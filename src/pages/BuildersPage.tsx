@@ -8,61 +8,61 @@ const BuildersPage = () => {
 
   const problems = [
     {
-      title: "shipping in silence",
-      description: "You've built multiple projects with great technical execution, but they never gain traction. Hours spent perfecting code, zero hours on telling anyone about it.",
-      emoji: "🤫"
+      title: "the project graveyard",
+      description: "You have 5, maybe 10 finished projects. They work. They're polished. But they're sitting on a shelf collecting dust because you have no time or energy to market them.",
+      emoji: "🪦"
     },
     {
-      title: "marketing feels like a chore",
-      description: "Writing copy, creating content, managing social media — these tasks drain your energy and take you away from what you love: building and iterating on your product.",
+      title: "building but not shipping",
+      description: "You spend months perfecting the code, but zero hours telling anyone about it. Launch day comes and... crickets. It's demoralizing.",
+      emoji: "📦"
+    },
+    {
+      title: "marketing feels impossible",
+      description: "You tried posting on Reddit, Twitter, Product Hunt. Maybe got a few upvotes. But you're not a marketer. You're a builder. It's just not your skill set.",
       emoji: "😮‍💨"
     },
     {
-      title: "no distribution strategy",
-      description: "You know how to build a product. But getting it in front of users? That's a completely different skill set you don't have time to master.",
+      title: "no users, no revenue",
+      description: "Your side projects have incredible potential but zero users and zero revenue. Meanwhile, inferior products with better marketing are thriving.",
       emoji: "📉"
     },
     {
-      title: "wearing too many hats",
-      description: "You're forced to be the developer, designer, marketer, salesperson, and customer support. You end up doing everything poorly instead of your one thing excellently.",
-      emoji: "🎩"
+      title: "wasted potential",
+      description: "You know your projects could make real money if someone just knew how to market them. But you're too busy building the next thing to go back and promote the old ones.",
+      emoji: "💸"
     },
     {
-      title: "launch anxiety",
-      description: "Every launch feels like shouting into the void. You post on Reddit, Twitter, and Product Hunt, but crickets. Meanwhile, inferior products with better marketing thrive.",
-      emoji: "😰"
-    },
-    {
-      title: "the graveyard of side projects",
-      description: "Your GitHub is filled with amazing projects that got 5 stars. Not because they're bad, but because nobody knows they exist.",
-      emoji: "🪦"
+      title: "working alone",
+      description: "Building solo is isolating. You have no one to bounce ideas off, no one to handle the parts you hate, and no one to share the wins (or losses) with.",
+      emoji: "🏝️"
     }
   ]
 
   const benefits = [
     {
-      title: "focus on what you do best",
-      description: "Stop context-switching between code and marketing. Let someone who lives and breathes growth handle distribution while you perfect the product."
+      title: "monetize your shelf projects",
+      description: "Stop letting finished projects rot. Hand them to someone who can market them, split the revenue, and finally see your work generate income."
     },
     {
-      title: "complementary skill sets",
-      description: "A marketer thinks in stories, audiences, and virality. You think in systems, logic, and scalability. Together, you're unstoppable."
+      title: "focus on what you love",
+      description: "You build. They market. No more forcing yourself to create TikToks or write cold emails. Just code and ship."
     },
     {
-      title: "faster validation cycles",
-      description: "Build, ship, market, measure, iterate. With a marketing co-founder, you can validate ideas 10x faster because someone's already building the audience while you build the product."
+      title: "equity over hourly rates",
+      description: "Stop trading time for money. Build something once, split the ownership, and earn recurring revenue as it grows."
     },
     {
-      title: "network effects",
-      description: "Marketers have connections with influencers, media, and communities you've never heard of. Tap into networks you'd never reach alone."
+      title: "real partnerships",
+      description: "This isn't outsourcing to Upwork. A marketing co-founder is invested in success because their equity depends on it. You're in it together."
     },
     {
-      title: "sustainable growth",
-      description: "Stop relying on one-time Product Hunt launches. A marketing co-founder builds systems for continuous user acquisition and retention."
+      title: "faster growth cycles",
+      description: "While you iterate on the product, they're building an audience, testing channels, and driving users. Growth happens in parallel, not sequentially."
     },
     {
-      title: "shared emotional burden",
-      description: "Building alone is isolating. Having a co-founder means someone celebrates wins with you and helps shoulder the failures."
+      title: "shared burden",
+      description: "Building alone is exhausting. Having a partner means someone celebrates wins with you and helps shoulder the failures. You're not in it alone anymore."
     }
   ]
 
@@ -113,12 +113,12 @@ const BuildersPage = () => {
             For builders
           </p>
           <h1 className="font-serif text-6xl md:text-7xl lg:text-8xl leading-[0.95] text-charcoal">
-            you can build<br />
-            anything.<br />
-            <span className="italic text-rust">but can you sell it?</span>
+            your projects<br />
+            are collecting dust.<br />
+            <span className="italic text-rust">give them life.</span>
           </h1>
           <p className="text-2xl md:text-3xl text-warm-gray-700 leading-relaxed font-light max-w-3xl mx-auto">
-            great products don't sell themselves. you need someone who knows how to make noise.
+            you've built it. now find someone who can sell it. split the equity. finally make money from your work.
           </p>
         </motion.div>
       </section>
@@ -183,13 +183,13 @@ const BuildersPage = () => {
             
             <div className="space-y-8 text-3xl md:text-4xl lg:text-5xl font-serif leading-relaxed text-charcoal">
               <p className="opacity-90">
-                you don't need to become a marketer.
+                your shelf projects could be making money.
               </p>
               <p className="opacity-90">
-                you need to <span className="italic text-rust">find one</span>.
+                you just need someone who can <span className="italic text-rust">market them</span>.
               </p>
               <p className="text-2xl md:text-3xl text-warm-gray-600 font-sans font-light mt-12 max-w-2xl mx-auto">
-                someone who can tell your story while you write the code.
+                hand over your finished project. split the equity. let them handle growth while you keep building.
               </p>
             </div>
           </motion.div>
@@ -305,10 +305,10 @@ const BuildersPage = () => {
             transition={{ duration: 0.8 }}
           >
             <h2 className="font-serif text-6xl md:text-7xl text-charcoal mb-8 leading-tight lowercase">
-              stop building<br />in silence
+              stop letting<br />projects collect dust
             </h2>
             <p className="text-xl md:text-2xl text-warm-gray-700 font-light mb-12">
-              find a marketer who can amplify your work
+              find a marketer who can turn your shelf project into revenue
             </p>
             <button
               onClick={() => navigate('/signup')}

@@ -71,15 +71,15 @@ const LandingPage = () => {
                 transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
               >
                 <p className="text-xs md:text-sm uppercase tracking-loose text-warm-gray-600 mb-8 font-sans">
-                  For the ones who build
+                  Turn shelf projects into real businesses
                 </p>
                 <h1 className="font-serif text-7xl md:text-8xl lg:text-9xl leading-[0.90] text-charcoal mb-10">
-                  where builders<br />
-                  meet<br />
-                  <span className="italic text-rust">storytellers</span>
+                  stop building<br />
+                  in silence.<br />
+                  <span className="italic text-rust">find your co-founder</span>
                 </h1>
                 <p className="text-2xl md:text-3xl text-warm-gray-700 leading-relaxed font-light max-w-lg">
-                  not another networking app — a place to start something.
+                  match with someone who complements your skills. split equity. build real wealth.
                 </p>
               </motion.div>
 
@@ -180,18 +180,21 @@ const LandingPage = () => {
             className="space-y-12"
           >
             <p className="text-sm uppercase tracking-loose text-warm-gray-600 font-sans" id="philosophy-heading">
-              The future is built in pairs
+              The philosophy
             </p>
             
             <div className="space-y-8 text-3xl md:text-4xl lg:text-5xl font-serif leading-relaxed text-charcoal">
               <p className="opacity-90">
-                you have built something great.
+                builders: your projects are collecting dust.
               </p>
               <p className="opacity-90">
-                now find someone who can <span className="italic text-rust">tell the world</span>.
+                storytellers: you're creating content for <span className="italic text-rust">$15/video</span>.
+              </p>
+              <p className="opacity-90 mt-8">
+                what if you both owned something <span className="italic text-rust">together</span>?
               </p>
               <p className="text-2xl md:text-3xl text-warm-gray-600 font-sans font-light mt-12 max-w-2xl">
-                for the ones who build in silence and the ones who make noise.
+                stop working alone. find a partner. split the equity. build real wealth.
               </p>
             </div>
           </motion.div>
@@ -219,12 +222,12 @@ const LandingPage = () => {
                   builders
                 </h3>
                 <p className="text-warm-gray-700 leading-relaxed font-light text-lg">
-                  you've built multiple projects that never see the light of day. not because they're not good — but because marketing and sales take time away from what you do best: building and iterating on the product.
+                  you have finished projects sitting on the shelf. apps, tools, products you spent months building. they work, but no one knows they exist. give them to someone who can market it. split the profits. finally see your work make money.
                 </p>
                 <div className="pt-4 space-y-2 text-base text-warm-gray-600 font-sans">
-                  <p className="lowercase">→ Mobile apps, SaaS, Web apps</p>
-                  <p className="lowercase">→ Hardware products</p>
-                  <p className="lowercase">→ AI apps, Developer Tools, Web3</p>
+                  <p className="lowercase">→ side projects with no users</p>
+                  <p className="lowercase">→ completed apps sitting idle</p>
+                  <p className="lowercase">→ tools you built but never marketed</p>
                 </div>
                 <div className="pt-6">
                   <span className="text-sm text-rust font-sans uppercase tracking-wider">
@@ -252,12 +255,12 @@ const LandingPage = () => {
                   storytellers
                 </h3>
                 <p className="text-warm-gray-700 leading-relaxed font-light text-lg">
-                  you're a growth hacker, content creator, or marketing strategist. you know how to make things go viral and reach people — but you need a builder to bring your vision to life.
+                  stop creating content for pennies. you can grow accounts, make things viral, and drive traffic. but you're making $15 per video for someone else's brand. find a developer with a real product. become partners. promote something you actually own. make real money.
                 </p>
                 <div className="pt-4 space-y-2 text-base text-warm-gray-600 font-sans">
-                  <p className="lowercase">→ growth hackers & marketers</p>
-                  <p className="lowercase">→ content creators & strategists</p>
-                  <p className="lowercase">→ brand storytellers</p>
+                  <p className="lowercase">→ tired of gig work & fiverr</p>
+                  <p className="lowercase">→ want equity, not hourly rates</p>
+                  <p className="lowercase">→ ready to own something real</p>
                 </div>
                 <div className="pt-6">
                   <span className="text-sm text-rust font-sans uppercase tracking-wider">
@@ -362,11 +365,11 @@ const LandingPage = () => {
         <div className="max-w-4xl mx-auto space-y-20">
           {[
             {
-              quote: "I built three apps that never saw the light of day. Not anymore.",
+              quote: "My side project had zero users for 8 months. Now it's making $3k/month.",
               role: "builder"
             },
             {
-              quote: "I have grown accounts to 500k. Now I am growing a product.",
+              quote: "I was making $15 per TikTok. Now I own 40% of a product doing $10k MRR.",
               role: "storyteller"
             }
           ].map((item, i) => (
