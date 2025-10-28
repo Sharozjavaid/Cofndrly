@@ -53,7 +53,7 @@ const SignupPage = () => {
   const [uploading, setUploading] = useState(false)
   const [showCustomSkillInput, setShowCustomSkillInput] = useState(false)
 
-  const totalSteps = 8 // Updated to include password step
+  const totalSteps = 9 // Split experience into 2 steps: background + skills
 
   const handleNext = async () => {
     if (step < totalSteps) {
@@ -346,7 +346,7 @@ const SignupPage = () => {
               </motion.div>
             )}
 
-            {/* Step 3: Experience */}
+            {/* Step 3: Professional Background */}
             {step === 3 && (
               <motion.div
                 key="step3"
@@ -377,11 +377,41 @@ const SignupPage = () => {
                       value={formData.experience}
                       onChange={(e) => setFormData({ ...formData, experience: e.target.value })}
                       className="w-full px-0 py-4 bg-transparent border-b-2 border-warm-gray-300 focus:border-charcoal focus:outline-none transition-colors text-lg text-charcoal resize-none font-light"
-                      rows={4}
+                      rows={5}
                       placeholder="share your journey..."
+                      required
                     />
+                    <p className="mt-2 text-sm text-warm-gray-500 font-light italic">
+                      fill this in to continue
+                    </p>
                   </div>
+                </div>
+              </motion.div>
+            )}
 
+            {/* Step 4: Skills & Expertise */}
+            {step === 4 && (
+              <motion.div
+                key="step4"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+                className="space-y-12"
+              >
+                <div className="space-y-4">
+                  <p className="text-xs uppercase tracking-loose text-warm-gray-600 font-sans">
+                    Expertise
+                  </p>
+                  <h1 className="font-serif text-5xl md:text-6xl text-charcoal lowercase leading-tight">
+                    your skills
+                  </h1>
+                  <p className="text-lg text-warm-gray-700 font-light max-w-lg">
+                    select at least one skill to continue
+                  </p>
+                </div>
+
+                <div className="space-y-8">
                   <div>
                     <label className="block text-xs uppercase tracking-loose text-warm-gray-600 mb-4 font-sans">
                       skills & expertise
@@ -479,10 +509,10 @@ const SignupPage = () => {
               </motion.div>
             )}
 
-            {/* Step 3: Passions */}
-            {step === 3 && (
+            {/* Step 5: Passions */}
+            {step === 5 && (
               <motion.div
-                key="step3"
+                key="step5"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -20 }}
@@ -531,10 +561,10 @@ const SignupPage = () => {
               </motion.div>
             )}
 
-            {/* Step 4: Commitment & Projects */}
-            {step === 4 && (
+            {/* Step 6: Commitment & Projects */}
+            {step === 6 && (
               <motion.div
-                key="step4"
+                key="step6"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -20 }}
@@ -642,10 +672,10 @@ const SignupPage = () => {
               </motion.div>
             )}
 
-            {/* Step 5: Looking For */}
-            {step === 5 && (
+            {/* Step 7: Looking For */}
+            {step === 7 && (
               <motion.div
-                key="step5"
+                key="step7"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -20 }}
@@ -681,10 +711,10 @@ const SignupPage = () => {
               </motion.div>
             )}
 
-            {/* Step 6: Profile Picture */}
-            {step === 6 && (
+            {/* Step 8: Profile Picture */}
+            {step === 8 && (
               <motion.div
-                key="step6"
+                key="step8"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -20 }}
@@ -759,10 +789,10 @@ const SignupPage = () => {
               </motion.div>
             )}
 
-            {/* Step 7: Bio */}
-            {step === 7 && (
+            {/* Step 9: Bio */}
+            {step === 9 && (
               <motion.div
-                key="step7"
+                key="step9"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -20 }}
@@ -822,16 +852,17 @@ const SignupPage = () => {
                 uploading ||
                 (step === 1 && (!formData.name || !formData.email || !formData.role)) ||
                 (step === 2 && (!formData.password || formData.password.length < 6)) ||
-                (step === 3 && (!formData.experience || formData.skills.length === 0)) ||
-                (step === 4 && !formData.passions) ||
-                (step === 5 && (
+                (step === 3 && !formData.experience) ||
+                (step === 4 && formData.skills.length === 0) ||
+                (step === 5 && !formData.passions) ||
+                (step === 6 && (
                   !formData.weeklyCommitment ||
                   (formData.role === 'technical' && !formData.hasExistingProject) ||
                   (formData.role === 'technical' && formData.hasExistingProject === 'yes' && !formData.projectLink) ||
                   (formData.role === 'non-technical' && !formData.portfolioLinks)
                 )) ||
-                (step === 6 && !formData.lookingFor) ||
-                (step === 8 && !formData.bio)
+                (step === 7 && !formData.lookingFor) ||
+                (step === 9 && !formData.bio)
               }
             >
               {uploading ? 'uploading...' : step === totalSteps ? 'submit application' : 'continue'}

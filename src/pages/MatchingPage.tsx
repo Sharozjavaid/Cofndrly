@@ -49,22 +49,37 @@ const MatchingPage = () => {
     }
   }, [currentUser, userProfile, navigate])
 
-  // Load approved users from Firestore
+  // Load approved users from Firestore and filter out already swiped profiles
   useEffect(() => {
     if (!currentUser) return
 
     const loadProfiles = async () => {
       try {
+        // Get all approved users
         const usersRef = collection(db, 'users')
         const q = query(usersRef, where('approved', '==', true))
         const snapshot = await getDocs(q)
         
+        // Get all swipes by current user
+        const swipesRef = collection(db, 'swipes')
+        const swipesQuery = query(swipesRef, where('fromUserId', '==', currentUser.uid))
+        const swipesSnapshot = await getDocs(swipesQuery)
+        
+        // Create set of user IDs that have been swiped on
+        const swipedUserIds = new Set(
+          swipesSnapshot.docs.map(doc => doc.data().toUserId)
+        )
+        
+        // Filter out current user and already swiped profiles
         const loadedProfiles = snapshot.docs
           .map(doc => ({
             id: doc.id,
             ...doc.data()
           }))
-          .filter(profile => profile.id !== currentUser.uid) as Profile[] // Don't show current user
+          .filter(profile => 
+            profile.id !== currentUser.uid && // Don't show current user
+            !swipedUserIds.has(profile.id) // Don't show already swiped profiles
+          ) as Profile[]
         
         setProfiles(loadedProfiles)
         setLoading(false)
@@ -205,17 +220,25 @@ const MatchingPage = () => {
     return (
       <div className="min-h-screen bg-cream grain flex items-center justify-center">
         <div className="text-center max-w-md px-8">
-          <div className="text-6xl mb-6">🔍</div>
-          <h2 className="font-serif text-3xl text-charcoal lowercase mb-4">no profiles yet</h2>
+          <div className="text-6xl mb-6">✨</div>
+          <h2 className="font-serif text-3xl text-charcoal lowercase mb-4">you've seen everyone!</h2>
           <p className="text-warm-gray-600 mb-8">
-            check back soon! we're reviewing applications and will have profiles for you to browse shortly.
+            check back later for new profiles. we're constantly reviewing new applications and adding more potential co-founders.
           </p>
-          <button
-            onClick={() => navigate('/')}
-            className="px-8 py-3 bg-charcoal text-cream rounded-sm hover:bg-warm-gray-900 transition-all"
-          >
-            back to home
-          </button>
+          <div className="flex flex-col gap-3">
+            <button
+              onClick={() => navigate('/messages')}
+              className="px-8 py-3 bg-charcoal text-cream rounded-sm hover:bg-warm-gray-900 transition-all"
+            >
+              view messages
+            </button>
+            <button
+              onClick={() => navigate('/')}
+              className="px-8 py-3 bg-transparent text-charcoal rounded-sm border border-warm-gray-300 hover:border-charcoal transition-all"
+            >
+              back to home
+            </button>
+          </div>
         </div>
       </div>
     )

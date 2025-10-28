@@ -1,8 +1,23 @@
+import { useEffect } from 'react'
 import { motion } from 'framer-motion'
 import { useNavigate } from 'react-router-dom'
+import { useAuth } from '../contexts/AuthContext'
 
 const WaitingApproval = () => {
   const navigate = useNavigate()
+  const { currentUser, userProfile } = useAuth()
+
+  // Redirect to matching if approved
+  useEffect(() => {
+    if (!currentUser) {
+      navigate('/login')
+      return
+    }
+
+    if (userProfile?.approved) {
+      navigate('/matching')
+    }
+  }, [currentUser, userProfile, navigate])
 
   return (
     <div className="min-h-screen bg-cream grain">
@@ -127,7 +142,7 @@ const WaitingApproval = () => {
             {/* Demo Button */}
             <div className="text-center pt-8">
               <button
-                onClick={() => navigate('/match')}
+                onClick={() => navigate('/matching')}
                 className="text-sm text-warm-gray-600 hover:text-charcoal transition-colors underline decoration-dotted underline-offset-4 font-light"
               >
                 preview matching interface (demo)
