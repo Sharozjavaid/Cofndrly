@@ -3,6 +3,7 @@ import { motion, AnimatePresence, PanInfo, useMotionValue, useTransform } from '
 import { useNavigate } from 'react-router-dom'
 import { db } from '../firebase/config'
 import { collection, query, where, getDocs, addDoc, serverTimestamp } from 'firebase/firestore'
+import { useAuth } from '../contexts/AuthContext'
 
 interface Profile {
   id: string
@@ -21,13 +22,13 @@ interface Profile {
 
 const MatchingPage = () => {
   const navigate = useNavigate()
+  const { currentUser, userProfile } = useAuth()
   const [profiles, setProfiles] = useState<Profile[]>([])
   const [currentIndex, setCurrentIndex] = useState(0)
   const [showMessage, setShowMessage] = useState(false)
   const [message, setMessage] = useState('')
   const [exitDirection, setExitDirection] = useState<'left' | 'right'>('right')
   const [loading, setLoading] = useState(true)
-  const [currentUserId] = useState('demo-user-123') // TODO: Replace with actual user auth
 
   const currentProfile = profiles[currentIndex]
 
@@ -35,8 +36,23 @@ const MatchingPage = () => {
   const rotate = useTransform(x, [-200, 200], [-15, 15])
   const opacity = useTransform(x, [-200, -100, 0, 100, 200], [0.5, 1, 1, 1, 0.5])
 
+  // Check authentication and approval
+  useEffect(() => {
+    if (!currentUser) {
+      navigate('/login')
+      return
+    }
+    
+    if (!userProfile?.approved) {
+      navigate('/waiting')
+      return
+    }
+  }, [currentUser, userProfile, navigate])
+
   // Load approved users from Firestore
   useEffect(() => {
+    if (!currentUser) return
+
     const loadProfiles = async () => {
       try {
         const usersRef = collection(db, 'users')
@@ -48,7 +64,7 @@ const MatchingPage = () => {
             id: doc.id,
             ...doc.data()
           }))
-          .filter(profile => profile.id !== currentUserId) as Profile[] // Don't show current user
+          .filter(profile => profile.id !== currentUser.uid) as Profile[] // Don't show current user
         
         setProfiles(loadedProfiles)
         setLoading(false)
@@ -59,24 +75,26 @@ const MatchingPage = () => {
     }
 
     loadProfiles()
-  }, [currentUserId])
+  }, [currentUser])
 
   // Check if a match already exists or if other user swiped right
   const checkForMatch = async (otherUserId: string) => {
+    if (!currentUser) return false
+    
     try {
       // Check if other user already swiped right on current user
       const swipesRef = collection(db, 'swipes')
       const q = query(
         swipesRef,
         where('fromUserId', '==', otherUserId),
-        where('toUserId', '==', currentUserId),
+        where('toUserId', '==', currentUser.uid),
         where('direction', '==', 'right')
       )
       const snapshot = await getDocs(q)
       
       if (!snapshot.empty) {
         // It's a match! Create match document
-        await createMatch(currentUserId, otherUserId)
+        await createMatch(currentUser.uid, otherUserId)
         return true
       }
       return false
@@ -105,12 +123,12 @@ const MatchingPage = () => {
 
   // Record swipe in Firestore
   const recordSwipe = async (direction: 'left' | 'right') => {
-    if (!currentProfile) return
+    if (!currentProfile || !currentUser) return
 
     try {
       const swipesRef = collection(db, 'swipes')
       await addDoc(swipesRef, {
-        fromUserId: currentUserId,
+        fromUserId: currentUser.uid,
         toUserId: currentProfile.id,
         direction,
         timestamp: serverTimestamp()
@@ -150,12 +168,12 @@ const MatchingPage = () => {
   }
 
   const handleSendMessage = async () => {
-    if (!message.trim() || !currentProfile) return
+    if (!message.trim() || !currentProfile || !currentUser) return
 
     try {
       const messagesRef = collection(db, 'messages')
       await addDoc(messagesRef, {
-        fromUserId: currentUserId,
+        fromUserId: currentUser.uid,
         toUserId: currentProfile.id,
         message: message.trim(),
         timestamp: serverTimestamp(),
@@ -215,10 +233,16 @@ const MatchingPage = () => {
             cofndrly
           </div>
           <div className="flex gap-4 items-center">
-            <button className="text-sm text-warm-gray-600 hover:text-charcoal transition-colors lowercase tracking-relaxed">
+            <button 
+              onClick={() => navigate('/messages')}
+              className="text-sm text-warm-gray-600 hover:text-charcoal transition-colors lowercase tracking-relaxed"
+            >
               messages
             </button>
-            <button className="text-sm text-warm-gray-600 hover:text-charcoal transition-colors lowercase tracking-relaxed">
+            <button 
+              onClick={() => navigate('/profile')}
+              className="text-sm text-warm-gray-600 hover:text-charcoal transition-colors lowercase tracking-relaxed"
+            >
               profile
             </button>
           </div>

@@ -4,6 +4,9 @@ import LoginPage from './pages/LoginPage'
 import SignupPage from './pages/SignupPage'
 import WaitingApproval from './pages/WaitingApproval'
 import MatchingPage from './pages/MatchingPage'
+import MessagesPage from './pages/MessagesPage'
+import ChatPage from './pages/ChatPage'
+import ProfilePage from './pages/ProfilePage'
 import AdminLogin from './pages/AdminLogin'
 import AdminDashboard from './pages/AdminDashboard'
 
@@ -16,6 +19,9 @@ function App() {
         <Route path="/signup" element={<SignupPage />} />
         <Route path="/waiting" element={<WaitingApproval />} />
         <Route path="/matching" element={<MatchingPage />} />
+        <Route path="/messages" element={<MessagesPage />} />
+        <Route path="/chat/:matchId" element={<ChatPage />} />
+        <Route path="/profile" element={<ProfilePage />} />
         <Route path="/admin" element={<AdminLogin />} />
         <Route path="/admin/dashboard" element={<AdminDashboard />} />
       </Routes>

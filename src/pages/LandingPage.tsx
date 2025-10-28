@@ -26,15 +26,25 @@ const LandingPage = () => {
           >
             cofndrly
           </motion.div>
-          <motion.button
+          <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.2 }}
-            onClick={() => navigate('/signup')}
-            className="px-6 py-2.5 bg-charcoal text-cream rounded-sm hover:bg-warm-gray-900 transition-all font-sans text-sm tracking-relaxed lowercase"
+            className="flex gap-3"
           >
-            apply
-          </motion.button>
+            <button
+              onClick={() => navigate('/login')}
+              className="px-6 py-2.5 bg-transparent text-charcoal rounded-sm border border-warm-gray-300 hover:border-charcoal transition-all font-sans text-sm tracking-relaxed lowercase"
+            >
+              sign in
+            </button>
+            <button
+              onClick={() => navigate('/signup')}
+              className="px-6 py-2.5 bg-charcoal text-cream rounded-sm hover:bg-warm-gray-900 transition-all font-sans text-sm tracking-relaxed lowercase"
+            >
+              apply
+            </button>
+          </motion.div>
         </div>
       </nav>
 

@@ -1,30 +1,38 @@
 import { useState } from 'react'
 import { motion } from 'framer-motion'
 import { useNavigate } from 'react-router-dom'
+import { useAuth } from '../contexts/AuthContext'
 
 const AdminLogin = () => {
   const navigate = useNavigate()
+  const { signIn } = useAuth()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
 
-  // Hardcoded admin credentials (you can change these)
-  const ADMIN_EMAIL = 'admin@cofndrly.com'
-  const ADMIN_PASSWORD = 'cofndrly2025'
-
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault()
     setError('')
     setLoading(true)
 
-    // Simple authentication check
-    if (email === ADMIN_EMAIL && password === ADMIN_PASSWORD) {
-      // Store admin session
-      sessionStorage.setItem('adminAuthenticated', 'true')
-      navigate('/admin/dashboard')
-    } else {
-      setError('Invalid credentials')
+    try {
+      await signIn(email, password)
+      
+      // Check if the logged in user is admin
+      if (email === 'admin@cofndrly.com') {
+        navigate('/admin/dashboard')
+      } else {
+        setError('Access denied. Admin credentials required.')
+        setLoading(false)
+      }
+    } catch (err: any) {
+      console.error('Login error:', err)
+      if (err.code === 'auth/invalid-credential' || err.code === 'auth/wrong-password' || err.code === 'auth/user-not-found') {
+        setError('Invalid credentials')
+      } else {
+        setError('Error signing in. Please try again.')
+      }
       setLoading(false)
     }
   }

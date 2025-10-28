@@ -3,6 +3,7 @@ import { motion } from 'framer-motion'
 import { useNavigate } from 'react-router-dom'
 import { db } from '../firebase/config'
 import { collection, onSnapshot, doc, updateDoc, deleteDoc } from 'firebase/firestore'
+import { useAuth } from '../contexts/AuthContext'
 
 interface User {
   id: string
@@ -22,41 +23,48 @@ interface User {
 
 const AdminDashboard = () => {
   const navigate = useNavigate()
+  const { currentUser, signOut } = useAuth()
   const [users, setUsers] = useState<User[]>([])
   const [filter, setFilter] = useState<'all' | 'pending' | 'approved'>('pending')
   const [selectedUser, setSelectedUser] = useState<User | null>(null)
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    // Check authentication
-    const isAuthenticated = sessionStorage.getItem('adminAuthenticated')
-    if (!isAuthenticated) {
+    // Check if user is authenticated and is admin
+    if (!currentUser || currentUser.email !== 'admin@cofndrly.com') {
       navigate('/admin')
       return
     }
 
     // Subscribe to users collection
     const usersRef = collection(db, 'users')
-    const unsubscribe = onSnapshot(usersRef, (snapshot) => {
-      const usersData = snapshot.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data()
-      })) as User[]
-      
-      // Sort by creation date (newest first)
-      usersData.sort((a, b) => {
-        if (a.createdAt && b.createdAt) {
-          return b.createdAt.toMillis() - a.createdAt.toMillis()
-        }
-        return 0
-      })
-      
-      setUsers(usersData)
-      setLoading(false)
-    })
+    const unsubscribe = onSnapshot(
+      usersRef, 
+      (snapshot) => {
+        const usersData = snapshot.docs.map(doc => ({
+          id: doc.id,
+          ...doc.data()
+        })) as User[]
+        
+        // Sort by creation date (newest first)
+        usersData.sort((a, b) => {
+          if (a.createdAt && b.createdAt) {
+            return b.createdAt.toMillis() - a.createdAt.toMillis()
+          }
+          return 0
+        })
+        
+        setUsers(usersData)
+        setLoading(false)
+      },
+      (error) => {
+        console.error('Error fetching users:', error)
+        setLoading(false)
+      }
+    )
 
     return () => unsubscribe()
-  }, [navigate])
+  }, [currentUser, navigate])
 
   const handleApprove = async (userId: string) => {
     try {
@@ -82,9 +90,13 @@ const AdminDashboard = () => {
     }
   }
 
-  const handleLogout = () => {
-    sessionStorage.removeItem('adminAuthenticated')
-    navigate('/admin')
+  const handleLogout = async () => {
+    try {
+      await signOut()
+      navigate('/admin')
+    } catch (error) {
+      console.error('Error signing out:', error)
+    }
   }
 
   const filteredUsers = users.filter(user => {
