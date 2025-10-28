@@ -1,5 +1,7 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import LandingPage from './pages/LandingPage'
+import BuildersPage from './pages/BuildersPage'
+import CreativesPage from './pages/CreativesPage'
 import LoginPage from './pages/LoginPage'
 import SignupPage from './pages/SignupPage'
 import WaitingApproval from './pages/WaitingApproval'
@@ -15,6 +17,8 @@ function App() {
     <Router>
       <Routes>
         <Route path="/" element={<LandingPage />} />
+        <Route path="/builders" element={<BuildersPage />} />
+        <Route path="/creatives" element={<CreativesPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/signup" element={<SignupPage />} />
         <Route path="/waiting" element={<WaitingApproval />} />
