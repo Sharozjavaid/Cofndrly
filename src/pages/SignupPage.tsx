@@ -17,6 +17,11 @@ interface FormData {
   bio: string
   profileImage: File | null
   profileImagePreview: string
+  weeklyCommitment: string
+  hasExistingProject: string
+  projectLink: string
+  portfolioLinks: string
+  customSkill: string
 }
 
 const SignupPage = () => {
@@ -33,11 +38,17 @@ const SignupPage = () => {
     lookingFor: '',
     bio: '',
     profileImage: null,
-    profileImagePreview: ''
+    profileImagePreview: '',
+    weeklyCommitment: '',
+    hasExistingProject: '',
+    projectLink: '',
+    portfolioLinks: '',
+    customSkill: ''
   })
   const [uploading, setUploading] = useState(false)
+  const [showCustomSkillInput, setShowCustomSkillInput] = useState(false)
 
-  const totalSteps = 6 // Increased from 5 to 6 for profile picture step
+  const totalSteps = 7 // Updated to include new commitment/project step
 
   const handleNext = async () => {
     if (step < totalSteps) {
@@ -72,6 +83,10 @@ const SignupPage = () => {
         lookingFor: formData.lookingFor,
         bio: formData.bio,
         profileImageUrl: profileImageUrl,
+        weeklyCommitment: formData.weeklyCommitment,
+        hasExistingProject: formData.hasExistingProject,
+        projectLink: formData.projectLink,
+        portfolioLinks: formData.portfolioLinks,
         approved: false,
         createdAt: new Date()
       })
@@ -97,6 +112,24 @@ const SignupPage = () => {
       skills: prev.skills.includes(skill)
         ? prev.skills.filter(s => s !== skill)
         : [...prev.skills, skill]
+    }))
+  }
+
+  const addCustomSkill = () => {
+    if (formData.customSkill.trim()) {
+      setFormData(prev => ({
+        ...prev,
+        skills: [...prev.skills, formData.customSkill.trim().toLowerCase()],
+        customSkill: ''
+      }))
+      setShowCustomSkillInput(false)
+    }
+  }
+
+  const removeSkill = (skill: string) => {
+    setFormData(prev => ({
+      ...prev,
+      skills: prev.skills.filter(s => s !== skill)
     }))
   }
 
@@ -292,7 +325,9 @@ const SignupPage = () => {
                     <label className="block text-xs uppercase tracking-loose text-warm-gray-600 mb-4 font-sans">
                       skills & expertise
                     </label>
-                    <div className="flex flex-wrap gap-3">
+                    
+                    {/* Predefined Skills */}
+                    <div className="flex flex-wrap gap-3 mb-4">
                       {(formData.role === 'technical' ? technicalSkills : nonTechnicalSkills).map(skill => (
                         <button
                           key={skill}
@@ -307,6 +342,77 @@ const SignupPage = () => {
                         </button>
                       ))}
                     </div>
+
+                    {/* Custom Skills Added */}
+                    {formData.skills.filter(skill => 
+                      !(formData.role === 'technical' ? technicalSkills : nonTechnicalSkills).includes(skill)
+                    ).length > 0 && (
+                      <div className="mb-4">
+                        <p className="text-xs uppercase tracking-loose text-warm-gray-500 mb-2 font-sans">
+                          custom skills
+                        </p>
+                        <div className="flex flex-wrap gap-3">
+                          {formData.skills
+                            .filter(skill => !(formData.role === 'technical' ? technicalSkills : nonTechnicalSkills).includes(skill))
+                            .map(skill => (
+                              <div
+                                key={skill}
+                                className="px-5 py-2.5 rounded-sm bg-rust/10 text-charcoal border border-rust/30 text-sm lowercase flex items-center gap-2"
+                              >
+                                {skill}
+                                <button
+                                  onClick={() => removeSkill(skill)}
+                                  className="text-rust hover:text-charcoal transition-colors"
+                                >
+                                  ×
+                                </button>
+                              </div>
+                            ))}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Add Custom Skill */}
+                    {!showCustomSkillInput ? (
+                      <button
+                        onClick={() => setShowCustomSkillInput(true)}
+                        className="px-5 py-2.5 rounded-sm bg-sand text-warm-gray-700 border border-warm-gray-300 hover:border-charcoal transition-all text-sm lowercase"
+                      >
+                        + add other skill
+                      </button>
+                    ) : (
+                      <div className="flex gap-3 items-center">
+                        <input
+                          type="text"
+                          value={formData.customSkill}
+                          onChange={(e) => setFormData({ ...formData, customSkill: e.target.value })}
+                          onKeyPress={(e) => {
+                            if (e.key === 'Enter') {
+                              e.preventDefault()
+                              addCustomSkill()
+                            }
+                          }}
+                          className="px-4 py-2.5 bg-white border border-warm-gray-300 focus:border-charcoal focus:outline-none rounded-sm text-sm text-charcoal lowercase flex-1"
+                          placeholder="type your skill..."
+                          autoFocus
+                        />
+                        <button
+                          onClick={addCustomSkill}
+                          className="px-5 py-2.5 rounded-sm bg-charcoal text-cream hover:bg-warm-gray-900 transition-all text-sm lowercase"
+                        >
+                          add
+                        </button>
+                        <button
+                          onClick={() => {
+                            setShowCustomSkillInput(false)
+                            setFormData({ ...formData, customSkill: '' })
+                          }}
+                          className="px-5 py-2.5 rounded-sm bg-white text-warm-gray-700 border border-warm-gray-300 hover:border-charcoal transition-all text-sm lowercase"
+                        >
+                          cancel
+                        </button>
+                      </div>
+                    )}
                   </div>
                 </div>
               </motion.div>
@@ -364,10 +470,121 @@ const SignupPage = () => {
               </motion.div>
             )}
 
-            {/* Step 4: Looking For */}
+            {/* Step 4: Commitment & Projects */}
             {step === 4 && (
               <motion.div
                 key="step4"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+                className="space-y-12"
+              >
+                <div className="space-y-4">
+                  <p className="text-xs uppercase tracking-loose text-warm-gray-600 font-sans">
+                    Commitment
+                  </p>
+                  <h1 className="font-serif text-5xl md:text-6xl text-charcoal lowercase leading-tight">
+                    time & projects
+                  </h1>
+                  <p className="text-lg text-warm-gray-700 font-light max-w-lg">
+                    let's talk about availability and what you've built
+                  </p>
+                </div>
+
+                <div className="space-y-8">
+                  {/* Weekly Time Commitment */}
+                  <div>
+                    <label className="block text-xs uppercase tracking-loose text-warm-gray-600 mb-4 font-sans">
+                      how many hours per week can you commit?
+                    </label>
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                      {['5-10 hours', '10-20 hours', '20-30 hours', '30+ hours (full-time)'].map(option => (
+                        <button
+                          key={option}
+                          onClick={() => setFormData({ ...formData, weeklyCommitment: option })}
+                          className={`p-4 rounded-sm border-2 transition-all text-center ${
+                            formData.weeklyCommitment === option
+                              ? 'border-charcoal bg-white'
+                              : 'border-warm-gray-200 hover:border-warm-gray-400 bg-white/50'
+                          }`}
+                        >
+                          <div className="text-sm lowercase text-charcoal font-light">{option}</div>
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* For Technical/Builders */}
+                  {formData.role === 'technical' && (
+                    <>
+                      <div>
+                        <label className="block text-xs uppercase tracking-loose text-warm-gray-600 mb-4 font-sans">
+                          do you already have a project you want to grow?
+                        </label>
+                        <div className="grid grid-cols-2 gap-4">
+                          {['yes', 'no, but i have ideas', 'open to anything'].map(option => (
+                            <button
+                              key={option}
+                              onClick={() => setFormData({ ...formData, hasExistingProject: option })}
+                              className={`p-4 rounded-sm border-2 transition-all text-center ${
+                                formData.hasExistingProject === option
+                                  ? 'border-charcoal bg-white'
+                                  : 'border-warm-gray-200 hover:border-warm-gray-400 bg-white/50'
+                              }`}
+                            >
+                              <div className="text-sm lowercase text-charcoal font-light">{option}</div>
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+
+                      {formData.hasExistingProject === 'yes' && (
+                        <div>
+                          <label className="block text-xs uppercase tracking-loose text-warm-gray-600 mb-3 font-sans">
+                            share a link to your project
+                          </label>
+                          <input
+                            type="url"
+                            value={formData.projectLink}
+                            onChange={(e) => setFormData({ ...formData, projectLink: e.target.value })}
+                            className="w-full px-0 py-4 bg-transparent border-b-2 border-warm-gray-300 focus:border-charcoal focus:outline-none transition-colors text-lg text-charcoal font-light"
+                            placeholder="https://yourproject.com or github.com/..."
+                          />
+                          <p className="text-sm text-warm-gray-500 mt-2 font-light">
+                            website, app store link, github repo, or product demo
+                          </p>
+                        </div>
+                      )}
+                    </>
+                  )}
+
+                  {/* For Non-Technical/Marketers */}
+                  {formData.role === 'non-technical' && (
+                    <div>
+                      <label className="block text-xs uppercase tracking-loose text-warm-gray-600 mb-3 font-sans">
+                        portfolio & work samples
+                      </label>
+                      <textarea
+                        value={formData.portfolioLinks}
+                        onChange={(e) => setFormData({ ...formData, portfolioLinks: e.target.value })}
+                        className="w-full px-0 py-4 bg-transparent border-b-2 border-warm-gray-300 focus:border-charcoal focus:outline-none transition-colors text-lg text-charcoal resize-none font-light"
+                        rows={5}
+                        placeholder="share links to your best work...&#10;&#10;tiktok videos, instagram reels, youtube channels, case studies, campaigns you've run, content you've created, etc."
+                      />
+                      <p className="text-sm text-warm-gray-500 mt-2 font-light">
+                        paste links (one per line) to your TikTok, Instagram, YouTube, or any content that shows your skills
+                      </p>
+                    </div>
+                  )}
+                </div>
+              </motion.div>
+            )}
+
+            {/* Step 5: Looking For */}
+            {step === 5 && (
+              <motion.div
+                key="step5"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -20 }}
@@ -403,10 +620,10 @@ const SignupPage = () => {
               </motion.div>
             )}
 
-            {/* Step 5: Profile Picture */}
-            {step === 5 && (
+            {/* Step 6: Profile Picture */}
+            {step === 6 && (
               <motion.div
-                key="step5"
+                key="step6"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -20 }}
@@ -481,10 +698,10 @@ const SignupPage = () => {
               </motion.div>
             )}
 
-            {/* Step 6: Bio */}
-            {step === 6 && (
+            {/* Step 7: Bio */}
+            {step === 7 && (
               <motion.div
-                key="step6"
+                key="step7"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -20 }}
@@ -545,9 +762,15 @@ const SignupPage = () => {
                 (step === 1 && (!formData.name || !formData.email || !formData.role)) ||
                 (step === 2 && (!formData.experience || formData.skills.length === 0)) ||
                 (step === 3 && !formData.passions) ||
-                (step === 4 && !formData.lookingFor) ||
-                (step === 5 && !formData.profileImage) ||
-                (step === 6 && !formData.bio)
+                (step === 4 && (
+                  !formData.weeklyCommitment ||
+                  (formData.role === 'technical' && !formData.hasExistingProject) ||
+                  (formData.role === 'technical' && formData.hasExistingProject === 'yes' && !formData.projectLink) ||
+                  (formData.role === 'non-technical' && !formData.portfolioLinks)
+                )) ||
+                (step === 5 && !formData.lookingFor) ||
+                (step === 6 && !formData.profileImage) ||
+                (step === 7 && !formData.bio)
               }
             >
               {uploading ? 'uploading...' : step === totalSteps ? 'submit application' : 'continue'}

@@ -184,6 +184,7 @@ const LandingPage = () => {
             viewport={{ once: true, margin: "-100px" }}
             transition={{ duration: 0.8 }}
             className="group cursor-pointer"
+            onClick={() => navigate('/builders')}
           >
             <div className="bg-white rounded-sm p-12 h-full border border-warm-gray-200 hover:border-charcoal transition-all duration-300 relative overflow-hidden">
               <div className="absolute top-0 right-0 w-32 h-32 bg-rust/5 rounded-full blur-2xl group-hover:bg-rust/10 transition-all"></div>
@@ -200,6 +201,11 @@ const LandingPage = () => {
                   <p className="lowercase">→ Hardware products</p>
                   <p className="lowercase">→ AI apps, Developer Tools, Web3</p>
                 </div>
+                <div className="pt-6">
+                  <span className="text-sm text-rust font-sans uppercase tracking-wider">
+                    learn more →
+                  </span>
+                </div>
               </div>
             </div>
           </motion.div>
@@ -211,6 +217,7 @@ const LandingPage = () => {
             viewport={{ once: true, margin: "-100px" }}
             transition={{ duration: 0.8, delay: 0.1 }}
             className="group cursor-pointer"
+            onClick={() => navigate('/creatives')}
           >
             <div className="bg-white rounded-sm p-12 h-full border border-warm-gray-200 hover:border-charcoal transition-all duration-300 relative overflow-hidden">
               <div className="absolute top-0 right-0 w-32 h-32 bg-sage/5 rounded-full blur-2xl group-hover:bg-sage/10 transition-all"></div>
@@ -226,6 +233,11 @@ const LandingPage = () => {
                   <p className="lowercase">→ growth hackers & marketers</p>
                   <p className="lowercase">→ content creators & strategists</p>
                   <p className="lowercase">→ brand storytellers</p>
+                </div>
+                <div className="pt-6">
+                  <span className="text-sm text-rust font-sans uppercase tracking-wider">
+                    learn more →
+                  </span>
                 </div>
               </div>
             </div>

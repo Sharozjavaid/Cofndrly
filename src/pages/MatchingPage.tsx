@@ -1,62 +1,33 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { motion, AnimatePresence, PanInfo, useMotionValue, useTransform } from 'framer-motion'
 import { useNavigate } from 'react-router-dom'
+import { db } from '../firebase/config'
+import { collection, query, where, getDocs, addDoc, serverTimestamp } from 'firebase/firestore'
 
 interface Profile {
-  id: number
+  id: string
   name: string
+  email: string
   role: 'technical' | 'non-technical'
   skills: string[]
   bio: string
   passions: string
   experience: string
-  tagline: string
-  profileImageUrl?: string
+  currentProject: string
+  lookingFor: string
+  profileImageUrl: string
+  approved: boolean
 }
-
-const sampleProfiles: Profile[] = [
-  {
-    id: 1,
-    name: 'sarah chen',
-    role: 'non-technical',
-    skills: ['tiktok growth', 'content creation', 'community'],
-    bio: 'built a 500k tiktok following in 6 months. now looking to grow a tech product from 0 to 100k users. i understand virality and know how to build communities that actually care.',
-    passions: 'social commerce, creator economy, gen z trends',
-    experience: 'head of social at yc startup → grew to 1m users',
-    tagline: 'storyteller meets scale',
-    profileImageUrl: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400'
-  },
-  {
-    id: 2,
-    name: 'alex martinez',
-    role: 'technical',
-    skills: ['react', 'node.js', 'ai/ml'],
-    bio: 'full-stack engineer who loves rapid prototyping. built 3 side projects with 10k+ users each. i can turn ideas into products fast, but struggle with the marketing side.',
-    passions: 'ai tools, productivity, developer experience',
-    experience: 'ex-google, ex-stripe. 8 years building products',
-    tagline: 'builder seeks voice',
-    profileImageUrl: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400'
-  },
-  {
-    id: 3,
-    name: 'emily rodriguez',
-    role: 'non-technical',
-    skills: ['seo', 'email marketing', 'sales'],
-    bio: 'growth marketer who helped 3 startups reach $1m arr. expert in seo, conversion optimization, and building scalable acquisition channels. ready to own the growth side completely.',
-    passions: 'b2b saas, fintech, remote work',
-    experience: '10 years in growth. previously at hubspot',
-    tagline: 'growth architect',
-    profileImageUrl: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=400'
-  }
-]
 
 const MatchingPage = () => {
   const navigate = useNavigate()
-  const [profiles] = useState(sampleProfiles)
+  const [profiles, setProfiles] = useState<Profile[]>([])
   const [currentIndex, setCurrentIndex] = useState(0)
   const [showMessage, setShowMessage] = useState(false)
   const [message, setMessage] = useState('')
   const [exitDirection, setExitDirection] = useState<'left' | 'right'>('right')
+  const [loading, setLoading] = useState(true)
+  const [currentUserId] = useState('demo-user-123') // TODO: Replace with actual user auth
 
   const currentProfile = profiles[currentIndex]
 
@@ -64,8 +35,105 @@ const MatchingPage = () => {
   const rotate = useTransform(x, [-200, 200], [-15, 15])
   const opacity = useTransform(x, [-200, -100, 0, 100, 200], [0.5, 1, 1, 1, 0.5])
 
-  const handleSwipe = (direction: 'left' | 'right') => {
+  // Load approved users from Firestore
+  useEffect(() => {
+    const loadProfiles = async () => {
+      try {
+        const usersRef = collection(db, 'users')
+        const q = query(usersRef, where('approved', '==', true))
+        const snapshot = await getDocs(q)
+        
+        const loadedProfiles = snapshot.docs
+          .map(doc => ({
+            id: doc.id,
+            ...doc.data()
+          }))
+          .filter(profile => profile.id !== currentUserId) as Profile[] // Don't show current user
+        
+        setProfiles(loadedProfiles)
+        setLoading(false)
+      } catch (error) {
+        console.error('Error loading profiles:', error)
+        setLoading(false)
+      }
+    }
+
+    loadProfiles()
+  }, [currentUserId])
+
+  // Check if a match already exists or if other user swiped right
+  const checkForMatch = async (otherUserId: string) => {
+    try {
+      // Check if other user already swiped right on current user
+      const swipesRef = collection(db, 'swipes')
+      const q = query(
+        swipesRef,
+        where('fromUserId', '==', otherUserId),
+        where('toUserId', '==', currentUserId),
+        where('direction', '==', 'right')
+      )
+      const snapshot = await getDocs(q)
+      
+      if (!snapshot.empty) {
+        // It's a match! Create match document
+        await createMatch(currentUserId, otherUserId)
+        return true
+      }
+      return false
+    } catch (error) {
+      console.error('Error checking for match:', error)
+      return false
+    }
+  }
+
+  // Create a match in Firestore
+  const createMatch = async (user1Id: string, user2Id: string) => {
+    try {
+      const matchesRef = collection(db, 'matches')
+      await addDoc(matchesRef, {
+        user1Id,
+        user2Id,
+        createdAt: serverTimestamp(),
+        conversationId: `${user1Id}_${user2Id}`,
+        status: 'active'
+      })
+      console.log('Match created!')
+    } catch (error) {
+      console.error('Error creating match:', error)
+    }
+  }
+
+  // Record swipe in Firestore
+  const recordSwipe = async (direction: 'left' | 'right') => {
+    if (!currentProfile) return
+
+    try {
+      const swipesRef = collection(db, 'swipes')
+      await addDoc(swipesRef, {
+        fromUserId: currentUserId,
+        toUserId: currentProfile.id,
+        direction,
+        timestamp: serverTimestamp()
+      })
+
+      // If swiped right, check for match
+      if (direction === 'right') {
+        const isMatch = await checkForMatch(currentProfile.id)
+        if (isMatch) {
+          alert('🎉 It\'s a match! You can now message each other.')
+        }
+      }
+    } catch (error) {
+      console.error('Error recording swipe:', error)
+    }
+  }
+
+  const handleSwipe = async (direction: 'left' | 'right') => {
     setExitDirection(direction)
+    
+    // Record the swipe
+    await recordSwipe(direction)
+    
     if (direction === 'right') {
       setShowMessage(true)
     } else {
@@ -81,11 +149,58 @@ const MatchingPage = () => {
     }
   }
 
-  const handleSendMessage = () => {
-    console.log('Message sent:', message)
-    setShowMessage(false)
-    setMessage('')
-    nextProfile()
+  const handleSendMessage = async () => {
+    if (!message.trim() || !currentProfile) return
+
+    try {
+      const messagesRef = collection(db, 'messages')
+      await addDoc(messagesRef, {
+        fromUserId: currentUserId,
+        toUserId: currentProfile.id,
+        message: message.trim(),
+        timestamp: serverTimestamp(),
+        read: false
+      })
+      
+      console.log('Message sent!')
+      setShowMessage(false)
+      setMessage('')
+      nextProfile()
+    } catch (error) {
+      console.error('Error sending message:', error)
+      alert('Error sending message. Please try again.')
+    }
+  }
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-cream grain flex items-center justify-center">
+        <div className="text-center">
+          <div className="text-4xl mb-4">⏳</div>
+          <p className="text-warm-gray-600">loading profiles...</p>
+        </div>
+      </div>
+    )
+  }
+
+  if (profiles.length === 0) {
+    return (
+      <div className="min-h-screen bg-cream grain flex items-center justify-center">
+        <div className="text-center max-w-md px-8">
+          <div className="text-6xl mb-6">🔍</div>
+          <h2 className="font-serif text-3xl text-charcoal lowercase mb-4">no profiles yet</h2>
+          <p className="text-warm-gray-600 mb-8">
+            check back soon! we're reviewing applications and will have profiles for you to browse shortly.
+          </p>
+          <button
+            onClick={() => navigate('/')}
+            className="px-8 py-3 bg-charcoal text-cream rounded-sm hover:bg-warm-gray-900 transition-all"
+          >
+            back to home
+          </button>
+        </div>
+      </div>
+    )
   }
 
   return (
@@ -163,11 +278,11 @@ const MatchingPage = () => {
                           </div>
                         </>
                       )}
-                      {/* Tagline overlay */}
+                      {/* Role badge overlay */}
                       <div className="absolute bottom-4 left-4 right-4">
                         <div className="bg-white/90 backdrop-blur-sm px-4 py-2 rounded-sm">
                           <p className="font-serif text-sm text-charcoal italic lowercase">
-                            {currentProfile.tagline}
+                            {currentProfile.role === 'technical' ? 'builder' : 'storyteller'}
                           </p>
                         </div>
                       </div>

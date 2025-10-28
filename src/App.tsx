@@ -5,6 +5,8 @@ import WaitingApproval from './pages/WaitingApproval'
 import MatchingPage from './pages/MatchingPage'
 import AdminLogin from './pages/AdminLogin'
 import AdminDashboard from './pages/AdminDashboard'
+import BuildersPage from './pages/BuildersPage'
+import CreativesPage from './pages/CreativesPage'
 
 function App() {
   return (
@@ -16,6 +18,8 @@ function App() {
         <Route path="/match" element={<MatchingPage />} />
         <Route path="/admin" element={<AdminLogin />} />
         <Route path="/admin/dashboard" element={<AdminDashboard />} />
+        <Route path="/builders" element={<BuildersPage />} />
+        <Route path="/creatives" element={<CreativesPage />} />
       </Routes>
     </Router>
   )
