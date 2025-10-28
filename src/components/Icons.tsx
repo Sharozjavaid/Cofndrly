@@ -306,49 +306,38 @@ export const ConnectIcon = () => (
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
   >
-    {/* Two people represented as circles with connections */}
-    <circle cx="30" cy="35" r="12" stroke="currentColor" strokeWidth="2" fill="none" />
-    <circle cx="70" cy="35" r="12" stroke="currentColor" strokeWidth="2" fill="none" />
+    {/* Two profile cards side by side */}
+    <rect x="12" y="25" width="30" height="40" rx="3" stroke="currentColor" strokeWidth="2" fill="none" />
+    <rect x="58" y="25" width="30" height="40" rx="3" stroke="currentColor" strokeWidth="2" fill="none" />
     
-    {/* Simple avatars - eyes */}
-    <circle cx="26" cy="33" r="1.5" fill="currentColor" />
-    <circle cx="34" cy="33" r="1.5" fill="currentColor" />
-    <circle cx="66" cy="33" r="1.5" fill="currentColor" />
-    <circle cx="74" cy="33" r="1.5" fill="currentColor" />
+    {/* Simple person icons */}
+    <circle cx="27" cy="38" r="5" stroke="currentColor" strokeWidth="1.5" fill="none" />
+    <path d="M 18 52 Q 27 48 36 52" stroke="currentColor" strokeWidth="1.5" fill="none" />
     
-    {/* Shoulders/body */}
-    <path d="M 18 47 Q 30 52 42 47" stroke="currentColor" strokeWidth="2" fill="none" />
-    <path d="M 58 47 Q 70 52 82 47" stroke="currentColor" strokeWidth="2" fill="none" />
+    <circle cx="73" cy="38" r="5" stroke="currentColor" strokeWidth="1.5" fill="none" />
+    <path d="M 64 52 Q 73 48 82 52" stroke="currentColor" strokeWidth="1.5" fill="none" />
     
-    {/* Lightning bolt connecting them - representing instant connection */}
+    {/* Heart/match symbol in center connecting them */}
+    <circle cx="50" cy="45" r="8" stroke="currentColor" strokeWidth="2" fill="none" opacity="0.8" />
     <path 
-      d="M 50 25 L 45 35 L 50 35 L 47 45" 
+      d="M 47 45 L 50 48 L 53 45" 
       stroke="currentColor" 
-      strokeWidth="2.5" 
+      strokeWidth="2" 
       strokeLinecap="round" 
       strokeLinejoin="round"
     />
-    <path 
-      d="M 50 25 L 55 35 L 50 35 L 53 45" 
-      stroke="currentColor" 
-      strokeWidth="2.5" 
-      strokeLinecap="round" 
-      strokeLinejoin="round"
-      opacity="0.5"
-    />
     
-    {/* Swipe gesture indication */}
+    {/* Connection lines from cards to center */}
+    <line x1="42" y1="45" x2="42" y2="45" stroke="currentColor" strokeWidth="2" strokeDasharray="2 2" opacity="0.5">
+      <animate attributeName="x2" from="42" to="42" dur="0s" />
+    </line>
+    <line x1="58" y1="45" x2="42" y2="45" stroke="currentColor" strokeWidth="2" strokeDasharray="3 3" opacity="0.5" />
+    
+    {/* Message bubbles below */}
     <g opacity="0.6">
-      <path d="M 20 65 Q 35 60 50 65" stroke="currentColor" strokeWidth="2" fill="none" strokeDasharray="3 3" />
-      <path d="M 50 65 Q 65 60 80 65" stroke="currentColor" strokeWidth="2" fill="none" strokeDasharray="3 3" />
-      {/* Arrows */}
-      <path d="M 18 65 L 22 63 M 18 65 L 22 67" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-      <path d="M 82 65 L 78 63 M 82 65 L 78 67" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+      <path d="M 20 72 L 32 72 L 32 78 L 28 78 L 26 82 L 26 78 L 20 78 Z" stroke="currentColor" strokeWidth="1.5" fill="none" />
+      <path d="M 80 72 L 68 72 L 68 78 L 72 78 L 74 82 L 74 78 L 80 78 Z" stroke="currentColor" strokeWidth="1.5" fill="none" />
     </g>
-    
-    {/* Match notification bubble */}
-    <circle cx="50" cy="80" r="10" fill="currentColor" opacity="0.1" />
-    <path d="M 45 80 L 48 83 L 55 76" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
   </svg>
 )
 

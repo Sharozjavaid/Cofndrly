@@ -92,7 +92,7 @@ const LandingPage = () => {
             >
               <div className="grid grid-cols-2 gap-4">
                 {/* Top Left - Code/Tech */}
-                <div className="aspect-square rounded-sm overflow-hidden bg-gradient-to-br from-charcoal to-warm-gray-800 p-6 flex flex-col items-center justify-center relative group">
+                <div className="aspect-square rounded-sm overflow-hidden bg-gradient-to-br from-warm-gray-800 to-warm-gray-700 p-6 flex flex-col items-center justify-center relative group">
                   <div className="absolute inset-0 bg-rust/5 opacity-0 group-hover:opacity-100 transition-opacity"></div>
                   <div className="relative z-10 flex flex-col items-center gap-3">
                     <div className="text-cream/90">
@@ -272,7 +272,7 @@ const LandingPage = () => {
                 title: 'start connecting', 
                 desc: 'swipe through potential co-founders. message matches. find your balance and launch together.',
                 icon: <ConnectIcon />,
-                color: 'rust'
+                color: 'sage'
               }
             ].map((item, i) => (
               <motion.div
