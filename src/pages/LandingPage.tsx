@@ -1,7 +1,7 @@
 import { motion, useScroll, useTransform } from 'framer-motion'
 import { useNavigate } from 'react-router-dom'
 import { useRef } from 'react'
-import { BuildIcon, CaptureIcon, CreateIcon, GrowIcon, BuilderIcon, StorytellerIcon, ApplyIcon, ApproveIcon, ConnectIcon } from '../components/Icons'
+import { BuildIcon, CaptureIcon, CreateIcon, GrowIcon, ApplyIcon, ApproveIcon, ConnectIcon } from '../components/Icons'
 
 const LandingPage = () => {
   const navigate = useNavigate()

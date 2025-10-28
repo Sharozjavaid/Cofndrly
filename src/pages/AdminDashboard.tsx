@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import { useNavigate } from 'react-router-dom'
 import { db } from '../firebase/config'
-import { collection, query, onSnapshot, doc, updateDoc, deleteDoc, where, orderBy } from 'firebase/firestore'
+import { collection, onSnapshot, doc, updateDoc, deleteDoc } from 'firebase/firestore'
 
 interface User {
   id: string
