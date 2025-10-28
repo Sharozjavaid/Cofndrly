@@ -3,11 +3,13 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { useNavigate } from 'react-router-dom'
 import { storage, db } from '../firebase/config'
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage'
-import { collection, addDoc } from 'firebase/firestore'
+import { setDoc, doc } from 'firebase/firestore'
+import { useAuth } from '../contexts/AuthContext'
 
 interface FormData {
   name: string
   email: string
+  password: string
   role: 'technical' | 'non-technical' | ''
   experience: string
   skills: string[]
@@ -26,10 +28,12 @@ interface FormData {
 
 const SignupPage = () => {
   const navigate = useNavigate()
+  const { signUp } = useAuth()
   const [step, setStep] = useState(1)
   const [formData, setFormData] = useState<FormData>({
     name: '',
     email: '',
+    password: '',
     role: '',
     experience: '',
     skills: [],
@@ -48,7 +52,7 @@ const SignupPage = () => {
   const [uploading, setUploading] = useState(false)
   const [showCustomSkillInput, setShowCustomSkillInput] = useState(false)
 
-  const totalSteps = 7 // Updated to include new commitment/project step
+  const totalSteps = 8 // Updated to include password step
 
   const handleNext = async () => {
     if (step < totalSteps) {
@@ -62,6 +66,10 @@ const SignupPage = () => {
   const handleSubmit = async () => {
     try {
       setUploading(true)
+      
+      // Create Firebase Auth account
+      const user = await signUp(formData.email, formData.password)
+      
       let profileImageUrl = ''
 
       // Upload profile image if exists
@@ -71,8 +79,8 @@ const SignupPage = () => {
         profileImageUrl = await getDownloadURL(imageRef)
       }
 
-      // Save user data to Firestore
-      await addDoc(collection(db, 'users'), {
+      // Save user profile to Firestore with the same ID as auth user
+      await setDoc(doc(db, 'users', user.uid), {
         name: formData.name,
         email: formData.email,
         role: formData.role,
@@ -93,10 +101,16 @@ const SignupPage = () => {
 
       setUploading(false)
       navigate('/waiting')
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error submitting form:', error)
       setUploading(false)
-      alert('Error submitting application. Please try again.')
+      if (error.code === 'auth/email-already-in-use') {
+        alert('This email is already registered. Please sign in instead.')
+      } else if (error.code === 'auth/weak-password') {
+        alert('Password should be at least 6 characters.')
+      } else {
+        alert('Error submitting application. Please try again.')
+      }
     }
   }
 
@@ -285,10 +299,53 @@ const SignupPage = () => {
               </motion.div>
             )}
 
-            {/* Step 2: Experience */}
+            {/* Step 2: Password */}
             {step === 2 && (
               <motion.div
                 key="step2"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+                className="space-y-12"
+              >
+                <div className="space-y-4">
+                  <p className="text-xs uppercase tracking-loose text-warm-gray-600 font-sans">
+                    Security
+                  </p>
+                  <h1 className="font-serif text-5xl md:text-6xl text-charcoal lowercase leading-tight">
+                    create password
+                  </h1>
+                  <p className="text-lg text-warm-gray-700 font-light max-w-lg">
+                    secure your account
+                  </p>
+                </div>
+
+                <div className="space-y-8">
+                  <div>
+                    <label className="block text-xs uppercase tracking-loose text-warm-gray-600 mb-3 font-sans">
+                      password (minimum 6 characters)
+                    </label>
+                    <input
+                      type="password"
+                      value={formData.password}
+                      onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                      className="w-full px-0 py-4 bg-transparent border-b-2 border-warm-gray-300 focus:border-charcoal focus:outline-none transition-colors text-xl text-charcoal font-light"
+                      placeholder="••••••••"
+                      minLength={6}
+                    />
+                    <p className="mt-2 text-sm text-warm-gray-600 font-light">
+                      you'll use this to sign in and access your matches
+                    </p>
+                  </div>
+                </div>
+              </motion.div>
+            )}
+
+            {/* Step 3: Experience */}
+            {step === 3 && (
+              <motion.div
+                key="step3"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -20 }}
