@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import { useNavigate } from 'react-router-dom'
 import { db } from '../firebase/config'
-import { collection, onSnapshot, doc, updateDoc, deleteDoc } from 'firebase/firestore'
+import { collection, onSnapshot, doc, updateDoc } from 'firebase/firestore'
 import { useAuth } from '../contexts/AuthContext'
 
 interface User {
@@ -79,9 +79,11 @@ const AdminDashboard = () => {
   }
 
   const handleReject = async (userId: string) => {
-    if (confirm('Are you sure you want to reject and delete this application?')) {
+    if (confirm('Are you sure you want to reject this application?')) {
       try {
-        await deleteDoc(doc(db, 'users', userId))
+        await updateDoc(doc(db, 'users', userId), {
+          approved: false
+        })
         setSelectedUser(null)
       } catch (error) {
         console.error('Error rejecting user:', error)
@@ -326,21 +328,29 @@ const AdminDashboard = () => {
                   <>
                     <button
                       onClick={() => handleApprove(selectedUser.id)}
-                      className="flex-1 px-6 py-4 bg-sage text-white rounded-sm hover:bg-sage/90 transition-all font-sans tracking-relaxed lowercase"
+                      className="flex-1 px-6 py-4 bg-green-600 text-white rounded-sm hover:bg-green-700 transition-all font-sans tracking-relaxed lowercase"
                     >
                       ✓ approve
                     </button>
                     <button
                       onClick={() => handleReject(selectedUser.id)}
-                      className="flex-1 px-6 py-4 bg-rust text-white rounded-sm hover:bg-rust/90 transition-all font-sans tracking-relaxed lowercase"
+                      className="flex-1 px-6 py-4 bg-red-600 text-white rounded-sm hover:bg-red-700 transition-all font-sans tracking-relaxed lowercase"
                     >
                       ✕ reject
                     </button>
                   </>
                 ) : (
-                  <div className="flex-1 px-6 py-4 bg-sage/10 text-sage rounded-sm text-center font-sans tracking-relaxed lowercase">
-                    ✓ approved
-                  </div>
+                  <>
+                    <div className="flex-1 px-6 py-4 bg-green-50 text-green-700 rounded-sm text-center font-sans tracking-relaxed lowercase border border-green-200">
+                      ✓ approved
+                    </div>
+                    <button
+                      onClick={() => handleReject(selectedUser.id)}
+                      className="flex-1 px-6 py-4 bg-red-600 text-white rounded-sm hover:bg-red-700 transition-all font-sans tracking-relaxed lowercase"
+                    >
+                      revoke approval
+                    </button>
+                  </>
                 )}
               </div>
             </div>

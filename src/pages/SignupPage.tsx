@@ -817,17 +817,18 @@ const SignupPage = () => {
               disabled={
                 uploading ||
                 (step === 1 && (!formData.name || !formData.email || !formData.role)) ||
-                (step === 2 && (!formData.experience || formData.skills.length === 0)) ||
-                (step === 3 && !formData.passions) ||
-                (step === 4 && (
+                (step === 2 && (!formData.password || formData.password.length < 6)) ||
+                (step === 3 && (!formData.experience || formData.skills.length === 0)) ||
+                (step === 4 && !formData.passions) ||
+                (step === 5 && (
                   !formData.weeklyCommitment ||
                   (formData.role === 'technical' && !formData.hasExistingProject) ||
                   (formData.role === 'technical' && formData.hasExistingProject === 'yes' && !formData.projectLink) ||
                   (formData.role === 'non-technical' && !formData.portfolioLinks)
                 )) ||
-                (step === 5 && !formData.lookingFor) ||
-                (step === 6 && !formData.profileImage) ||
-                (step === 7 && !formData.bio)
+                (step === 6 && !formData.lookingFor) ||
+                (step === 7 && !formData.profileImage) ||
+                (step === 8 && !formData.bio)
               }
             >
               {uploading ? 'uploading...' : step === totalSteps ? 'submit application' : 'continue'}
