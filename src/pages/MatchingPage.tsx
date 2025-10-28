@@ -138,7 +138,7 @@ const MatchingPage = () => {
                   }}
                   drag="x"
                   dragConstraints={{ left: 0, right: 0 }}
-                  onDragEnd={(e, info: PanInfo) => {
+                  onDragEnd={(_e, info: PanInfo) => {
                     if (Math.abs(info.offset.x) > 100) {
                       handleSwipe(info.offset.x > 0 ? 'right' : 'left')
                     }
