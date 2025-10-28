@@ -188,19 +188,17 @@ const LandingPage = () => {
             <div className="bg-white rounded-sm p-12 h-full border border-warm-gray-200 hover:border-charcoal transition-all duration-300 relative overflow-hidden">
               <div className="absolute top-0 right-0 w-32 h-32 bg-rust/5 rounded-full blur-2xl group-hover:bg-rust/10 transition-all"></div>
               <div className="relative space-y-6">
-                <div className="text-charcoal">
-                  <BuilderIcon />
-                </div>
+                <div className="text-6xl mb-6">⚙️</div>
                 <h3 className="font-serif text-4xl text-charcoal lowercase">
                   builders
                 </h3>
                 <p className="text-warm-gray-700 leading-relaxed font-light text-lg">
-                  you can build products that change lives. but marketing takes time away from what you do best — creating.
+                  you've built multiple projects that never see the light of day. not because they're not good — but because marketing and sales take time away from what you do best: building and iterating on the product.
                 </p>
                 <div className="pt-4 space-y-2 text-base text-warm-gray-600 font-sans">
-                  <p className="lowercase">→ react, python, ai/ml</p>
-                  <p className="lowercase">→ full-stack, ios, blockchain</p>
-                  <p className="lowercase">→ rapid prototyping</p>
+                  <p className="lowercase">→ Mobile apps, SaaS, Web apps</p>
+                  <p className="lowercase">→ Hardware products</p>
+                  <p className="lowercase">→ AI apps, Developer Tools, Web3</p>
                 </div>
               </div>
             </div>
@@ -217,19 +215,17 @@ const LandingPage = () => {
             <div className="bg-white rounded-sm p-12 h-full border border-warm-gray-200 hover:border-charcoal transition-all duration-300 relative overflow-hidden">
               <div className="absolute top-0 right-0 w-32 h-32 bg-sage/5 rounded-full blur-2xl group-hover:bg-sage/10 transition-all"></div>
               <div className="relative space-y-6">
-                <div className="text-charcoal">
-                  <StorytellerIcon />
-                </div>
+                <div className="text-6xl mb-6">📸</div>
                 <h3 className="font-serif text-4xl text-charcoal lowercase">
                   storytellers
                 </h3>
                 <p className="text-warm-gray-700 leading-relaxed font-light text-lg">
-                  you know how to grow, how to reach people, how to make things go viral. you need a builder to bring your vision to life.
+                  you're a growth hacker, content creator, or marketing strategist. you know how to make things go viral and reach people — but you need a builder to bring your vision to life.
                 </p>
                 <div className="pt-4 space-y-2 text-base text-warm-gray-600 font-sans">
-                  <p className="lowercase">→ tiktok, video, photography</p>
-                  <p className="lowercase">→ content creation, editing</p>
-                  <p className="lowercase">→ brand & narrative</p>
+                  <p className="lowercase">→ growth hackers & marketers</p>
+                  <p className="lowercase">→ content creators & strategists</p>
+                  <p className="lowercase">→ brand storytellers</p>
                 </div>
               </div>
             </div>
@@ -255,7 +251,7 @@ const LandingPage = () => {
             </h2>
           </motion.div>
           
-          <div className="space-y-12">
+          <div className="space-y-20">
             {[
               { 
                 num: '01', 
@@ -312,7 +308,7 @@ const LandingPage = () => {
                   
                   {/* Arrow connector (except last one) */}
                   {i < 2 && (
-                    <div className="hidden md:block absolute left-16 -bottom-12 text-4xl text-warm-gray-700">
+                    <div className="hidden md:block absolute left-16 -bottom-20 text-4xl text-warm-gray-700">
                       ↓
                     </div>
                   )}
@@ -367,9 +363,6 @@ const LandingPage = () => {
             <h2 className="font-serif text-6xl md:text-7xl lg:text-8xl text-charcoal mb-8 leading-tight">
               find your<br />other half
             </h2>
-            <p className="text-2xl md:text-3xl text-warm-gray-700 mb-12 font-light max-w-2xl mx-auto">
-              selective, creative, modern. the app you tell your friends about.
-            </p>
             <button
               onClick={() => navigate('/signup')}
               className="px-14 py-6 bg-charcoal text-cream rounded-sm hover:bg-warm-gray-900 transition-all font-sans tracking-relaxed lowercase text-xl inline-block"

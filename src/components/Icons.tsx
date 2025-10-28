@@ -306,32 +306,49 @@ export const ConnectIcon = () => (
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
   >
-    {/* Two profile circles */}
-    <circle cx="35" cy="40" r="15" stroke="currentColor" strokeWidth="2" fill="none" />
-    <circle cx="65" cy="40" r="15" stroke="currentColor" strokeWidth="2" fill="none" />
+    {/* Two people represented as circles with connections */}
+    <circle cx="30" cy="35" r="12" stroke="currentColor" strokeWidth="2" fill="none" />
+    <circle cx="70" cy="35" r="12" stroke="currentColor" strokeWidth="2" fill="none" />
     
-    {/* Simple face details */}
-    <circle cx="30" cy="37" r="1.5" fill="currentColor" />
-    <circle cx="40" cy="37" r="1.5" fill="currentColor" />
-    <circle cx="60" cy="37" r="1.5" fill="currentColor" />
-    <circle cx="70" cy="37" r="1.5" fill="currentColor" />
+    {/* Simple avatars - eyes */}
+    <circle cx="26" cy="33" r="1.5" fill="currentColor" />
+    <circle cx="34" cy="33" r="1.5" fill="currentColor" />
+    <circle cx="66" cy="33" r="1.5" fill="currentColor" />
+    <circle cx="74" cy="33" r="1.5" fill="currentColor" />
     
-    <path d="M 30 45 Q 35 48 40 45" stroke="currentColor" strokeWidth="1.5" fill="none" strokeLinecap="round" />
-    <path d="M 60 45 Q 65 48 70 45" stroke="currentColor" strokeWidth="1.5" fill="none" strokeLinecap="round" />
+    {/* Shoulders/body */}
+    <path d="M 18 47 Q 30 52 42 47" stroke="currentColor" strokeWidth="2" fill="none" />
+    <path d="M 58 47 Q 70 52 82 47" stroke="currentColor" strokeWidth="2" fill="none" />
     
-    {/* Connection line with heart */}
-    <path d="M 35 55 L 35 65 L 50 65 L 65 65 L 65 55" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-    
-    {/* Heart in center */}
+    {/* Lightning bolt connecting them - representing instant connection */}
     <path 
-      d="M 50 68 L 47 65 Q 45 63 45 61 Q 45 59 47 59 Q 49 59 50 61 Q 51 59 53 59 Q 55 59 55 61 Q 55 63 53 65 Z"
-      fill="currentColor"
-      opacity="0.7"
+      d="M 50 25 L 45 35 L 50 35 L 47 45" 
+      stroke="currentColor" 
+      strokeWidth="2.5" 
+      strokeLinecap="round" 
+      strokeLinejoin="round"
+    />
+    <path 
+      d="M 50 25 L 55 35 L 50 35 L 53 45" 
+      stroke="currentColor" 
+      strokeWidth="2.5" 
+      strokeLinecap="round" 
+      strokeLinejoin="round"
+      opacity="0.5"
     />
     
-    {/* Message bubbles */}
-    <rect x="25" y="72" width="20" height="12" rx="2" stroke="currentColor" strokeWidth="1.5" fill="none" />
-    <rect x="55" y="72" width="20" height="12" rx="2" stroke="currentColor" strokeWidth="1.5" fill="none" />
+    {/* Swipe gesture indication */}
+    <g opacity="0.6">
+      <path d="M 20 65 Q 35 60 50 65" stroke="currentColor" strokeWidth="2" fill="none" strokeDasharray="3 3" />
+      <path d="M 50 65 Q 65 60 80 65" stroke="currentColor" strokeWidth="2" fill="none" strokeDasharray="3 3" />
+      {/* Arrows */}
+      <path d="M 18 65 L 22 63 M 18 65 L 22 67" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+      <path d="M 82 65 L 78 63 M 82 65 L 78 67" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+    </g>
+    
+    {/* Match notification bubble */}
+    <circle cx="50" cy="80" r="10" fill="currentColor" opacity="0.1" />
+    <path d="M 45 80 L 48 83 L 55 76" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
   </svg>
 )
 

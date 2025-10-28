@@ -1,6 +1,9 @@
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useNavigate } from 'react-router-dom'
+import { storage, db } from '../firebase/config'
+import { ref, uploadBytes, getDownloadURL } from 'firebase/storage'
+import { collection, addDoc } from 'firebase/firestore'
 
 interface FormData {
   name: string
@@ -12,6 +15,8 @@ interface FormData {
   currentProject: string
   lookingFor: string
   bio: string
+  profileImage: File | null
+  profileImagePreview: string
 }
 
 const SignupPage = () => {
@@ -26,17 +31,57 @@ const SignupPage = () => {
     passions: '',
     currentProject: '',
     lookingFor: '',
-    bio: ''
+    bio: '',
+    profileImage: null,
+    profileImagePreview: ''
   })
+  const [uploading, setUploading] = useState(false)
 
-  const totalSteps = 5
+  const totalSteps = 6 // Increased from 5 to 6 for profile picture step
 
-  const handleNext = () => {
+  const handleNext = async () => {
     if (step < totalSteps) {
       setStep(step + 1)
     } else {
-      console.log('Form submitted:', formData)
+      // Submit form with image upload
+      await handleSubmit()
+    }
+  }
+
+  const handleSubmit = async () => {
+    try {
+      setUploading(true)
+      let profileImageUrl = ''
+
+      // Upload profile image if exists
+      if (formData.profileImage) {
+        const imageRef = ref(storage, `profile-images/${Date.now()}_${formData.profileImage.name}`)
+        await uploadBytes(imageRef, formData.profileImage)
+        profileImageUrl = await getDownloadURL(imageRef)
+      }
+
+      // Save user data to Firestore
+      await addDoc(collection(db, 'users'), {
+        name: formData.name,
+        email: formData.email,
+        role: formData.role,
+        experience: formData.experience,
+        skills: formData.skills,
+        passions: formData.passions,
+        currentProject: formData.currentProject,
+        lookingFor: formData.lookingFor,
+        bio: formData.bio,
+        profileImageUrl: profileImageUrl,
+        approved: false,
+        createdAt: new Date()
+      })
+
+      setUploading(false)
       navigate('/waiting')
+    } catch (error) {
+      console.error('Error submitting form:', error)
+      setUploading(false)
+      alert('Error submitting application. Please try again.')
     }
   }
 
@@ -53,6 +98,29 @@ const SignupPage = () => {
         ? prev.skills.filter(s => s !== skill)
         : [...prev.skills, skill]
     }))
+  }
+
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (file) {
+      // Validate file size (max 5MB)
+      if (file.size > 5 * 1024 * 1024) {
+        alert('Image size should be less than 5MB')
+        return
+      }
+
+      // Validate file type
+      if (!file.type.startsWith('image/')) {
+        alert('Please upload an image file')
+        return
+      }
+
+      setFormData({
+        ...formData,
+        profileImage: file,
+        profileImagePreview: URL.createObjectURL(file)
+      })
+    }
   }
 
   const technicalSkills = [
@@ -335,10 +403,88 @@ const SignupPage = () => {
               </motion.div>
             )}
 
-            {/* Step 5: Bio */}
+            {/* Step 5: Profile Picture */}
             {step === 5 && (
               <motion.div
                 key="step5"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+                className="space-y-12"
+              >
+                <div className="space-y-4">
+                  <p className="text-xs uppercase tracking-loose text-warm-gray-600 font-sans">
+                    Your photo
+                  </p>
+                  <h1 className="font-serif text-5xl md:text-6xl text-charcoal lowercase leading-tight">
+                    add a profile picture
+                  </h1>
+                  <p className="text-lg text-warm-gray-700 font-light max-w-lg">
+                    help potential co-founders recognize you
+                  </p>
+                </div>
+
+                <div className="space-y-8">
+                  {/* Image Preview */}
+                  <div className="flex flex-col items-center gap-6">
+                    <div className="relative w-48 h-48 rounded-sm border-2 border-warm-gray-300 border-dashed overflow-hidden bg-sand flex items-center justify-center">
+                      {formData.profileImagePreview ? (
+                        <img
+                          src={formData.profileImagePreview}
+                          alt="Profile preview"
+                          className="w-full h-full object-cover"
+                        />
+                      ) : (
+                        <div className="text-center text-warm-gray-500">
+                          <svg className="w-16 h-16 mx-auto mb-2 opacity-40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                          </svg>
+                          <p className="text-sm">no photo yet</p>
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Upload Button */}
+                    <div className="relative">
+                      <input
+                        type="file"
+                        accept="image/*"
+                        onChange={handleImageChange}
+                        className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                        id="profile-image"
+                      />
+                      <label
+                        htmlFor="profile-image"
+                        className="px-8 py-3 bg-charcoal text-cream rounded-sm hover:bg-warm-gray-900 transition-all font-sans tracking-relaxed lowercase cursor-pointer inline-block"
+                      >
+                        {formData.profileImage ? 'change photo' : 'upload photo'}
+                      </label>
+                    </div>
+
+                    {formData.profileImage && (
+                      <button
+                        onClick={() => setFormData({ ...formData, profileImage: null, profileImagePreview: '' })}
+                        className="text-sm text-warm-gray-600 hover:text-charcoal transition-colors underline underline-offset-2"
+                      >
+                        remove photo
+                      </button>
+                    )}
+                  </div>
+
+                  <div className="p-6 rounded-sm bg-sand border-l-2 border-rust">
+                    <p className="text-sm text-warm-gray-700 font-light">
+                      <strong className="font-medium">tip:</strong> use a clear, well-lit photo where your face is visible. square photos work best.
+                    </p>
+                  </div>
+                </div>
+              </motion.div>
+            )}
+
+            {/* Step 6: Bio */}
+            {step === 6 && (
+              <motion.div
+                key="step6"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -20 }}
@@ -395,14 +541,16 @@ const SignupPage = () => {
               onClick={handleNext}
               className="flex-1 px-6 py-3 bg-charcoal text-cream rounded-sm hover:bg-warm-gray-900 transition-all font-sans tracking-relaxed lowercase disabled:opacity-30 disabled:cursor-not-allowed"
               disabled={
+                uploading ||
                 (step === 1 && (!formData.name || !formData.email || !formData.role)) ||
                 (step === 2 && (!formData.experience || formData.skills.length === 0)) ||
                 (step === 3 && !formData.passions) ||
                 (step === 4 && !formData.lookingFor) ||
-                (step === 5 && !formData.bio)
+                (step === 5 && !formData.profileImage) ||
+                (step === 6 && !formData.bio)
               }
             >
-              {step === totalSteps ? 'submit application' : 'continue'}
+              {uploading ? 'uploading...' : step === totalSteps ? 'submit application' : 'continue'}
             </button>
           </div>
         </div>

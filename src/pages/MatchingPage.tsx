@@ -11,6 +11,7 @@ interface Profile {
   passions: string
   experience: string
   tagline: string
+  profileImageUrl?: string
 }
 
 const sampleProfiles: Profile[] = [
@@ -22,7 +23,8 @@ const sampleProfiles: Profile[] = [
     bio: 'built a 500k tiktok following in 6 months. now looking to grow a tech product from 0 to 100k users. i understand virality and know how to build communities that actually care.',
     passions: 'social commerce, creator economy, gen z trends',
     experience: 'head of social at yc startup → grew to 1m users',
-    tagline: 'storyteller meets scale'
+    tagline: 'storyteller meets scale',
+    profileImageUrl: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400'
   },
   {
     id: 2,
@@ -32,7 +34,8 @@ const sampleProfiles: Profile[] = [
     bio: 'full-stack engineer who loves rapid prototyping. built 3 side projects with 10k+ users each. i can turn ideas into products fast, but struggle with the marketing side.',
     passions: 'ai tools, productivity, developer experience',
     experience: 'ex-google, ex-stripe. 8 years building products',
-    tagline: 'builder seeks voice'
+    tagline: 'builder seeks voice',
+    profileImageUrl: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400'
   },
   {
     id: 3,
@@ -42,7 +45,8 @@ const sampleProfiles: Profile[] = [
     bio: 'growth marketer who helped 3 startups reach $1m arr. expert in seo, conversion optimization, and building scalable acquisition channels. ready to own the growth side completely.',
     passions: 'b2b saas, fintech, remote work',
     experience: '10 years in growth. previously at hubspot',
-    tagline: 'growth architect'
+    tagline: 'growth architect',
+    profileImageUrl: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=400'
   }
 ]
 
@@ -145,10 +149,20 @@ const MatchingPage = () => {
                   <div className="h-full bg-white rounded-sm shadow-xl p-6 flex flex-col border border-warm-gray-200">
                     {/* Photo Area - Abstract representation */}
                     <div className="bg-gradient-to-br from-sand to-warm-gray-200 rounded-sm mb-6 h-64 flex items-center justify-center relative overflow-hidden">
-                      <div className={`absolute inset-0 ${currentProfile.role === 'technical' ? 'bg-rust/5' : 'bg-sage/5'}`}></div>
-                      <div className="text-7xl opacity-40">
-                        {currentProfile.role === 'technical' ? '⚙️' : '📈'}
-                      </div>
+                      {currentProfile.profileImageUrl ? (
+                        <img 
+                          src={currentProfile.profileImageUrl} 
+                          alt={currentProfile.name}
+                          className="w-full h-full object-cover"
+                        />
+                      ) : (
+                        <>
+                          <div className={`absolute inset-0 ${currentProfile.role === 'technical' ? 'bg-rust/5' : 'bg-sage/5'}`}></div>
+                          <div className="text-7xl opacity-40">
+                            {currentProfile.role === 'technical' ? '⚙️' : '📈'}
+                          </div>
+                        </>
+                      )}
                       {/* Tagline overlay */}
                       <div className="absolute bottom-4 left-4 right-4">
                         <div className="bg-white/90 backdrop-blur-sm px-4 py-2 rounded-sm">
