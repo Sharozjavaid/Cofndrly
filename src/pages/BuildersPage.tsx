@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion'
 import { useNavigate } from 'react-router-dom'
 import { BuildIcon } from '../components/Icons'
+import SEO from '../components/SEO'
 
 const BuildersPage = () => {
   const navigate = useNavigate()
@@ -66,8 +67,15 @@ const BuildersPage = () => {
   ]
 
   return (
-    <div className="min-h-screen bg-cream grain">
-      {/* Navigation */}
+    <>
+      <SEO
+        title="For Builders — Find a Marketing Co-Founder | cofndrly"
+        description="You build great products but struggle with marketing and distribution. Find a growth hacker, content creator, or marketer who can help you reach your audience and scale."
+        keywords="technical co-founder, find marketer, marketing co-founder, growth co-founder, startup builder, product developer, technical founder, developer co-founder"
+        canonicalUrl="https://cofndrly.com/builders"
+      />
+      <div className="min-h-screen bg-cream grain">
+        {/* Navigation */}
       <nav className="fixed top-0 w-full bg-cream/80 backdrop-blur-md border-b border-warm-gray-200/50 z-50">
         <div className="max-w-7xl mx-auto px-8 py-6 flex items-center justify-between">
           <motion.div
@@ -325,7 +333,8 @@ const BuildersPage = () => {
           </div>
         </div>
       </footer>
-    </div>
+      </div>
+    </>
   )
 }
 

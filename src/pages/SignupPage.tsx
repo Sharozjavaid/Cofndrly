@@ -6,6 +6,7 @@ import { ref, uploadBytes, getDownloadURL } from 'firebase/storage'
 import { setDoc, doc } from 'firebase/firestore'
 import { useAuth } from '../contexts/AuthContext'
 import { generateInitialsImage } from '../utils/generateInitials'
+import SEO from '../components/SEO'
 
 interface FormData {
   name: string
@@ -186,8 +187,16 @@ const SignupPage = () => {
   ]
 
   return (
-    <div className="min-h-screen bg-cream grain">
-      {/* Minimal Navigation */}
+    <>
+      <SEO
+        title="Apply to Join cofndrly — Find Your Co-Founder"
+        description="Apply to join our curated community of builders and storytellers. Get matched with your ideal co-founder and launch your next startup together."
+        keywords="apply co-founder, startup application, join cofndrly, find co-founder, co-founder matching"
+        canonicalUrl="https://cofndrly.com/signup"
+        noindex={true}
+      />
+      <div className="min-h-screen bg-cream grain">
+        {/* Minimal Navigation */}
       <nav className="fixed top-0 w-full bg-cream/80 backdrop-blur-md border-b border-warm-gray-200/50 z-50">
         <div className="max-w-7xl mx-auto px-8 py-6 flex items-center justify-between">
           <div 
@@ -871,6 +880,7 @@ const SignupPage = () => {
         </div>
       </div>
     </div>
+    </>
   )
 }
 

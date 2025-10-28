@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion'
 import { useNavigate } from 'react-router-dom'
 import { CreateIcon } from '../components/Icons'
+import SEO from '../components/SEO'
 
 const CreativesPage = () => {
   const navigate = useNavigate()
@@ -66,8 +67,15 @@ const CreativesPage = () => {
   ]
 
   return (
-    <div className="min-h-screen bg-cream grain">
-      {/* Navigation */}
+    <>
+      <SEO
+        title="For Storytellers — Find a Technical Co-Founder | cofndrly"
+        description="You're a growth hacker, content creator, or marketer who needs a technical partner. Find a builder who can turn your vision into a real product and scale it."
+        keywords="find technical co-founder, developer co-founder, technical partner, growth hacker, content creator, marketing co-founder, non-technical founder"
+        canonicalUrl="https://cofndrly.com/creatives"
+      />
+      <div className="min-h-screen bg-cream grain">
+        {/* Navigation */}
       <nav className="fixed top-0 w-full bg-cream/80 backdrop-blur-md border-b border-warm-gray-200/50 z-50">
         <div className="max-w-7xl mx-auto px-8 py-6 flex items-center justify-between">
           <motion.div
@@ -325,7 +333,8 @@ const CreativesPage = () => {
           </div>
         </div>
       </footer>
-    </div>
+      </div>
+    </>
   )
 }
 

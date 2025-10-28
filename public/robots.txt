@@ -1,0 +1,22 @@
+# robots.txt for cofndrly
+User-agent: *
+Allow: /
+Allow: /builders
+Allow: /creatives
+Disallow: /admin
+Disallow: /admin/*
+Disallow: /login
+Disallow: /signup
+Disallow: /waiting
+Disallow: /matching
+Disallow: /messages
+Disallow: /chat
+Disallow: /chat/*
+Disallow: /profile
+
+# Sitemap location
+Sitemap: https://cofndrly.com/sitemap.xml
+
+# Crawl delay (optional, adjust if needed)
+Crawl-delay: 1
+

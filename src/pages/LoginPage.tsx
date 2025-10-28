@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { motion } from 'framer-motion'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../contexts/AuthContext'
+import SEO from '../components/SEO'
 
 const LoginPage = () => {
   const navigate = useNavigate()
@@ -34,7 +35,14 @@ const LoginPage = () => {
   }
 
   return (
-    <div className="min-h-screen bg-cream grain flex items-center justify-center px-8 py-12">
+    <>
+      <SEO
+        title="Sign In to cofndrly — Access Your Matches"
+        description="Sign in to your cofndrly account to continue matching with potential co-founders and grow your startup."
+        canonicalUrl="https://cofndrly.com/login"
+        noindex={true}
+      />
+      <div className="min-h-screen bg-cream grain flex items-center justify-center px-8 py-12">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -115,6 +123,7 @@ const LoginPage = () => {
         </div>
       </motion.div>
     </div>
+    </>
   )
 }
 

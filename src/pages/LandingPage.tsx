@@ -2,6 +2,7 @@ import { motion, useScroll, useTransform } from 'framer-motion'
 import { useNavigate } from 'react-router-dom'
 import { useRef } from 'react'
 import { BuildIcon, CaptureIcon, CreateIcon, GrowIcon, ApplyIcon, ApproveIcon, ConnectIcon } from '../components/Icons'
+import SEO from '../components/SEO'
 
 const LandingPage = () => {
   const navigate = useNavigate()
@@ -15,8 +16,15 @@ const LandingPage = () => {
   const scale = useTransform(scrollYProgress, [0, 0.5], [1, 0.95])
 
   return (
-    <div className="min-h-screen bg-cream grain">
-      {/* Minimal Navigation */}
+    <>
+      <SEO
+        title="cofndrly — where builders meet storytellers | Find Your Co-Founder"
+        description="Not another networking app — a place to start something. Connect technical builders with growth hackers, content creators, and marketers to launch your next startup."
+        keywords="co-founder matching, find co-founder, technical co-founder, startup co-founder, growth hacker, content creator, entrepreneur networking, startup founders, builder network, marketing co-founder"
+        canonicalUrl="https://cofndrly.com/"
+      />
+      <div className="min-h-screen bg-cream grain">
+        {/* Minimal Navigation */}
       <nav className="fixed top-0 w-full bg-cream/80 backdrop-blur-md border-b border-warm-gray-200/50 z-50">
         <div className="max-w-7xl mx-auto px-8 py-6 flex items-center justify-between">
           <motion.div
@@ -49,14 +57,14 @@ const LandingPage = () => {
       </nav>
 
       {/* Hero Section - Split Screen */}
-      <section ref={heroRef} className="min-h-screen flex items-center justify-center px-8 pt-32 pb-20">
+      <section ref={heroRef} className="min-h-screen flex items-center justify-center px-8 pt-32 pb-20" aria-label="Hero section">
         <motion.div 
           style={{ opacity, scale }}
           className="max-w-6xl w-full"
         >
           <div className="grid lg:grid-cols-2 gap-16 lg:gap-24 items-center">
             {/* Left: Typography */}
-            <div className="space-y-8">
+            <article className="space-y-8">
               <motion.div
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -84,14 +92,18 @@ const LandingPage = () => {
                 <button
                   onClick={() => navigate('/signup')}
                   className="px-10 py-5 bg-charcoal text-cream rounded-sm hover:bg-warm-gray-900 transition-all font-sans tracking-relaxed lowercase text-lg"
+                  aria-label="Find your co-founder - Sign up"
                 >
                   find your other half
                 </button>
-                <button className="px-10 py-5 bg-transparent text-charcoal rounded-sm border border-warm-gray-300 hover:border-charcoal transition-all font-sans tracking-relaxed lowercase text-lg">
+                <button 
+                  className="px-10 py-5 bg-transparent text-charcoal rounded-sm border border-warm-gray-300 hover:border-charcoal transition-all font-sans tracking-relaxed lowercase text-lg"
+                  aria-label="Learn more about cofndrly"
+                >
                   learn more
                 </button>
               </motion.div>
-            </div>
+            </article>
 
             {/* Right: Creative Visual Grid */}
             <motion.div
@@ -99,13 +111,15 @@ const LandingPage = () => {
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.2, duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
               className="relative"
+              role="img"
+              aria-label="Visual representation of builders and storytellers collaborating"
             >
               <div className="grid grid-cols-2 gap-4">
                 {/* Top Left - Code/Tech */}
                 <div className="aspect-square rounded-sm overflow-hidden bg-gradient-to-br from-warm-gray-800 to-warm-gray-700 p-6 flex flex-col items-center justify-center relative group">
-                  <div className="absolute inset-0 bg-rust/5 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                  <div className="absolute inset-0 bg-rust/5 opacity-0 group-hover:opacity-100 transition-opacity" aria-hidden="true"></div>
                   <div className="relative z-10 flex flex-col items-center gap-3">
-                    <div className="text-cream/90">
+                    <div className="text-cream/90" aria-hidden="true">
                       <BuildIcon />
                     </div>
                     <p className="text-xs text-cream/60 font-mono uppercase tracking-wider">build</p>
@@ -114,9 +128,9 @@ const LandingPage = () => {
                 
                 {/* Top Right - Camera/Content */}
                 <div className="aspect-square rounded-sm overflow-hidden bg-gradient-to-br from-sage/30 to-warm-gray-200 p-6 flex flex-col items-center justify-center relative group">
-                  <div className="absolute inset-0 bg-sage/10 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                  <div className="absolute inset-0 bg-sage/10 opacity-0 group-hover:opacity-100 transition-opacity" aria-hidden="true"></div>
                   <div className="relative z-10 flex flex-col items-center gap-3">
-                    <div className="text-warm-gray-700">
+                    <div className="text-warm-gray-700" aria-hidden="true">
                       <CaptureIcon />
                     </div>
                     <p className="text-xs text-warm-gray-600 font-mono uppercase tracking-wider">capture</p>
@@ -125,9 +139,9 @@ const LandingPage = () => {
                 
                 {/* Bottom Left - Video/Edit */}
                 <div className="aspect-square rounded-sm overflow-hidden bg-gradient-to-br from-rust/20 to-sand p-6 flex flex-col items-center justify-center relative group">
-                  <div className="absolute inset-0 bg-rust/10 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                  <div className="absolute inset-0 bg-rust/10 opacity-0 group-hover:opacity-100 transition-opacity" aria-hidden="true"></div>
                   <div className="relative z-10 flex flex-col items-center gap-3">
-                    <div className="text-warm-gray-700">
+                    <div className="text-warm-gray-700" aria-hidden="true">
                       <CreateIcon />
                     </div>
                     <p className="text-xs text-warm-gray-600 font-mono uppercase tracking-wider">create</p>
@@ -136,9 +150,9 @@ const LandingPage = () => {
                 
                 {/* Bottom Right - Growth/Analytics */}
                 <div className="aspect-square rounded-sm overflow-hidden bg-gradient-to-br from-warm-gray-200 to-sage/20 p-6 flex flex-col items-center justify-center relative group">
-                  <div className="absolute inset-0 bg-sage/10 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                  <div className="absolute inset-0 bg-sage/10 opacity-0 group-hover:opacity-100 transition-opacity" aria-hidden="true"></div>
                   <div className="relative z-10 flex flex-col items-center gap-3">
-                    <div className="text-warm-gray-700">
+                    <div className="text-warm-gray-700" aria-hidden="true">
                       <GrowIcon />
                     </div>
                     <p className="text-xs text-warm-gray-600 font-mono uppercase tracking-wider">grow</p>
@@ -147,7 +161,7 @@ const LandingPage = () => {
               </div>
               
               {/* Connection line overlay */}
-              <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+              <div className="absolute inset-0 flex items-center justify-center pointer-events-none" aria-hidden="true">
                 <div className="text-6xl text-rust/30">+</div>
               </div>
             </motion.div>
@@ -156,7 +170,7 @@ const LandingPage = () => {
       </section>
 
       {/* Philosophy Section */}
-      <section className="py-32 px-8 bg-sand">
+      <section className="py-32 px-8 bg-sand" aria-labelledby="philosophy-heading">
         <div className="max-w-4xl mx-auto">
           <motion.div
             initial={{ opacity: 0, y: 40 }}
@@ -165,7 +179,7 @@ const LandingPage = () => {
             transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
             className="space-y-12"
           >
-            <p className="text-sm uppercase tracking-loose text-warm-gray-600 font-sans">
+            <p className="text-sm uppercase tracking-loose text-warm-gray-600 font-sans" id="philosophy-heading">
               The future is built in pairs
             </p>
             
@@ -185,10 +199,11 @@ const LandingPage = () => {
       </section>
 
       {/* Split Cards - The Two Sides */}
-      <section className="py-32 px-8">
+      <section className="py-32 px-8" aria-labelledby="audience-heading">
+        <h2 id="audience-heading" className="sr-only">Who cofndrly is for</h2>
         <div className="max-w-6xl mx-auto grid md:grid-cols-2 gap-8">
           {/* Technical Builders */}
-          <motion.div
+          <motion.article
             initial={{ opacity: 0, y: 40 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-100px" }}
@@ -197,9 +212,9 @@ const LandingPage = () => {
             onClick={() => navigate('/builders')}
           >
             <div className="bg-white rounded-sm p-12 h-full border border-warm-gray-200 hover:border-charcoal transition-all duration-300 relative overflow-hidden">
-              <div className="absolute top-0 right-0 w-32 h-32 bg-rust/5 rounded-full blur-2xl group-hover:bg-rust/10 transition-all"></div>
+              <div className="absolute top-0 right-0 w-32 h-32 bg-rust/5 rounded-full blur-2xl group-hover:bg-rust/10 transition-all" aria-hidden="true"></div>
               <div className="relative space-y-6">
-                <div className="text-6xl mb-6">⚙️</div>
+                <div className="text-6xl mb-6" role="img" aria-label="Builders">⚙️</div>
                 <h3 className="font-serif text-4xl text-charcoal lowercase">
                   builders
                 </h3>
@@ -218,10 +233,10 @@ const LandingPage = () => {
                 </div>
               </div>
             </div>
-          </motion.div>
+          </motion.article>
 
           {/* Storytellers/Marketers */}
-          <motion.div
+          <motion.article
             initial={{ opacity: 0, y: 40 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-100px" }}
@@ -230,9 +245,9 @@ const LandingPage = () => {
             onClick={() => navigate('/creatives')}
           >
             <div className="bg-white rounded-sm p-12 h-full border border-warm-gray-200 hover:border-charcoal transition-all duration-300 relative overflow-hidden">
-              <div className="absolute top-0 right-0 w-32 h-32 bg-sage/5 rounded-full blur-2xl group-hover:bg-sage/10 transition-all"></div>
+              <div className="absolute top-0 right-0 w-32 h-32 bg-sage/5 rounded-full blur-2xl group-hover:bg-sage/10 transition-all" aria-hidden="true"></div>
               <div className="relative space-y-6">
-                <div className="text-6xl mb-6">📸</div>
+                <div className="text-6xl mb-6" role="img" aria-label="Storytellers">📸</div>
                 <h3 className="font-serif text-4xl text-charcoal lowercase">
                   storytellers
                 </h3>
@@ -251,12 +266,12 @@ const LandingPage = () => {
                 </div>
               </div>
             </div>
-          </motion.div>
+          </motion.article>
         </div>
       </section>
 
       {/* How It Works - Enhanced */}
-      <section className="py-32 px-8 bg-charcoal text-cream">
+      <section className="py-32 px-8 bg-charcoal text-cream" aria-labelledby="how-it-works-heading">
         <div className="max-w-6xl mx-auto">
           <motion.div
             initial={{ opacity: 0, y: 40 }}
@@ -268,7 +283,7 @@ const LandingPage = () => {
             <p className="text-sm uppercase tracking-loose text-warm-gray-400 mb-6 font-sans">
               How it works
             </p>
-            <h2 className="font-serif text-5xl md:text-6xl lg:text-7xl text-cream lowercase">
+            <h2 id="how-it-works-heading" className="font-serif text-5xl md:text-6xl lg:text-7xl text-cream lowercase">
               three simple steps
             </h2>
           </motion.div>
@@ -310,10 +325,10 @@ const LandingPage = () => {
                   <div className={`flex-shrink-0 w-24 h-24 md:w-32 md:h-32 rounded-sm flex items-center justify-center relative group ${
                     item.color === 'rust' ? 'bg-rust/20' : 'bg-sage/20'
                   }`}>
-                    <div className="text-cream">
+                    <div className="text-cream" aria-hidden="true">
                       {item.icon}
                     </div>
-                    <div className="absolute -top-3 -left-3 font-mono text-xs text-warm-gray-500 bg-charcoal px-2 py-1 rounded-sm border border-warm-gray-700">
+                    <div className="absolute -top-3 -left-3 font-mono text-xs text-warm-gray-500 bg-charcoal px-2 py-1 rounded-sm border border-warm-gray-700" aria-label={`Step ${item.num}`}>
                       {item.num}
                     </div>
                   </div>
@@ -330,7 +345,7 @@ const LandingPage = () => {
                   
                   {/* Arrow connector (except last one) */}
                   {i < 2 && (
-                    <div className="hidden md:block absolute left-16 -bottom-20 text-4xl text-warm-gray-700">
+                    <div className="hidden md:block absolute left-16 -bottom-20 text-4xl text-warm-gray-700" aria-hidden="true">
                       ↓
                     </div>
                   )}
@@ -342,7 +357,8 @@ const LandingPage = () => {
       </section>
 
       {/* Testimonial-style quotes */}
-      <section className="py-32 px-8">
+      <section className="py-32 px-8" aria-labelledby="testimonials-heading">
+        <h2 id="testimonials-heading" className="sr-only">User testimonials</h2>
         <div className="max-w-4xl mx-auto space-y-20">
           {[
             {
@@ -354,7 +370,7 @@ const LandingPage = () => {
               role: "storyteller"
             }
           ].map((item, i) => (
-            <motion.div
+            <motion.blockquote
               key={i}
               initial={{ opacity: 0, y: 40 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -365,16 +381,16 @@ const LandingPage = () => {
               <p className="font-serif text-3xl md:text-4xl text-charcoal leading-relaxed mb-4">
                 "{item.quote}"
               </p>
-              <p className="text-sm uppercase tracking-loose text-warm-gray-600 font-sans">
+              <footer className="text-sm uppercase tracking-loose text-warm-gray-600 font-sans">
                 — {item.role}
-              </p>
-            </motion.div>
+              </footer>
+            </motion.blockquote>
           ))}
         </div>
       </section>
 
       {/* Final CTA */}
-      <section className="py-32 px-8 bg-sand">
+      <section className="py-32 px-8 bg-sand" aria-labelledby="cta-heading">
         <div className="max-w-3xl mx-auto text-center space-y-8">
           <motion.div
             initial={{ opacity: 0, y: 40 }}
@@ -382,12 +398,13 @@ const LandingPage = () => {
             viewport={{ once: true }}
             transition={{ duration: 0.8 }}
           >
-            <h2 className="font-serif text-6xl md:text-7xl lg:text-8xl text-charcoal mb-8 leading-tight">
+            <h2 id="cta-heading" className="font-serif text-6xl md:text-7xl lg:text-8xl text-charcoal mb-8 leading-tight">
               find your<br />other half
             </h2>
             <button
               onClick={() => navigate('/signup')}
               className="px-14 py-6 bg-charcoal text-cream rounded-sm hover:bg-warm-gray-900 transition-all font-sans tracking-relaxed lowercase text-xl inline-block"
+              aria-label="Apply now to find your co-founder"
             >
               apply now
             </button>
@@ -396,19 +413,20 @@ const LandingPage = () => {
       </section>
 
       {/* Minimal Footer */}
-      <footer className="py-12 px-8 border-t border-warm-gray-200">
+      <footer className="py-12 px-8 border-t border-warm-gray-200" role="contentinfo">
         <div className="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center gap-6">
           <div className="font-serif text-lg lowercase text-charcoal">
             cofndrly
           </div>
-          <div className="flex gap-8 text-sm text-warm-gray-600 font-sans lowercase">
+          <nav className="flex gap-8 text-sm text-warm-gray-600 font-sans lowercase" aria-label="Footer navigation">
             <a href="#" className="hover:text-charcoal transition-colors">about</a>
             <a href="#" className="hover:text-charcoal transition-colors">contact</a>
             <a href="#" className="hover:text-charcoal transition-colors">privacy</a>
-          </div>
+          </nav>
         </div>
       </footer>
-    </div>
+      </div>
+    </>
   )
 }
 
