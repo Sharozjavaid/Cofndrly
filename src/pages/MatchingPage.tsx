@@ -167,19 +167,23 @@ const MatchingPage = () => {
     // Record the swipe
     await recordSwipe(direction)
     
+    // Remove the current profile from the stack
+    const newProfiles = profiles.filter((_, index) => index !== currentIndex)
+    setProfiles(newProfiles)
+    
+    // Reset to first profile or stay at current index if we're not at the end
+    if (currentIndex >= newProfiles.length) {
+      setCurrentIndex(0)
+    }
+    
     if (direction === 'right') {
       setShowMessage(true)
-    } else {
-      nextProfile()
     }
   }
 
   const nextProfile = () => {
-    if (currentIndex < profiles.length - 1) {
-      setCurrentIndex(currentIndex + 1)
-    } else {
-      setCurrentIndex(0)
-    }
+    // This function is now only called after sending a message
+    // The profile was already removed in handleSwipe, so we just close the message modal
   }
 
   const handleSendMessage = async () => {
@@ -198,7 +202,7 @@ const MatchingPage = () => {
       console.log('Message sent!')
       setShowMessage(false)
       setMessage('')
-      nextProfile()
+      // Profile was already removed from stack in handleSwipe, just close the modal
     } catch (error) {
       console.error('Error sending message:', error)
       alert('Error sending message. Please try again.')
