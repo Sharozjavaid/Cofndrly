@@ -181,11 +181,6 @@ const MatchingPage = () => {
     }
   }
 
-  const nextProfile = () => {
-    // This function is now only called after sending a message
-    // The profile was already removed in handleSwipe, so we just close the message modal
-  }
-
   const handleSendMessage = async () => {
     if (!message.trim() || !currentProfile || !currentUser) return
 
