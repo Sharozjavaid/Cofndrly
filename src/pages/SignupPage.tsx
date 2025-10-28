@@ -5,6 +5,7 @@ import { storage, db } from '../firebase/config'
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage'
 import { setDoc, doc } from 'firebase/firestore'
 import { useAuth } from '../contexts/AuthContext'
+import { generateInitialsImage } from '../utils/generateInitials'
 
 interface FormData {
   name: string
@@ -72,11 +73,14 @@ const SignupPage = () => {
       
       let profileImageUrl = ''
 
-      // Upload profile image if exists
+      // Upload profile image if exists, otherwise use initials
       if (formData.profileImage) {
         const imageRef = ref(storage, `profile-images/${Date.now()}_${formData.profileImage.name}`)
         await uploadBytes(imageRef, formData.profileImage)
         profileImageUrl = await getDownloadURL(imageRef)
+      } else {
+        // Generate initials image as data URL
+        profileImageUrl = generateInitialsImage(formData.name)
       }
 
       // Save user profile to Firestore with the same ID as auth user
@@ -689,13 +693,13 @@ const SignupPage = () => {
               >
                 <div className="space-y-4">
                   <p className="text-xs uppercase tracking-loose text-warm-gray-600 font-sans">
-                    Your photo
+                    Your photo (optional)
                   </p>
                   <h1 className="font-serif text-5xl md:text-6xl text-charcoal lowercase leading-tight">
                     add a profile picture
                   </h1>
                   <p className="text-lg text-warm-gray-700 font-light max-w-lg">
-                    help potential co-founders recognize you
+                    skip this step to use your initials instead
                   </p>
                 </div>
 
@@ -827,7 +831,6 @@ const SignupPage = () => {
                   (formData.role === 'non-technical' && !formData.portfolioLinks)
                 )) ||
                 (step === 6 && !formData.lookingFor) ||
-                (step === 7 && !formData.profileImage) ||
                 (step === 8 && !formData.bio)
               }
             >
