@@ -30,7 +30,7 @@ interface Conversation {
 
 const MessagesPage = () => {
   const navigate = useNavigate()
-  const { currentUser, userProfile, signOut } = useAuth()
+  const { currentUser, userProfile } = useAuth()
   const [conversations, setConversations] = useState<Conversation[]>([])
   const [loading, setLoading] = useState(true)
 
