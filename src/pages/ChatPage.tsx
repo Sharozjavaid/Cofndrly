@@ -22,7 +22,7 @@ interface OtherUser {
 
 const ChatPage = () => {
   const navigate = useNavigate()
-  const { matchId } = useParams()
+  const { matchId } = useParams() // This now holds otherUserId
   const { currentUser } = useAuth()
   const [messages, setMessages] = useState<Message[]>([])
   const [newMessage, setNewMessage] = useState('')
@@ -45,17 +45,10 @@ const ChatPage = () => {
       return
     }
 
-    const loadMatchAndMessages = async () => {
+    const loadMessagesAndUser = async () => {
       try {
-        // Load match details
-        const matchDoc = await getDoc(doc(db, 'matches', matchId))
-        if (!matchDoc.exists()) {
-          navigate('/messages')
-          return
-        }
-
-        const matchData = matchDoc.data()
-        const otherUserId = matchData.user1Id === currentUser.uid ? matchData.user2Id : matchData.user1Id
+        // matchId is actually the otherUserId
+        const otherUserId = matchId
         
         // Load other user's profile
         const userDoc = await getDoc(doc(db, 'users', otherUserId))
@@ -63,7 +56,7 @@ const ChatPage = () => {
           setOtherUser(userDoc.data() as OtherUser)
         }
 
-        // Subscribe to messages
+        // Subscribe to messages between current user and other user
         const messagesRef = collection(db, 'messages')
         const q = query(
           messagesRef,
@@ -93,25 +86,31 @@ const ChatPage = () => {
       }
     }
 
-    loadMatchAndMessages()
+    loadMessagesAndUser()
   }, [currentUser, matchId, navigate])
 
   const handleSendMessage = async (e: React.FormEvent) => {
     e.preventDefault()
-    if (!newMessage.trim() || !currentUser || !otherUser || sending) return
+    if (!newMessage.trim() || !currentUser || !matchId || sending) return
 
     setSending(true)
     try {
       const messagesRef = collection(db, 'messages')
-      
-      // Get other user ID from match
-      const matchDoc = await getDoc(doc(db, 'matches', matchId!))
-      const matchData = matchDoc.data()
-      const otherUserId = matchData!.user1Id === currentUser.uid ? matchData!.user2Id : matchData!.user1Id
+      const otherUserId = matchId // matchId is actually the otherUserId
+
+      // Get current user's name
+      const currentUserDoc = await getDoc(doc(db, 'users', currentUser.uid))
+      const currentUserName = currentUserDoc.exists() ? currentUserDoc.data().name : 'Unknown'
+
+      // Get other user's name
+      const otherUserDoc = await getDoc(doc(db, 'users', otherUserId))
+      const otherUserName = otherUserDoc.exists() ? otherUserDoc.data().name : 'Unknown'
 
       await addDoc(messagesRef, {
         fromUserId: currentUser.uid,
+        fromUserName: currentUserName,
         toUserId: otherUserId,
+        toUserName: otherUserName,
         message: newMessage.trim(),
         timestamp: serverTimestamp(),
         read: false
@@ -153,7 +152,10 @@ const ChatPage = () => {
           </button>
 
           {otherUser && (
-            <div className="flex items-center gap-3">
+            <div 
+              className="flex items-center gap-3 cursor-pointer hover:opacity-80 transition-opacity"
+              onClick={() => navigate(`/profile/${matchId}`)}
+            >
               <div className="w-10 h-10 rounded-full overflow-hidden bg-sand">
                 {otherUser.profileImageUrl ? (
                   <img 
@@ -198,9 +200,35 @@ const ChatPage = () => {
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: i * 0.05 }}
-                    className={`flex ${isOwn ? 'justify-end' : 'justify-start'}`}
+                    className={`flex gap-3 ${isOwn ? 'flex-row-reverse' : 'flex-row'}`}
                   >
-                    <div className={`max-w-lg ${isOwn ? 'ml-auto' : 'mr-auto'}`}>
+                    {/* Profile Picture */}
+                    <div 
+                      className="flex-shrink-0 cursor-pointer hover:opacity-80 transition-opacity"
+                      onClick={() => navigate(`/profile/${isOwn ? currentUser.uid : matchId}`)}
+                    >
+                      <div className="w-10 h-10 rounded-full bg-gradient-to-br from-sand to-warm-gray-200 overflow-hidden">
+                        {(isOwn ? currentUser?.photoURL : otherUser?.profileImageUrl) ? (
+                          <img 
+                            src={(isOwn ? currentUser?.photoURL : otherUser?.profileImageUrl) || ''}
+                            alt={isOwn ? 'You' : (otherUser?.name || 'User')}
+                            className="w-full h-full object-cover"
+                          />
+                        ) : (
+                          <div className="w-full h-full flex items-center justify-center text-warm-gray-400 text-sm font-medium">
+                            {isOwn ? (currentUser?.displayName?.[0] || 'Y') : (otherUser?.name?.[0] || '?')}
+                          </div>
+                        )}
+                      </div>
+                    </div>
+
+                    {/* Message Content */}
+                    <div className={`max-w-lg ${isOwn ? 'items-end' : 'items-start'} flex flex-col`}>
+                      <div className={`text-xs font-medium mb-1 px-2 ${isOwn ? 'text-right' : 'text-left'}`}>
+                        <span className="text-warm-gray-600">
+                          {isOwn ? 'You' : otherUser?.name}
+                        </span>
+                      </div>
                       <div className={`rounded-2xl px-6 py-4 ${
                         isOwn
                           ? 'bg-charcoal text-cream'

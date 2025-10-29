@@ -12,20 +12,30 @@ interface FormData {
   name: string
   email: string
   password: string
-  role: 'technical' | 'non-technical' | ''
+  role: 'builder' | 'marketer' | ''
   experience: string
   skills: string[]
-  passions: string
-  currentProject: string
-  lookingFor: string
   bio: string
   profileImage: File | null
   profileImagePreview: string
-  weeklyCommitment: string
-  hasExistingProject: string
-  projectLink: string
-  portfolioLinks: string
   customSkill: string
+  
+  // Builder-specific fields
+  projects: Array<{
+    name: string
+    description: string
+    stage: string
+    link: string
+    logo: File | null
+    logoPreview: string
+  }>
+  partnershipPreference: string[]
+  
+  // Marketer-specific fields
+  marketingExperience: string
+  portfolioLinks: string
+  preferredArrangement: string[]
+  industries: string[]
 }
 
 const SignupPage = () => {
@@ -39,22 +49,26 @@ const SignupPage = () => {
     role: '',
     experience: '',
     skills: [],
-    passions: '',
-    currentProject: '',
-    lookingFor: '',
     bio: '',
     profileImage: null,
     profileImagePreview: '',
-    weeklyCommitment: '',
-    hasExistingProject: '',
-    projectLink: '',
+    customSkill: '',
+    
+    // Builder-specific
+    projects: [],
+    partnershipPreference: [],
+    
+    // Marketer-specific
+    marketingExperience: '',
     portfolioLinks: '',
-    customSkill: ''
+    preferredArrangement: [],
+    industries: []
   })
   const [uploading, setUploading] = useState(false)
   const [showCustomSkillInput, setShowCustomSkillInput] = useState(false)
+  const [currentProjectIndex, setCurrentProjectIndex] = useState(0)
 
-  const totalSteps = 9 // Split experience into 2 steps: background + skills
+  const totalSteps = 7 // Adjusted for new flow with projects
 
   const handleNext = async () => {
     if (step < totalSteps) {
@@ -84,6 +98,25 @@ const SignupPage = () => {
         profileImageUrl = generateInitialsImage(formData.name)
       }
 
+      // Upload project logos for builders
+      const projectsWithLogos = await Promise.all(
+        formData.projects.map(async (project) => {
+          let logoUrl = ''
+          if (project.logo) {
+            const logoRef = ref(storage, `project-logos/${Date.now()}_${project.logo.name}`)
+            await uploadBytes(logoRef, project.logo)
+            logoUrl = await getDownloadURL(logoRef)
+          }
+          return {
+            name: project.name,
+            description: project.description,
+            stage: project.stage,
+            link: project.link,
+            logoUrl: logoUrl
+          }
+        })
+      )
+
       // Save user profile to Firestore with the same ID as auth user
       await setDoc(doc(db, 'users', user.uid), {
         name: formData.name,
@@ -91,15 +124,23 @@ const SignupPage = () => {
         role: formData.role,
         experience: formData.experience,
         skills: formData.skills,
-        passions: formData.passions,
-        currentProject: formData.currentProject,
-        lookingFor: formData.lookingFor,
         bio: formData.bio,
         profileImageUrl: profileImageUrl,
-        weeklyCommitment: formData.weeklyCommitment,
-        hasExistingProject: formData.hasExistingProject,
-        projectLink: formData.projectLink,
-        portfolioLinks: formData.portfolioLinks,
+        
+        // Builder-specific
+        ...(formData.role === 'builder' && {
+          projects: projectsWithLogos,
+          partnershipPreference: formData.partnershipPreference
+        }),
+        
+        // Marketer-specific
+        ...(formData.role === 'marketer' && {
+          marketingExperience: formData.marketingExperience,
+          portfolioLinks: formData.portfolioLinks,
+          preferredArrangement: formData.preferredArrangement,
+          industries: formData.industries
+        }),
+        
         approved: false,
         createdAt: new Date()
       })
@@ -175,16 +216,22 @@ const SignupPage = () => {
     }
   }
 
-  const technicalSkills = [
+  const builderSkills = [
     'react', 'node.js', 'python', 'ios', 'android',
     'ai/ml', 'blockchain', 'devops', 'ui/ux', 'full stack'
   ]
 
-  const nonTechnicalSkills = [
-    'tiktok growth', 'content creation', 'photography',
-    'video editing', 'videography', 'brand strategy',
-    'community', 'copywriting', 'social media', 'seo'
+  const marketerSkills = [
+    'paid ads', 'content creation', 'seo',
+    'social media', 'copywriting', 'email marketing',
+    'growth hacking', 'analytics', 'influencer marketing', 'community building'
   ]
+
+  const toggleArrayItem = (array: string[], item: string) => {
+    return array.includes(item)
+      ? array.filter(i => i !== item)
+      : [...array, item]
+  }
 
   return (
     <>
@@ -279,9 +326,9 @@ const SignupPage = () => {
                     </label>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       <button
-                        onClick={() => setFormData({ ...formData, role: 'technical' })}
+                        onClick={() => setFormData({ ...formData, role: 'builder' })}
                         className={`p-8 rounded-sm border-2 transition-all text-left ${
-                          formData.role === 'technical'
+                          formData.role === 'builder'
                             ? 'border-charcoal bg-white'
                             : 'border-warm-gray-200 hover:border-warm-gray-400 bg-white/50'
                         }`}
@@ -289,21 +336,21 @@ const SignupPage = () => {
                         <div className="text-4xl mb-4">⚙️</div>
                         <div className="font-serif text-2xl mb-2 lowercase text-charcoal">builder</div>
                         <div className="text-sm text-warm-gray-600 font-light">
-                          i create products and need help with growth
+                          i build products and have shelf projects
                         </div>
                       </button>
                       <button
-                        onClick={() => setFormData({ ...formData, role: 'non-technical' })}
+                        onClick={() => setFormData({ ...formData, role: 'marketer' })}
                         className={`p-8 rounded-sm border-2 transition-all text-left ${
-                          formData.role === 'non-technical'
+                          formData.role === 'marketer'
                             ? 'border-charcoal bg-white'
                             : 'border-warm-gray-200 hover:border-warm-gray-400 bg-white/50'
                         }`}
                       >
                         <div className="text-4xl mb-4">📈</div>
-                        <div className="font-serif text-2xl mb-2 lowercase text-charcoal">storyteller</div>
+                        <div className="font-serif text-2xl mb-2 lowercase text-charcoal">marketer</div>
                         <div className="text-sm text-warm-gray-600 font-light">
-                          i grow products and need a technical partner
+                          i market products and can help launch projects
                         </div>
                       </button>
                     </div>
@@ -428,7 +475,7 @@ const SignupPage = () => {
                     
                     {/* Predefined Skills */}
                     <div className="flex flex-wrap gap-3 mb-4">
-                      {(formData.role === 'technical' ? technicalSkills : nonTechnicalSkills).map(skill => (
+                      {(formData.role === 'builder' ? builderSkills : marketerSkills).map(skill => (
                         <button
                           key={skill}
                           onClick={() => toggleSkill(skill)}
@@ -445,7 +492,7 @@ const SignupPage = () => {
 
                     {/* Custom Skills Added */}
                     {formData.skills.filter(skill => 
-                      !(formData.role === 'technical' ? technicalSkills : nonTechnicalSkills).includes(skill)
+                      !(formData.role === 'builder' ? builderSkills : marketerSkills).includes(skill)
                     ).length > 0 && (
                       <div className="mb-4">
                         <p className="text-xs uppercase tracking-loose text-warm-gray-500 mb-2 font-sans">
@@ -453,7 +500,7 @@ const SignupPage = () => {
                         </p>
                         <div className="flex flex-wrap gap-3">
                           {formData.skills
-                            .filter(skill => !(formData.role === 'technical' ? technicalSkills : nonTechnicalSkills).includes(skill))
+                            .filter(skill => !(formData.role === 'builder' ? builderSkills : marketerSkills).includes(skill))
                             .map(skill => (
                               <div
                                 key={skill}
@@ -518,7 +565,7 @@ const SignupPage = () => {
               </motion.div>
             )}
 
-            {/* Step 5: Passions */}
+            {/* Step 5: Add Projects (Builders) or Marketing Experience (Marketers) */}
             {step === 5 && (
               <motion.div
                 key="step5"
@@ -528,49 +575,273 @@ const SignupPage = () => {
                 transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
                 className="space-y-12"
               >
-                <div className="space-y-4">
-                  <p className="text-xs uppercase tracking-loose text-warm-gray-600 font-sans">
-                    Motivation
-                  </p>
-                  <h1 className="font-serif text-5xl md:text-6xl text-charcoal lowercase leading-tight">
-                    what drives you?
-                  </h1>
-                  <p className="text-lg text-warm-gray-700 font-light max-w-lg">
-                    the problems that keep you up at night
-                  </p>
-                </div>
+                {formData.role === 'builder' ? (
+                  <>
+                    <div className="space-y-4">
+                      <p className="text-xs uppercase tracking-loose text-warm-gray-600 font-sans">
+                        Your Projects
+                      </p>
+                      <h1 className="font-serif text-5xl md:text-6xl text-charcoal lowercase leading-tight">
+                        add your projects
+                      </h1>
+                      <p className="text-lg text-warm-gray-700 font-light max-w-lg">
+                        add at least one project. you can add more later.
+                      </p>
+                    </div>
 
-                <div className="space-y-8">
-                  <div>
-                    <label className="block text-xs uppercase tracking-loose text-warm-gray-600 mb-3 font-sans">
-                      passions & interests
-                    </label>
-                    <textarea
-                      value={formData.passions}
-                      onChange={(e) => setFormData({ ...formData, passions: e.target.value })}
-                      className="w-full px-0 py-4 bg-transparent border-b-2 border-warm-gray-300 focus:border-charcoal focus:outline-none transition-colors text-lg text-charcoal resize-none font-light"
-                      rows={4}
-                      placeholder="what industries excite you? what problems do you want to solve?"
-                    />
-                  </div>
+                    {/* Current Project Form */}
+                    {currentProjectIndex < formData.projects.length || formData.projects.length === 0 ? (
+                      <div className="space-y-8 p-8 bg-white rounded-sm border border-warm-gray-200">
+                        <h3 className="font-serif text-2xl text-charcoal lowercase">
+                          Project {formData.projects.length + 1}
+                        </h3>
 
-                  <div>
-                    <label className="block text-xs uppercase tracking-loose text-warm-gray-600 mb-3 font-sans">
-                      current project <span className="text-warm-gray-400">(optional)</span>
-                    </label>
-                    <textarea
-                      value={formData.currentProject}
-                      onChange={(e) => setFormData({ ...formData, currentProject: e.target.value })}
-                      className="w-full px-0 py-4 bg-transparent border-b-2 border-warm-gray-300 focus:border-charcoal focus:outline-none transition-colors text-lg text-charcoal resize-none font-light"
-                      rows={3}
-                      placeholder="working on anything right now?"
-                    />
-                  </div>
-                </div>
+                        {/* Project Name */}
+                        <div>
+                          <label className="block text-xs uppercase tracking-loose text-warm-gray-600 mb-3 font-sans">
+                            project name <span className="text-rust">*</span>
+                          </label>
+                          <input
+                            type="text"
+                            value={formData.projects[currentProjectIndex]?.name || ''}
+                            onChange={(e) => {
+                              const newProjects = [...formData.projects]
+                              if (!newProjects[currentProjectIndex]) {
+                                newProjects[currentProjectIndex] = { name: '', description: '', stage: '', link: '', logo: null, logoPreview: '' }
+                              }
+                              newProjects[currentProjectIndex].name = e.target.value
+                              setFormData({ ...formData, projects: newProjects })
+                            }}
+                            className="w-full px-0 py-4 bg-transparent border-b-2 border-warm-gray-300 focus:border-charcoal focus:outline-none transition-colors text-xl text-charcoal font-light"
+                            placeholder="my awesome app"
+                          />
+                        </div>
+
+                        {/* Project Description */}
+                        <div>
+                          <label className="block text-xs uppercase tracking-loose text-warm-gray-600 mb-3 font-sans">
+                            description <span className="text-rust">*</span>
+                          </label>
+                          <textarea
+                            value={formData.projects[currentProjectIndex]?.description || ''}
+                            onChange={(e) => {
+                              const newProjects = [...formData.projects]
+                              if (!newProjects[currentProjectIndex]) {
+                                newProjects[currentProjectIndex] = { name: '', description: '', stage: '', link: '', logo: null, logoPreview: '' }
+                              }
+                              newProjects[currentProjectIndex].description = e.target.value
+                              setFormData({ ...formData, projects: newProjects })
+                            }}
+                            className="w-full px-0 py-4 bg-transparent border-b-2 border-warm-gray-300 focus:border-charcoal focus:outline-none transition-colors text-lg text-charcoal resize-none font-light"
+                            rows={4}
+                            placeholder="what does it do? who is it for?"
+                          />
+                        </div>
+
+                        {/* Project Stage */}
+                        <div>
+                          <label className="block text-xs uppercase tracking-loose text-warm-gray-600 mb-4 font-sans">
+                            project stage <span className="text-rust">*</span>
+                          </label>
+                          <div className="space-y-3">
+                            {['💡 Idea / Concept', '🔨 In Development', '🚀 MVP Launched', '📈 Early Traction (<100 users)', '🎯 Growing (100-1K users)', '💪 Established (1K+ users)'].map(stage => (
+                              <button
+                                key={stage}
+                                onClick={() => {
+                                  const newProjects = [...formData.projects]
+                                  if (!newProjects[currentProjectIndex]) {
+                                    newProjects[currentProjectIndex] = { name: '', description: '', stage: '', link: '', logo: null, logoPreview: '' }
+                                  }
+                                  newProjects[currentProjectIndex].stage = stage
+                                  setFormData({ ...formData, projects: newProjects })
+                                }}
+                                className={`w-full p-4 rounded-sm border-2 transition-all text-left ${
+                                  formData.projects[currentProjectIndex]?.stage === stage
+                                    ? 'border-charcoal bg-white'
+                                    : 'border-warm-gray-200 hover:border-warm-gray-400 bg-white/50'
+                                }`}
+                              >
+                                <div className="text-sm lowercase text-charcoal font-light">{stage}</div>
+                              </button>
+                            ))}
+                          </div>
+                        </div>
+
+                        {/* Project Link */}
+                        <div>
+                          <label className="block text-xs uppercase tracking-loose text-warm-gray-600 mb-3 font-sans">
+                            project link <span className="text-rust">*</span>
+                          </label>
+                          <input
+                            type="url"
+                            value={formData.projects[currentProjectIndex]?.link || ''}
+                            onChange={(e) => {
+                              const newProjects = [...formData.projects]
+                              if (!newProjects[currentProjectIndex]) {
+                                newProjects[currentProjectIndex] = { name: '', description: '', stage: '', link: '', logo: null, logoPreview: '' }
+                              }
+                              newProjects[currentProjectIndex].link = e.target.value
+                              setFormData({ ...formData, projects: newProjects })
+                            }}
+                            className="w-full px-0 py-4 bg-transparent border-b-2 border-warm-gray-300 focus:border-charcoal focus:outline-none transition-colors text-lg text-charcoal font-light"
+                            placeholder="https://..."
+                          />
+                          <p className="text-sm text-warm-gray-500 mt-2 font-light">
+                            website, app store, github, etc.
+                          </p>
+                        </div>
+
+                        {/* Project Logo */}
+                        <div>
+                          <label className="block text-xs uppercase tracking-loose text-warm-gray-600 mb-4 font-sans">
+                            project logo <span className="text-warm-gray-400">(optional)</span>
+                          </label>
+                          
+                          {formData.projects[currentProjectIndex]?.logoPreview && (
+                            <div className="mb-4">
+                              <img
+                                src={formData.projects[currentProjectIndex].logoPreview}
+                                alt="Logo preview"
+                                className="w-24 h-24 object-cover rounded-sm border border-warm-gray-200"
+                              />
+                            </div>
+                          )}
+
+                          <div className="relative">
+                            <input
+                              type="file"
+                              accept="image/*"
+                              onChange={(e) => {
+                                const file = e.target.files?.[0]
+                                if (file) {
+                                  const newProjects = [...formData.projects]
+                                  if (!newProjects[currentProjectIndex]) {
+                                    newProjects[currentProjectIndex] = { name: '', description: '', stage: '', link: '', logo: null, logoPreview: '' }
+                                  }
+                                  newProjects[currentProjectIndex].logo = file
+                                  newProjects[currentProjectIndex].logoPreview = URL.createObjectURL(file)
+                                  setFormData({ ...formData, projects: newProjects })
+                                }
+                              }}
+                              className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                              id="project-logo"
+                            />
+                            <label
+                              htmlFor="project-logo"
+                              className="px-8 py-3 bg-white text-charcoal border border-warm-gray-300 hover:border-charcoal rounded-sm transition-all font-sans tracking-relaxed lowercase cursor-pointer inline-block"
+                            >
+                              {formData.projects[currentProjectIndex]?.logo ? 'change logo' : 'upload logo'}
+                            </label>
+                          </div>
+                        </div>
+
+                        {/* Add Another Project Button */}
+                        <div className="pt-6 border-t border-warm-gray-200">
+                          <button
+                            onClick={() => {
+                              const currentProject = formData.projects[currentProjectIndex]
+                              if (currentProject && currentProject.name && currentProject.description && currentProject.stage && currentProject.link) {
+                                setCurrentProjectIndex(currentProjectIndex + 1)
+                              } else {
+                                alert('Please complete the current project before adding another.')
+                              }
+                            }}
+                            className="text-sm text-rust hover:text-charcoal transition-colors lowercase"
+                          >
+                            + add another project (optional)
+                          </button>
+                        </div>
+                      </div>
+                    ) : null}
+
+                    {/* List of Added Projects */}
+                    {formData.projects.length > 0 && (
+                      <div className="space-y-4">
+                        <p className="text-xs uppercase tracking-loose text-warm-gray-600 font-sans">
+                          Added Projects ({formData.projects.length})
+                        </p>
+                        {formData.projects.map((project, index) => (
+                          <div key={index} className="p-4 bg-sand rounded-sm border border-warm-gray-200 flex items-center justify-between">
+                            <div className="flex items-center gap-3">
+                              {project.logoPreview && (
+                                <img src={project.logoPreview} alt={project.name} className="w-12 h-12 object-cover rounded-sm" />
+                              )}
+                              <div>
+                                <p className="font-serif text-lg text-charcoal lowercase">{project.name}</p>
+                                <p className="text-xs text-warm-gray-600">{project.stage}</p>
+                              </div>
+                            </div>
+                            <button
+                              onClick={() => {
+                                const newProjects = formData.projects.filter((_, i) => i !== index)
+                                setFormData({ ...formData, projects: newProjects })
+                                if (currentProjectIndex > newProjects.length) {
+                                  setCurrentProjectIndex(newProjects.length)
+                                }
+                              }}
+                              className="text-warm-gray-500 hover:text-rust transition-colors"
+                            >
+                              remove
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </>
+                ) : (
+                  // Marketer Experience (same as before)
+                  <>
+                    <div className="space-y-4">
+                      <p className="text-xs uppercase tracking-loose text-warm-gray-600 font-sans">
+                        Your Experience
+                      </p>
+                      <h1 className="font-serif text-5xl md:text-6xl text-charcoal lowercase leading-tight">
+                        your marketing background
+                      </h1>
+                      <p className="text-lg text-warm-gray-700 font-light max-w-lg">
+                        what marketing experience do you have?
+                      </p>
+                    </div>
+
+                    <div className="space-y-8">
+                      {/* For Marketers: Marketing Experience */}
+                      <div>
+                        <label className="block text-xs uppercase tracking-loose text-warm-gray-600 mb-3 font-sans">
+                          describe your marketing experience
+                        </label>
+                        <textarea
+                          value={formData.marketingExperience}
+                          onChange={(e) => setFormData({ ...formData, marketingExperience: e.target.value })}
+                          className="w-full px-0 py-4 bg-transparent border-b-2 border-warm-gray-300 focus:border-charcoal focus:outline-none transition-colors text-lg text-charcoal resize-none font-light"
+                          rows={5}
+                          placeholder="what have you marketed? what results did you achieve? include numbers if possible..."
+                          required
+                        />
+                      </div>
+
+                      {/* Portfolio Links */}
+                      <div>
+                        <label className="block text-xs uppercase tracking-loose text-warm-gray-600 mb-3 font-sans">
+                          portfolio & work samples
+                        </label>
+                        <textarea
+                          value={formData.portfolioLinks}
+                          onChange={(e) => setFormData({ ...formData, portfolioLinks: e.target.value })}
+                          className="w-full px-0 py-4 bg-transparent border-b-2 border-warm-gray-300 focus:border-charcoal focus:outline-none transition-colors text-lg text-charcoal resize-none font-light"
+                          rows={5}
+                          placeholder="share links to your best work...&#10;&#10;campaigns, content, case studies, social media accounts, etc."
+                        />
+                        <p className="text-sm text-warm-gray-500 mt-2 font-light">
+                          paste links (one per line)
+                        </p>
+                      </div>
+                    </div>
+                  </>
+                )}
               </motion.div>
             )}
 
-            {/* Step 6: Commitment & Projects */}
+            {/* Step 6: Partnership Preferences */}
             {step === 6 && (
               <motion.div
                 key="step6"
@@ -582,53 +853,36 @@ const SignupPage = () => {
               >
                 <div className="space-y-4">
                   <p className="text-xs uppercase tracking-loose text-warm-gray-600 font-sans">
-                    Commitment
+                    Arrangements
                   </p>
                   <h1 className="font-serif text-5xl md:text-6xl text-charcoal lowercase leading-tight">
-                    time & projects
+                    partnership terms
                   </h1>
                   <p className="text-lg text-warm-gray-700 font-light max-w-lg">
-                    let's talk about availability and what you've built
+                    {formData.role === 'builder' 
+                      ? 'what arrangement are you open to with marketers?'
+                      : 'what arrangement are you looking for?'
+                    }
                   </p>
                 </div>
 
                 <div className="space-y-8">
-                  {/* Weekly Time Commitment */}
                   <div>
                     <label className="block text-xs uppercase tracking-loose text-warm-gray-600 mb-4 font-sans">
-                      how many hours per week can you commit?
+                      select all that apply
                     </label>
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                      {['5-10 hours', '10-20 hours', '20-30 hours', '30+ hours (full-time)'].map(option => (
-                        <button
-                          key={option}
-                          onClick={() => setFormData({ ...formData, weeklyCommitment: option })}
-                          className={`p-4 rounded-sm border-2 transition-all text-center ${
-                            formData.weeklyCommitment === option
-                              ? 'border-charcoal bg-white'
-                              : 'border-warm-gray-200 hover:border-warm-gray-400 bg-white/50'
-                          }`}
-                        >
-                          <div className="text-sm lowercase text-charcoal font-light">{option}</div>
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-
-                  {/* For Technical/Builders */}
-                  {formData.role === 'technical' && (
-                    <>
-                      <div>
-                        <label className="block text-xs uppercase tracking-loose text-warm-gray-600 mb-4 font-sans">
-                          do you already have a project you want to grow?
-                        </label>
-                        <div className="grid grid-cols-2 gap-4">
-                          {['yes', 'no, but i have ideas', 'open to anything'].map(option => (
+                    <div className="space-y-3">
+                      {formData.role === 'builder' ? (
+                        <>
+                          {['co-founder / equity partner', 'revenue share', 'pay for marketing services', 'open to discussion'].map(option => (
                             <button
                               key={option}
-                              onClick={() => setFormData({ ...formData, hasExistingProject: option })}
-                              className={`p-4 rounded-sm border-2 transition-all text-center ${
-                                formData.hasExistingProject === option
+                              onClick={() => setFormData({ 
+                                ...formData, 
+                                partnershipPreference: toggleArrayItem(formData.partnershipPreference, option)
+                              })}
+                              className={`w-full p-4 rounded-sm border-2 transition-all text-left ${
+                                formData.partnershipPreference.includes(option)
                                   ? 'border-charcoal bg-white'
                                   : 'border-warm-gray-200 hover:border-warm-gray-400 bg-white/50'
                               }`}
@@ -636,172 +890,64 @@ const SignupPage = () => {
                               <div className="text-sm lowercase text-charcoal font-light">{option}</div>
                             </button>
                           ))}
-                        </div>
-                      </div>
-
-                      {formData.hasExistingProject === 'yes' && (
-                        <div>
-                          <label className="block text-xs uppercase tracking-loose text-warm-gray-600 mb-3 font-sans">
-                            share a link to your project
-                          </label>
-                          <input
-                            type="url"
-                            value={formData.projectLink}
-                            onChange={(e) => setFormData({ ...formData, projectLink: e.target.value })}
-                            className="w-full px-0 py-4 bg-transparent border-b-2 border-warm-gray-300 focus:border-charcoal focus:outline-none transition-colors text-lg text-charcoal font-light"
-                            placeholder="https://yourproject.com or github.com/..."
-                          />
-                          <p className="text-sm text-warm-gray-500 mt-2 font-light">
-                            website, app store link, github repo, or product demo
-                          </p>
-                        </div>
+                        </>
+                      ) : (
+                        <>
+                          {['seeking co-founder / equity position', 'revenue share', 'paid marketing work', 'open to any arrangement'].map(option => (
+                            <button
+                              key={option}
+                              onClick={() => setFormData({ 
+                                ...formData, 
+                                preferredArrangement: toggleArrayItem(formData.preferredArrangement, option)
+                              })}
+                              className={`w-full p-4 rounded-sm border-2 transition-all text-left ${
+                                formData.preferredArrangement.includes(option)
+                                  ? 'border-charcoal bg-white'
+                                  : 'border-warm-gray-200 hover:border-warm-gray-400 bg-white/50'
+                              }`}
+                            >
+                              <div className="text-sm lowercase text-charcoal font-light">{option}</div>
+                            </button>
+                          ))}
+                        </>
                       )}
-                    </>
-                  )}
+                    </div>
+                  </div>
 
-                  {/* For Non-Technical/Marketers */}
-                  {formData.role === 'non-technical' && (
+                  {/* Industries for Marketers */}
+                  {formData.role === 'marketer' && (
                     <div>
-                      <label className="block text-xs uppercase tracking-loose text-warm-gray-600 mb-3 font-sans">
-                        portfolio & work samples
+                      <label className="block text-xs uppercase tracking-loose text-warm-gray-600 mb-4 font-sans">
+                        what industries interest you? (optional)
                       </label>
-                      <textarea
-                        value={formData.portfolioLinks}
-                        onChange={(e) => setFormData({ ...formData, portfolioLinks: e.target.value })}
-                        className="w-full px-0 py-4 bg-transparent border-b-2 border-warm-gray-300 focus:border-charcoal focus:outline-none transition-colors text-lg text-charcoal resize-none font-light"
-                        rows={5}
-                        placeholder="share links to your best work...&#10;&#10;tiktok videos, instagram reels, youtube channels, case studies, campaigns you've run, content you've created, etc."
-                      />
-                      <p className="text-sm text-warm-gray-500 mt-2 font-light">
-                        paste links (one per line) to your TikTok, Instagram, YouTube, or any content that shows your skills
-                      </p>
+                      <div className="flex flex-wrap gap-3">
+                        {['fintech', 'health & wellness', 'productivity', 'social', 'ai/ml', 'e-commerce', 'education', 'gaming', 'any'].map(industry => (
+                          <button
+                            key={industry}
+                            onClick={() => setFormData({ 
+                              ...formData, 
+                              industries: toggleArrayItem(formData.industries, industry)
+                            })}
+                            className={`px-5 py-2.5 rounded-sm transition-all text-sm lowercase ${
+                              formData.industries.includes(industry)
+                                ? 'bg-charcoal text-cream'
+                                : 'bg-white text-warm-gray-700 border border-warm-gray-300 hover:border-charcoal'
+                            }`}
+                          >
+                            {industry}
+                          </button>
+                        ))}
+                      </div>
                     </div>
                   )}
                 </div>
               </motion.div>
             )}
 
-            {/* Step 7: Looking For */}
+            {/* Step 7: Bio */}
             {step === 7 && (
               <motion.div
                 key="step7"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -20 }}
-                transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-                className="space-y-12"
-              >
-                <div className="space-y-4">
-                  <p className="text-xs uppercase tracking-loose text-warm-gray-600 font-sans">
-                    Partnership
-                  </p>
-                  <h1 className="font-serif text-5xl md:text-6xl text-charcoal lowercase leading-tight">
-                    your ideal match
-                  </h1>
-                  <p className="text-lg text-warm-gray-700 font-light max-w-lg">
-                    who complements you?
-                  </p>
-                </div>
-
-                <div className="space-y-8">
-                  <div>
-                    <label className="block text-xs uppercase tracking-loose text-warm-gray-600 mb-3 font-sans">
-                      what i'm looking for
-                    </label>
-                    <textarea
-                      value={formData.lookingFor}
-                      onChange={(e) => setFormData({ ...formData, lookingFor: e.target.value })}
-                      className="w-full px-0 py-4 bg-transparent border-b-2 border-warm-gray-300 focus:border-charcoal focus:outline-none transition-colors text-lg text-charcoal resize-none font-light"
-                      rows={5}
-                      placeholder="describe your ideal co-founder. what skills? what values? what energy?"
-                    />
-                  </div>
-                </div>
-              </motion.div>
-            )}
-
-            {/* Step 8: Profile Picture */}
-            {step === 8 && (
-              <motion.div
-                key="step8"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -20 }}
-                transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-                className="space-y-12"
-              >
-                <div className="space-y-4">
-                  <p className="text-xs uppercase tracking-loose text-warm-gray-600 font-sans">
-                    Your photo (optional)
-                  </p>
-                  <h1 className="font-serif text-5xl md:text-6xl text-charcoal lowercase leading-tight">
-                    add a profile picture
-                  </h1>
-                  <p className="text-lg text-warm-gray-700 font-light max-w-lg">
-                    skip this step to use your initials instead
-                  </p>
-                </div>
-
-                <div className="space-y-8">
-                  {/* Image Preview */}
-                  <div className="flex flex-col items-center gap-6">
-                    <div className="relative w-48 h-48 rounded-sm border-2 border-warm-gray-300 border-dashed overflow-hidden bg-sand flex items-center justify-center">
-                      {formData.profileImagePreview ? (
-                        <img
-                          src={formData.profileImagePreview}
-                          alt="Profile preview"
-                          className="w-full h-full object-cover"
-                        />
-                      ) : (
-                        <div className="text-center text-warm-gray-500">
-                          <svg className="w-16 h-16 mx-auto mb-2 opacity-40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                          </svg>
-                          <p className="text-sm">no photo yet</p>
-                        </div>
-                      )}
-                    </div>
-
-                    {/* Upload Button */}
-                    <div className="relative">
-                      <input
-                        type="file"
-                        accept="image/*"
-                        onChange={handleImageChange}
-                        className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-                        id="profile-image"
-                      />
-                      <label
-                        htmlFor="profile-image"
-                        className="px-8 py-3 bg-charcoal text-cream rounded-sm hover:bg-warm-gray-900 transition-all font-sans tracking-relaxed lowercase cursor-pointer inline-block"
-                      >
-                        {formData.profileImage ? 'change photo' : 'upload photo'}
-                      </label>
-                    </div>
-
-                    {formData.profileImage && (
-                      <button
-                        onClick={() => setFormData({ ...formData, profileImage: null, profileImagePreview: '' })}
-                        className="text-sm text-warm-gray-600 hover:text-charcoal transition-colors underline underline-offset-2"
-                      >
-                        remove photo
-                      </button>
-                    )}
-                  </div>
-
-                  <div className="p-6 rounded-sm bg-sand border-l-2 border-rust">
-                    <p className="text-sm text-warm-gray-700 font-light">
-                      <strong className="font-medium">tip:</strong> use a clear, well-lit photo where your face is visible. square photos work best.
-                    </p>
-                  </div>
-                </div>
-              </motion.div>
-            )}
-
-            {/* Step 9: Bio */}
-            {step === 9 && (
-              <motion.div
-                key="step9"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -20 }}
@@ -816,7 +962,10 @@ const SignupPage = () => {
                     tell your story
                   </h1>
                   <p className="text-lg text-warm-gray-700 font-light max-w-lg">
-                    this is what potential co-founders will see
+                    {formData.role === 'builder' 
+                      ? 'this is what marketers will see when browsing your projects'
+                      : 'this is what builders will see when you reach out'
+                    }
                   </p>
                 </div>
 
@@ -836,7 +985,7 @@ const SignupPage = () => {
 
                   <div className="p-6 rounded-sm bg-sand border-l-2 border-rust">
                     <p className="text-sm text-warm-gray-700 font-light italic">
-                      be authentic. be specific. be human. the best matches come from real stories.
+                      be authentic. be specific. be human. the best connections come from real stories.
                     </p>
                   </div>
                 </div>
@@ -863,15 +1012,11 @@ const SignupPage = () => {
                 (step === 2 && (!formData.password || formData.password.length < 6)) ||
                 (step === 3 && !formData.experience) ||
                 (step === 4 && formData.skills.length === 0) ||
-                (step === 5 && !formData.passions) ||
-                (step === 6 && (
-                  !formData.weeklyCommitment ||
-                  (formData.role === 'technical' && !formData.hasExistingProject) ||
-                  (formData.role === 'technical' && formData.hasExistingProject === 'yes' && !formData.projectLink) ||
-                  (formData.role === 'non-technical' && !formData.portfolioLinks)
-                )) ||
-                (step === 7 && !formData.lookingFor) ||
-                (step === 9 && !formData.bio)
+                (step === 5 && formData.role === 'builder' && formData.projects.length === 0) ||
+                (step === 5 && formData.role === 'marketer' && (!formData.marketingExperience || !formData.portfolioLinks)) ||
+                (step === 6 && formData.role === 'builder' && formData.partnershipPreference.length === 0) ||
+                (step === 6 && formData.role === 'marketer' && formData.preferredArrangement.length === 0) ||
+                (step === 7 && !formData.bio)
               }
             >
               {uploading ? 'uploading...' : step === totalSteps ? 'submit application' : 'continue'}

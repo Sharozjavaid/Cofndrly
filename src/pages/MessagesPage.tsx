@@ -3,26 +3,35 @@ import { motion } from 'framer-motion'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../contexts/AuthContext'
 import { db } from '../firebase/config'
-import { collection, query, where, getDocs, doc, getDoc } from 'firebase/firestore'
+import { collection, query, where, getDocs, doc, getDoc, orderBy } from 'firebase/firestore'
 
-interface Match {
+interface Message {
   id: string
-  user1Id: string
-  user2Id: string
-  conversationId: string
-  createdAt: any
-  otherUser?: {
-    name: string
-    role: string
-    profileImageUrl: string
-    bio: string
-  }
+  fromUserId: string
+  fromUserName: string
+  toUserId: string
+  toUserName: string
+  message: string
+  projectName?: string
+  timestamp: any
+  read: boolean
+}
+
+interface Conversation {
+  otherUserId: string
+  otherUserName: string
+  otherUserProfileImage?: string
+  otherUserBio?: string
+  lastMessage: string
+  lastMessageTime: any
+  unreadCount: number
+  projectName?: string
 }
 
 const MessagesPage = () => {
   const navigate = useNavigate()
   const { currentUser, signOut } = useAuth()
-  const [matches, setMatches] = useState<Match[]>([])
+  const [conversations, setConversations] = useState<Conversation[]>([])
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
@@ -31,62 +40,92 @@ const MessagesPage = () => {
       return
     }
 
-    const loadMatches = async () => {
+    const loadConversations = async () => {
       try {
-        const matchesRef = collection(db, 'matches')
+        const messagesRef = collection(db, 'messages')
         
-        // Query for matches where current user is either user1 or user2
-        const q1 = query(matchesRef, where('user1Id', '==', currentUser.uid))
-        const q2 = query(matchesRef, where('user2Id', '==', currentUser.uid))
+        // Query for messages TO the current user
+        const qReceived = query(
+          messagesRef, 
+          where('toUserId', '==', currentUser.uid),
+          orderBy('timestamp', 'desc')
+        )
         
-        const [snapshot1, snapshot2] = await Promise.all([
-          getDocs(q1),
-          getDocs(q2)
+        // Query for messages FROM the current user
+        const qSent = query(
+          messagesRef,
+          where('fromUserId', '==', currentUser.uid),
+          orderBy('timestamp', 'desc')
+        )
+        
+        const [receivedSnapshot, sentSnapshot] = await Promise.all([
+          getDocs(qReceived),
+          getDocs(qSent)
         ])
         
-        const matchesData: Match[] = []
+        // Combine all messages
+        const allMessages: Message[] = []
+        receivedSnapshot.docs.forEach(doc => {
+          allMessages.push({ id: doc.id, ...doc.data() } as Message)
+        })
+        sentSnapshot.docs.forEach(doc => {
+          allMessages.push({ id: doc.id, ...doc.data() } as Message)
+        })
         
-        // Process matches where current user is user1
-        for (const matchDoc of snapshot1.docs) {
-          const matchData = { id: matchDoc.id, ...matchDoc.data() } as Match
-          const otherUserId = matchData.user2Id
-          const userDoc = await getDoc(doc(db, 'users', otherUserId))
+        // Group messages by conversation (other user)
+        const conversationsMap = new Map<string, Conversation>()
+        
+        for (const msg of allMessages) {
+          const otherUserId = msg.fromUserId === currentUser.uid ? msg.toUserId : msg.fromUserId
+          const otherUserName = msg.fromUserId === currentUser.uid ? msg.toUserName : msg.fromUserName
           
-          if (userDoc.exists()) {
-            matchData.otherUser = userDoc.data() as any
-            matchesData.push(matchData)
+          if (!conversationsMap.has(otherUserId)) {
+            // Fetch other user's profile
+            const userDoc = await getDoc(doc(db, 'users', otherUserId))
+            const userData = userDoc.exists() ? userDoc.data() : null
+            
+            conversationsMap.set(otherUserId, {
+              otherUserId,
+              otherUserName,
+              otherUserProfileImage: userData?.profileImageUrl,
+              otherUserBio: userData?.bio,
+              lastMessage: msg.message,
+              lastMessageTime: msg.timestamp,
+              unreadCount: msg.toUserId === currentUser.uid && !msg.read ? 1 : 0,
+              projectName: msg.projectName
+            })
+          } else {
+            const conv = conversationsMap.get(otherUserId)!
+            // Update last message if this one is newer
+            if (msg.timestamp && (!conv.lastMessageTime || msg.timestamp.toMillis() > conv.lastMessageTime.toMillis())) {
+              conv.lastMessage = msg.message
+              conv.lastMessageTime = msg.timestamp
+              conv.projectName = msg.projectName
+            }
+            // Count unread messages
+            if (msg.toUserId === currentUser.uid && !msg.read) {
+              conv.unreadCount++
+            }
           }
         }
         
-        // Process matches where current user is user2
-        for (const matchDoc of snapshot2.docs) {
-          const matchData = { id: matchDoc.id, ...matchDoc.data() } as Match
-          const otherUserId = matchData.user1Id
-          const userDoc = await getDoc(doc(db, 'users', otherUserId))
-          
-          if (userDoc.exists()) {
-            matchData.otherUser = userDoc.data() as any
-            matchesData.push(matchData)
-          }
-        }
-        
-        // Sort by creation date (newest first)
-        matchesData.sort((a, b) => {
-          if (a.createdAt && b.createdAt) {
-            return b.createdAt.toMillis() - a.createdAt.toMillis()
+        // Convert map to array and sort by last message time
+        const conversationsArray = Array.from(conversationsMap.values()).sort((a, b) => {
+          if (a.lastMessageTime && b.lastMessageTime) {
+            return b.lastMessageTime.toMillis() - a.lastMessageTime.toMillis()
           }
           return 0
         })
         
-        setMatches(matchesData)
+        setConversations(conversationsArray)
         setLoading(false)
       } catch (error) {
-        console.error('Error loading matches:', error)
+        console.error('Error loading conversations:', error)
         setLoading(false)
       }
     }
 
-    loadMatches()
+    loadConversations()
   }, [currentUser, navigate])
 
   const handleSignOut = async () => {
@@ -122,10 +161,10 @@ const MessagesPage = () => {
           </div>
           <div className="flex gap-4 items-center">
             <button 
-              onClick={() => navigate('/matching')}
+              onClick={() => navigate('/projects')}
               className="text-sm text-warm-gray-600 hover:text-charcoal transition-colors lowercase tracking-relaxed"
             >
-              browse
+              browse projects
             </button>
             <button 
               onClick={() => navigate('/profile')}
@@ -152,18 +191,18 @@ const MessagesPage = () => {
             className="mb-12"
           >
             <h1 className="font-serif text-5xl md:text-6xl text-charcoal lowercase mb-4">
-              your matches
+              your messages
             </h1>
             <p className="text-warm-gray-600 font-light text-lg">
-              {matches.length === 0 
-                ? 'no matches yet — keep swiping!'
-                : `${matches.length} ${matches.length === 1 ? 'match' : 'matches'} • start the conversation`
+              {conversations.length === 0 
+                ? 'no messages yet — start browsing!'
+                : `${conversations.length} ${conversations.length === 1 ? 'conversation' : 'conversations'}`
               }
             </p>
           </motion.div>
 
-          {/* Matches List */}
-          {matches.length === 0 ? (
+          {/* Conversations List */}
+          {conversations.length === 0 ? (
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -172,65 +211,78 @@ const MessagesPage = () => {
             >
               <div className="text-6xl mb-6">💬</div>
               <h2 className="font-serif text-3xl text-charcoal lowercase mb-4">
-                no matches yet
+                no messages yet
               </h2>
               <p className="text-warm-gray-600 mb-8 max-w-md mx-auto">
-                keep swiping to find your co-founder. when you both swipe right, you'll see them here.
+                browse projects or find a partner to start a conversation.
               </p>
               <button
-                onClick={() => navigate('/matching')}
+                onClick={() => navigate('/projects')}
                 className="px-8 py-4 bg-charcoal text-cream rounded-sm hover:bg-warm-gray-900 transition-all font-sans tracking-relaxed lowercase"
               >
-                start browsing
+                browse projects
               </button>
             </motion.div>
           ) : (
-            <div className="grid md:grid-cols-2 gap-6">
-              {matches.map((match, i) => (
+            <div className="space-y-4">
+              {conversations.map((conv, i) => (
                 <motion.div
-                  key={match.id}
+                  key={conv.otherUserId}
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: i * 0.1 }}
-                  onClick={() => navigate(`/chat/${match.id}`)}
+                  transition={{ delay: i * 0.05 }}
+                  onClick={() => navigate(`/chat/${conv.otherUserId}`)}
                   className="bg-white rounded-sm border border-warm-gray-200 hover:border-charcoal transition-all cursor-pointer overflow-hidden group"
                 >
-                  {/* Profile Image */}
-                  <div className="relative h-64 bg-gradient-to-br from-sand to-warm-gray-200 overflow-hidden">
-                    {match.otherUser?.profileImageUrl ? (
-                      <img 
-                        src={match.otherUser.profileImageUrl}
-                        alt={match.otherUser.name}
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                      />
-                    ) : (
-                      <div className="w-full h-full flex items-center justify-center">
-                        <svg className="w-24 h-24 text-warm-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                        </svg>
+                  <div className="p-6 flex gap-4">
+                    {/* Profile Image */}
+                    <div 
+                      className="relative flex-shrink-0 cursor-pointer hover:opacity-80 transition-opacity"
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        navigate(`/profile/${conv.otherUserId}`)
+                      }}
+                    >
+                      <div className="w-16 h-16 rounded-full bg-gradient-to-br from-sand to-warm-gray-200 overflow-hidden">
+                        {conv.otherUserProfileImage ? (
+                          <img 
+                            src={conv.otherUserProfileImage}
+                            alt={conv.otherUserName}
+                            className="w-full h-full object-cover"
+                          />
+                        ) : (
+                          <div className="w-full h-full flex items-center justify-center">
+                            <svg className="w-8 h-8 text-warm-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                            </svg>
+                          </div>
+                        )}
                       </div>
-                    )}
-                    
-                    {/* Role Badge */}
-                    <div className={`absolute top-3 right-3 px-3 py-1.5 rounded-sm text-xs uppercase tracking-wider backdrop-blur-md ${
-                      match.otherUser?.role === 'technical'
-                        ? 'bg-charcoal/90 text-cream'
-                        : 'bg-sage/90 text-white'
-                    }`}>
-                      {match.otherUser?.role === 'technical' ? '⚙️ builder' : '📈 storyteller'}
+                      {conv.unreadCount > 0 && (
+                        <div className="absolute -top-1 -right-1 bg-rust text-white text-xs w-5 h-5 rounded-full flex items-center justify-center font-bold">
+                          {conv.unreadCount}
+                        </div>
+                      )}
                     </div>
-                  </div>
 
-                  {/* Info */}
-                  <div className="p-6">
-                    <h3 className="font-serif text-2xl text-charcoal lowercase mb-2">
-                      {match.otherUser?.name}
-                    </h3>
-                    <p className="text-sm text-warm-gray-600 line-clamp-2 mb-4">
-                      {match.otherUser?.bio}
-                    </p>
-                    <div className="text-xs text-warm-gray-500 uppercase tracking-wider">
-                      matched {match.createdAt ? new Date(match.createdAt.toDate()).toLocaleDateString() : 'recently'}
+                    {/* Info */}
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center justify-between mb-1">
+                        <h3 className="font-serif text-xl text-charcoal lowercase">
+                          {conv.otherUserName}
+                        </h3>
+                        <div className="text-xs text-warm-gray-500">
+                          {conv.lastMessageTime ? new Date(conv.lastMessageTime.toDate()).toLocaleDateString(undefined, { month: 'short', day: 'numeric' }) : ''}
+                        </div>
+                      </div>
+                      {conv.projectName && (
+                        <div className="text-xs text-sage mb-1 font-medium">
+                          Re: {conv.projectName}
+                        </div>
+                      )}
+                      <p className="text-sm text-warm-gray-600 line-clamp-2">
+                        {conv.lastMessage}
+                      </p>
                     </div>
                   </div>
                 </motion.div>

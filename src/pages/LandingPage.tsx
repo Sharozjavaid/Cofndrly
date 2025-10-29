@@ -18,9 +18,9 @@ const LandingPage = () => {
   return (
     <>
       <SEO
-        title="cofndrly — where builders meet storytellers | Find Your Co-Founder"
-        description="Not another networking app — a place to start something. Connect technical builders with growth hackers, content creators, and marketers to launch your next startup."
-        keywords="co-founder matching, find co-founder, technical co-founder, startup co-founder, growth hacker, content creator, entrepreneur networking, startup founders, builder network, marketing co-founder"
+        title="cofndrly — Turn Your Shelf Projects Into Revenue"
+        description="Connect builders with marketers. Got projects collecting dust? Find marketers who can bring them to market. Looking to market ready-to-launch products? Find builders who need your help."
+        keywords="project marketplace, builder marketer platform, launch shelf projects, marketing partnerships, technical projects, co-founder, revenue share, project collaboration"
         canonicalUrl="https://cofndrly.com/"
       />
       <div className="min-h-screen bg-cream grain">
@@ -71,15 +71,15 @@ const LandingPage = () => {
                 transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
               >
                 <p className="text-xs md:text-sm uppercase tracking-loose text-warm-gray-600 mb-8 font-sans">
-                  For the ones who build
+                  Launch what you've built
                 </p>
-                <h1 className="font-serif text-7xl md:text-8xl lg:text-9xl leading-[0.90] text-charcoal mb-10">
-                  where builders<br />
-                  meet<br />
-                  <span className="italic text-rust">storytellers</span>
+                <h1 className="font-serif text-5xl md:text-6xl lg:text-7xl leading-[0.95] text-charcoal mb-10">
+                  turn your<br />
+                  shelf projects<br />
+                  <span className="italic text-rust">into revenue</span>
                 </h1>
                 <p className="text-2xl md:text-3xl text-warm-gray-700 leading-relaxed font-light max-w-lg">
-                  not another networking app — a place to start something.
+                  we connect builders with marketers. launch projects that deserve to see the light of day.
                 </p>
               </motion.div>
 
@@ -92,11 +92,14 @@ const LandingPage = () => {
                 <button
                   onClick={() => navigate('/signup')}
                   className="px-10 py-5 bg-charcoal text-cream rounded-sm hover:bg-warm-gray-900 transition-all font-sans tracking-relaxed lowercase text-lg"
-                  aria-label="Find your co-founder - Sign up"
+                  aria-label="Get started - Post or browse projects"
                 >
-                  find your other half
+                  get started
                 </button>
                 <button 
+                  onClick={() => {
+                    document.getElementById('how-it-works')?.scrollIntoView({ behavior: 'smooth' })
+                  }}
                   className="px-10 py-5 bg-transparent text-charcoal rounded-sm border border-warm-gray-300 hover:border-charcoal transition-all font-sans tracking-relaxed lowercase text-lg"
                   aria-label="Learn more about cofndrly"
                 >
@@ -180,18 +183,18 @@ const LandingPage = () => {
             className="space-y-12"
           >
             <p className="text-sm uppercase tracking-loose text-warm-gray-600 font-sans" id="philosophy-heading">
-              The future is built in pairs
+              The problem
             </p>
             
             <div className="space-y-8 text-3xl md:text-4xl lg:text-5xl font-serif leading-relaxed text-charcoal">
               <p className="opacity-90">
-                you have built something great.
+                you've built something great, but it's just sitting there.
               </p>
               <p className="opacity-90">
-                now find someone who can <span className="italic text-rust">tell the world</span>.
+                not because it's not good — because <span className="italic text-rust">marketing takes time away from building</span>.
               </p>
               <p className="text-2xl md:text-3xl text-warm-gray-600 font-sans font-light mt-12 max-w-2xl">
-                for the ones who build in silence and the ones who make noise.
+                for builders with projects on the shelf and marketers who can sell anything.
               </p>
             </div>
           </motion.div>
@@ -209,59 +212,59 @@ const LandingPage = () => {
             viewport={{ once: true, margin: "-100px" }}
             transition={{ duration: 0.8 }}
             className="group cursor-pointer"
-            onClick={() => navigate('/builders')}
+            onClick={() => navigate('/signup')}
           >
             <div className="bg-white rounded-sm p-12 h-full border border-warm-gray-200 hover:border-charcoal transition-all duration-300 relative overflow-hidden">
               <div className="absolute top-0 right-0 w-32 h-32 bg-rust/5 rounded-full blur-2xl group-hover:bg-rust/10 transition-all" aria-hidden="true"></div>
               <div className="relative space-y-6">
                 <div className="text-6xl mb-6" role="img" aria-label="Builders">⚙️</div>
                 <h3 className="font-serif text-4xl text-charcoal lowercase">
-                  builders
+                  for builders
                 </h3>
                 <p className="text-warm-gray-700 leading-relaxed font-light text-lg">
-                  you've built multiple projects that never see the light of day. not because they're not good — but because marketing and sales take time away from what you do best: building and iterating on the product.
+                  got projects collecting dust? post them here and get partnered with marketers who can help you launch. whether it's revenue share, co-founder equity, or paid work — find someone who can sell what you've built.
                 </p>
                 <div className="pt-4 space-y-2 text-base text-warm-gray-600 font-sans">
-                  <p className="lowercase">→ Mobile apps, SaaS, Web apps</p>
-                  <p className="lowercase">→ Hardware products</p>
-                  <p className="lowercase">→ AI apps, Developer Tools, Web3</p>
+                  <p className="lowercase">→ post your shelf projects</p>
+                  <p className="lowercase">→ browse marketers ready to help</p>
+                  <p className="lowercase">→ flexible partnership terms</p>
                 </div>
                 <div className="pt-6">
                   <span className="text-sm text-rust font-sans uppercase tracking-wider">
-                    learn more →
+                    post a project →
                   </span>
                 </div>
               </div>
             </div>
           </motion.article>
 
-          {/* Storytellers/Marketers */}
+          {/* Marketers */}
           <motion.article
             initial={{ opacity: 0, y: 40 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-100px" }}
             transition={{ duration: 0.8, delay: 0.1 }}
             className="group cursor-pointer"
-            onClick={() => navigate('/creatives')}
+            onClick={() => navigate('/signup')}
           >
             <div className="bg-white rounded-sm p-12 h-full border border-warm-gray-200 hover:border-charcoal transition-all duration-300 relative overflow-hidden">
               <div className="absolute top-0 right-0 w-32 h-32 bg-sage/5 rounded-full blur-2xl group-hover:bg-sage/10 transition-all" aria-hidden="true"></div>
               <div className="relative space-y-6">
-                <div className="text-6xl mb-6" role="img" aria-label="Storytellers">📸</div>
+                <div className="text-6xl mb-6" role="img" aria-label="Marketers">📈</div>
                 <h3 className="font-serif text-4xl text-charcoal lowercase">
-                  storytellers
+                  for marketers
                 </h3>
                 <p className="text-warm-gray-700 leading-relaxed font-light text-lg">
-                  you're a growth hacker, content creator, or marketing strategist. you know how to make things go viral and reach people — but you need a builder to bring your vision to life.
+                  you can sell anything, but you need products to market. browse ready-to-launch projects and reach out to builders. become a partner, get equity, or get paid — you choose what works for you.
                 </p>
                 <div className="pt-4 space-y-2 text-base text-warm-gray-600 font-sans">
-                  <p className="lowercase">→ growth hackers & marketers</p>
-                  <p className="lowercase">→ content creators & strategists</p>
-                  <p className="lowercase">→ brand storytellers</p>
+                  <p className="lowercase">→ browse available projects</p>
+                  <p className="lowercase">→ partner with builders</p>
+                  <p className="lowercase">→ get paid or earn equity</p>
                 </div>
                 <div className="pt-6">
                   <span className="text-sm text-rust font-sans uppercase tracking-wider">
-                    learn more →
+                    browse projects →
                   </span>
                 </div>
               </div>
@@ -271,7 +274,7 @@ const LandingPage = () => {
       </section>
 
       {/* How It Works - Enhanced */}
-      <section className="py-32 px-8 bg-charcoal text-cream" aria-labelledby="how-it-works-heading">
+      <section id="how-it-works" className="py-32 px-8 bg-charcoal text-cream" aria-labelledby="how-it-works-heading">
         <div className="max-w-6xl mx-auto">
           <motion.div
             initial={{ opacity: 0, y: 40 }}
@@ -292,22 +295,22 @@ const LandingPage = () => {
             {[
               { 
                 num: '01', 
-                title: 'apply', 
-                desc: 'share your story, experience, and what you are building. tell us what makes you unique.',
+                title: 'sign up', 
+                desc: 'choose builder or marketer. tell us about your experience and what you\'re looking for.',
                 icon: <ApplyIcon />,
                 color: 'rust'
               },
               { 
                 num: '02', 
-                title: 'get approved', 
-                desc: 'we carefully curate our community to ensure quality matches. expect to hear from us within 24-48 hours.',
+                title: 'post or browse', 
+                desc: 'builders: post your shelf projects. marketers: browse available projects and see what you can help launch.',
                 icon: <ApproveIcon />,
                 color: 'sage'
               },
               { 
                 num: '03', 
-                title: 'start connecting', 
-                desc: 'swipe through potential co-founders. message matches. find your balance and launch together.',
+                title: 'connect & launch', 
+                desc: 'reach out, discuss terms (revenue share, equity, or payment), and launch together.',
                 icon: <ConnectIcon />,
                 color: 'sage'
               }
@@ -362,12 +365,12 @@ const LandingPage = () => {
         <div className="max-w-4xl mx-auto space-y-20">
           {[
             {
-              quote: "I built three apps that never saw the light of day. Not anymore.",
+              quote: "I've built three apps that just sit in my GitHub. Now they're getting launched.",
               role: "builder"
             },
             {
-              quote: "I have grown accounts to 500k. Now I am growing a product.",
-              role: "storyteller"
+              quote: "I can sell ice to eskimos. Now I have actual products to market.",
+              role: "marketer"
             }
           ].map((item, i) => (
             <motion.blockquote
@@ -399,14 +402,14 @@ const LandingPage = () => {
             transition={{ duration: 0.8 }}
           >
             <h2 id="cta-heading" className="font-serif text-6xl md:text-7xl lg:text-8xl text-charcoal mb-8 leading-tight">
-              find your<br />other half
+              launch your<br />shelf project
             </h2>
             <button
               onClick={() => navigate('/signup')}
               className="px-14 py-6 bg-charcoal text-cream rounded-sm hover:bg-warm-gray-900 transition-all font-sans tracking-relaxed lowercase text-xl inline-block"
-              aria-label="Apply now to find your co-founder"
+              aria-label="Get started now"
             >
-              apply now
+              get started
             </button>
           </motion.div>
         </div>

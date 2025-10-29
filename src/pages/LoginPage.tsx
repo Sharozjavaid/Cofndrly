@@ -19,7 +19,7 @@ const LoginPage = () => {
 
     try {
       await signIn(email, password)
-      navigate('/matching')
+      navigate('/projects')
     } catch (err: any) {
       console.error('Login error:', err)
       if (err.code === 'auth/user-not-found' || err.code === 'auth/wrong-password') {
@@ -37,8 +37,8 @@ const LoginPage = () => {
   return (
     <>
       <SEO
-        title="Sign In to cofndrly — Access Your Matches"
-        description="Sign in to your cofndrly account to continue matching with potential co-founders and grow your startup."
+        title="Sign In to cofndrly — Access Your Account"
+        description="Sign in to your cofndrly account to browse projects, connect with builders and marketers, and launch your ideas."
         canonicalUrl="https://cofndrly.com/login"
         noindex={true}
       />
@@ -54,7 +54,7 @@ const LoginPage = () => {
             welcome back
           </h1>
           <p className="text-warm-gray-600 font-light">
-            sign in to continue matching
+            sign in to browse projects
           </p>
         </div>
 

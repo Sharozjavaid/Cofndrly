@@ -9,15 +9,21 @@ interface Profile {
   id: string
   name: string
   email: string
-  role: 'technical' | 'non-technical'
+  role: 'builder' | 'marketer'
   skills: string[]
   bio: string
-  passions: string
   experience: string
-  currentProject: string
-  lookingFor: string
   profileImageUrl: string
   approved: boolean
+  partnershipPreference?: string[]
+  preferredArrangement?: string[]
+  projects?: Array<{
+    name: string
+    description: string
+    stage: string
+    link: string
+    logoUrl: string
+  }>
 }
 
 const MatchingPage = () => {
@@ -29,6 +35,7 @@ const MatchingPage = () => {
   const [message, setMessage] = useState('')
   const [exitDirection, setExitDirection] = useState<'left' | 'right'>('right')
   const [loading, setLoading] = useState(true)
+  const [lookingFor, setLookingFor] = useState<'builder' | 'marketer' | 'all'>('all')
 
   const currentProfile = profiles[currentIndex]
 
@@ -57,7 +64,13 @@ const MatchingPage = () => {
       try {
         // Get all approved users
         const usersRef = collection(db, 'users')
-        const q = query(usersRef, where('approved', '==', true))
+        let q = query(usersRef, where('approved', '==', true))
+        
+        // Apply role filter if selected
+        if (lookingFor !== 'all') {
+          q = query(usersRef, where('approved', '==', true), where('role', '==', lookingFor))
+        }
+        
         const snapshot = await getDocs(q)
         
         // Get all swipes by current user
@@ -82,6 +95,7 @@ const MatchingPage = () => {
           ) as Profile[]
         
         setProfiles(loadedProfiles)
+        setCurrentIndex(0) // Reset to first profile
         setLoading(false)
       } catch (error) {
         console.error('Error loading profiles:', error)
@@ -90,7 +104,7 @@ const MatchingPage = () => {
     }
 
     loadProfiles()
-  }, [currentUser])
+  }, [currentUser, lookingFor])
 
   // Check if a match already exists or if other user swiped right
   const checkForMatch = async (otherUserId: string) => {
@@ -256,6 +270,12 @@ const MatchingPage = () => {
           </div>
           <div className="flex gap-4 items-center">
             <button 
+              onClick={() => navigate('/projects')}
+              className="text-sm text-warm-gray-600 hover:text-charcoal transition-colors lowercase tracking-relaxed"
+            >
+              browse projects
+            </button>
+            <button 
               onClick={() => navigate('/messages')}
               className="text-sm text-warm-gray-600 hover:text-charcoal transition-colors lowercase tracking-relaxed"
             >
@@ -274,13 +294,52 @@ const MatchingPage = () => {
       <div className="pt-28 pb-12 px-8">
         <div className="max-w-xl mx-auto">
           {/* Instructions */}
-          <div className="text-center mb-12 space-y-2">
+          <div className="text-center mb-8 space-y-2">
             <h1 className="font-serif text-4xl text-charcoal lowercase">
-              find your match
+              find a partner
             </h1>
             <p className="text-sm text-warm-gray-600 font-light">
               swipe left to pass, right to connect
             </p>
+          </div>
+
+          {/* Filter Toggle */}
+          <div className="mb-12">
+            <p className="text-xs uppercase tracking-loose text-warm-gray-600 mb-4 font-sans text-center">
+              looking for
+            </p>
+            <div className="flex gap-3 justify-center">
+              <button
+                onClick={() => setLookingFor('all')}
+                className={`px-6 py-2.5 rounded-sm transition-all text-sm lowercase ${
+                  lookingFor === 'all'
+                    ? 'bg-charcoal text-cream'
+                    : 'bg-white text-warm-gray-700 border border-warm-gray-300 hover:border-charcoal'
+                }`}
+              >
+                anyone
+              </button>
+              <button
+                onClick={() => setLookingFor('builder')}
+                className={`px-6 py-2.5 rounded-sm transition-all text-sm lowercase ${
+                  lookingFor === 'builder'
+                    ? 'bg-charcoal text-cream'
+                    : 'bg-white text-warm-gray-700 border border-warm-gray-300 hover:border-charcoal'
+                }`}
+              >
+                ⚙️ builders
+              </button>
+              <button
+                onClick={() => setLookingFor('marketer')}
+                className={`px-6 py-2.5 rounded-sm transition-all text-sm lowercase ${
+                  lookingFor === 'marketer'
+                    ? 'bg-charcoal text-cream'
+                    : 'bg-white text-warm-gray-700 border border-warm-gray-300 hover:border-charcoal'
+                }`}
+              >
+                📈 marketers
+              </button>
+            </div>
           </div>
 
           {/* Card Stack - Polaroid Style */}
@@ -318,9 +377,9 @@ const MatchingPage = () => {
                         />
                       ) : (
                         <>
-                          <div className={`absolute inset-0 ${currentProfile.role === 'technical' ? 'bg-rust/5' : 'bg-sage/5'}`}></div>
+                          <div className={`absolute inset-0 ${currentProfile.role === 'builder' ? 'bg-rust/5' : 'bg-sage/5'}`}></div>
                           <div className="text-7xl opacity-40">
-                            {currentProfile.role === 'technical' ? '⚙️' : '📈'}
+                            {currentProfile.role === 'builder' ? '⚙️' : '📈'}
                           </div>
                         </>
                       )}
@@ -328,7 +387,7 @@ const MatchingPage = () => {
                       <div className="absolute bottom-4 left-4 right-4">
                         <div className="bg-white/90 backdrop-blur-sm px-4 py-2 rounded-sm">
                           <p className="font-serif text-sm text-charcoal italic lowercase">
-                            {currentProfile.role === 'technical' ? 'builder' : 'storyteller'}
+                            {currentProfile.role === 'builder' ? 'builder' : 'marketer'}
                           </p>
                         </div>
                       </div>
@@ -342,10 +401,29 @@ const MatchingPage = () => {
                         </h2>
                         <div className="inline-block px-3 py-1 bg-sand rounded-sm">
                           <span className="text-xs uppercase tracking-loose text-warm-gray-700">
-                            {currentProfile.role === 'technical' ? 'builder' : 'storyteller'}
+                            {currentProfile.role}
                           </span>
                         </div>
                       </div>
+
+                      {/* Partnership Preferences */}
+                      {(currentProfile.partnershipPreference || currentProfile.preferredArrangement) && (
+                        <div>
+                          <h3 className="text-xs uppercase tracking-loose text-warm-gray-600 mb-3 font-sans">
+                            open to
+                          </h3>
+                          <div className="flex flex-wrap gap-2">
+                            {(currentProfile.partnershipPreference || currentProfile.preferredArrangement || []).map(pref => (
+                              <span
+                                key={pref}
+                                className="px-3 py-1.5 bg-rust/10 border border-rust/30 rounded-sm text-xs text-charcoal lowercase"
+                              >
+                                {pref}
+                              </span>
+                            ))}
+                          </div>
+                        </div>
+                      )}
 
                       <div>
                         <h3 className="text-xs uppercase tracking-loose text-warm-gray-600 mb-3 font-sans">
@@ -372,14 +450,30 @@ const MatchingPage = () => {
                         </p>
                       </div>
 
-                      <div>
-                        <h3 className="text-xs uppercase tracking-loose text-warm-gray-600 mb-2 font-sans">
-                          passions
-                        </h3>
-                        <p className="text-warm-gray-700 leading-relaxed font-light text-sm">
-                          {currentProfile.passions}
-                        </p>
-                      </div>
+                      {/* Show projects for builders */}
+                      {currentProfile.role === 'builder' && currentProfile.projects && currentProfile.projects.length > 0 && (
+                        <div>
+                          <h3 className="text-xs uppercase tracking-loose text-warm-gray-600 mb-3 font-sans">
+                            projects ({currentProfile.projects.length})
+                          </h3>
+                          <div className="space-y-3">
+                            {currentProfile.projects.slice(0, 2).map((project, idx) => (
+                              <div key={idx} className="p-3 bg-sand rounded-sm border border-warm-gray-200">
+                                <div className="flex items-center gap-3 mb-2">
+                                  {project.logoUrl && (
+                                    <img src={project.logoUrl} alt={project.name} className="w-8 h-8 object-cover rounded" />
+                                  )}
+                                  <p className="font-serif text-sm text-charcoal lowercase">{project.name}</p>
+                                </div>
+                                <p className="text-xs text-warm-gray-600">{project.stage}</p>
+                              </div>
+                            ))}
+                            {currentProfile.projects.length > 2 && (
+                              <p className="text-xs text-warm-gray-600 italic">+ {currentProfile.projects.length - 2} more</p>
+                            )}
+                          </div>
+                        </div>
+                      )}
 
                       <div>
                         <h3 className="text-xs uppercase tracking-loose text-warm-gray-600 mb-2 font-sans">

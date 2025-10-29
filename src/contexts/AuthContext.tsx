@@ -13,15 +13,28 @@ interface UserProfile {
   id: string
   name: string
   email: string
-  role: 'technical' | 'non-technical'
+  role: 'builder' | 'marketer'
   skills: string[]
   bio: string
-  passions: string
   experience: string
-  currentProject: string
-  lookingFor: string
   profileImageUrl: string
   approved: boolean
+  
+  // Builder-specific fields
+  projects?: Array<{
+    name: string
+    description: string
+    stage: string
+    link: string
+    logoUrl: string
+  }>
+  partnershipPreference?: string[]
+  
+  // Marketer-specific fields
+  marketingExperience?: string
+  portfolioLinks?: string
+  preferredArrangement?: string[]
+  industries?: string[]
 }
 
 interface AuthContextType {

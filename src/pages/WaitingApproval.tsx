@@ -7,7 +7,7 @@ const WaitingApproval = () => {
   const navigate = useNavigate()
   const { currentUser, userProfile } = useAuth()
 
-  // Redirect to matching if approved
+  // Redirect to projects page if approved
   useEffect(() => {
     if (!currentUser) {
       navigate('/login')
@@ -15,7 +15,7 @@ const WaitingApproval = () => {
     }
 
     if (userProfile?.approved) {
-      navigate('/matching')
+      navigate('/projects')
     }
   }, [currentUser, userProfile, navigate])
 
@@ -142,10 +142,10 @@ const WaitingApproval = () => {
             {/* Demo Button */}
             <div className="text-center pt-8">
               <button
-                onClick={() => navigate('/matching')}
+                onClick={() => navigate('/projects')}
                 className="text-sm text-warm-gray-600 hover:text-charcoal transition-colors underline decoration-dotted underline-offset-4 font-light"
               >
-                preview matching interface (demo)
+                browse projects (preview)
               </button>
             </div>
           </motion.div>

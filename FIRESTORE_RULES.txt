@@ -16,12 +16,21 @@ service cloud.firestore {
       // Anyone can create their own profile (signup)
       allow create: if true;
       
-      // Admins can read all users (for dashboard)
-      // Regular users can only read approved users (for matching)
-      allow read: if isAdmin() || resource.data.approved == true;
+      // Read access:
+      // - Admins can read all users
+      // - Users can read approved profiles (for matching/browsing)
+      // - Users can read any profile when authenticated (needed for messaging)
+      //   Note: Only approved users appear in matching, but we allow reading
+      //   any user profile for messaging functionality
+      allow read: if isAdmin() || 
+                     resource.data.approved == true ||
+                     request.auth != null;
       
-      // Admins can update and delete any user
-      allow update, delete: if isAdmin();
+      // Users can update their own profile
+      allow update: if request.auth != null && request.auth.uid == userId;
+      
+      // Only admins can delete users
+      allow delete: if isAdmin();
     }
     
     // Matches collection - stores mutual likes
@@ -40,11 +49,39 @@ service cloud.firestore {
     
     // Messages collection - stores conversations
     match /messages/{messageId} {
-      // Users can create messages
-      allow create: if request.auth != null;
+      // Users can create messages when authenticated
+      allow create: if request.auth != null &&
+                       request.resource.data.fromUserId == request.auth.uid;
       
-      // Users can read messages in their conversations
+      // Users can read messages where they are sender or recipient
+      // This allows queries like: where('toUserId', '==', uid) and where('fromUserId', '==', uid)
+      // with orderBy('timestamp')
+      allow read: if request.auth != null &&
+                     (resource.data.fromUserId == request.auth.uid || 
+                      resource.data.toUserId == request.auth.uid);
+      
+      // Allow list operation for querying all messages the user is part of
+      // This is needed for MessagesPage to fetch all conversations
+      allow list: if request.auth != null;
+      
+      // Users can update messages (e.g., mark as read)
+      // Only the recipient can update (to mark as read)
+      allow update: if request.auth != null &&
+                       resource.data.toUserId == request.auth.uid;
+    }
+    
+    // Projects collection - stores posted projects
+    match /projects/{projectId} {
+      // Authenticated users can create projects
+      allow create: if request.auth != null &&
+                       request.resource.data.userId == request.auth.uid;
+      
+      // Anyone authenticated can read projects (for browsing)
       allow read: if request.auth != null;
+      
+      // Only the project owner can update or delete their project
+      allow update, delete: if request.auth != null &&
+                               resource.data.userId == request.auth.uid;
     }
     
     // Swipes collection - tracks who swiped on whom
