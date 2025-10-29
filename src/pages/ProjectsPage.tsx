@@ -3,6 +3,7 @@ import { motion } from 'framer-motion'
 import { useNavigate } from 'react-router-dom'
 import { db } from '../firebase/config'
 import { collection, query, getDocs, where } from 'firebase/firestore'
+import { useAuth } from '../contexts/AuthContext'
 
 interface Project {
   name: string
@@ -19,6 +20,7 @@ interface Project {
 
 const ProjectsPage = () => {
   const navigate = useNavigate()
+  const { userProfile } = useAuth()
   const [projects, setProjects] = useState<Project[]>([])
   const [loading, setLoading] = useState(true)
   const [filter, setFilter] = useState<string>('all')
@@ -92,7 +94,7 @@ const ProjectsPage = () => {
         <div className="max-w-7xl mx-auto px-8 py-6 flex items-center justify-between">
           <div 
             className="text-xl font-serif tracking-tight lowercase text-charcoal cursor-pointer" 
-            onClick={() => navigate('/')}
+            onClick={() => navigate('/projects')}
           >
             cofndrly
           </div>
@@ -103,6 +105,14 @@ const ProjectsPage = () => {
             >
               browse projects
             </button>
+            {userProfile?.role === 'builder' && (
+              <button 
+                onClick={() => navigate('/my-projects')}
+                className="text-sm text-warm-gray-600 hover:text-charcoal transition-colors lowercase tracking-relaxed"
+              >
+                my projects
+              </button>
+            )}
             <button 
               onClick={() => navigate('/messages')}
               className="text-sm text-warm-gray-600 hover:text-charcoal transition-colors lowercase tracking-relaxed"

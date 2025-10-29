@@ -26,8 +26,8 @@ service cloud.firestore {
                      resource.data.approved == true ||
                      request.auth != null;
       
-      // Users can update their own profile
-      allow update: if request.auth != null && request.auth.uid == userId;
+      // Users can update their own profile, OR admins can update any profile
+      allow update: if (request.auth != null && request.auth.uid == userId) || isAdmin();
       
       // Only admins can delete users
       allow delete: if isAdmin();

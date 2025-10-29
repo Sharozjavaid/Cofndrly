@@ -17,12 +17,8 @@ const DashboardPage = () => {
       return
     }
 
-    // Redirect based on role
-    if (userProfile.role === 'marketer') {
-      navigate('/projects')
-    } else if (userProfile.role === 'builder') {
-      navigate('/my-projects')
-    }
+    // Always redirect to projects page (browse projects) for all users
+    navigate('/projects')
   }, [currentUser, userProfile, navigate])
 
   return (

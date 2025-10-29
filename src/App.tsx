@@ -17,6 +17,7 @@ import ProjectDetailPage from './pages/ProjectDetailPage'
 import DashboardPage from './pages/DashboardPage'
 import MyProjectsPage from './pages/MyProjectsPage'
 import UserProjectDetailPage from './pages/UserProjectDetailPage'
+import EditProfilePage from './pages/EditProfilePage'
 
 function App() {
   return (
@@ -35,6 +36,7 @@ function App() {
         <Route path="/chat/:matchId" element={<ChatPage />} />
         <Route path="/profile" element={<ProfilePage />} />
         <Route path="/profile/:userId" element={<ProfilePage />} />
+        <Route path="/edit-profile" element={<EditProfilePage />} />
         <Route path="/admin" element={<AdminLogin />} />
         <Route path="/admin/dashboard" element={<AdminDashboard />} />
         <Route path="/post-project" element={<ProjectPostPage />} />

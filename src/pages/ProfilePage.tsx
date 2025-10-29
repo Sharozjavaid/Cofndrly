@@ -78,7 +78,7 @@ const ProfilePage = () => {
         <div className="max-w-7xl mx-auto px-8 py-6 flex items-center justify-between">
           <div 
             className="text-xl font-serif tracking-tight lowercase text-charcoal cursor-pointer" 
-            onClick={() => navigate('/')}
+            onClick={() => navigate('/projects')}
           >
             cofndrly
           </div>
@@ -87,23 +87,38 @@ const ProfilePage = () => {
               onClick={() => navigate('/projects')}
               className="text-sm text-warm-gray-600 hover:text-charcoal transition-colors lowercase tracking-relaxed"
             >
-              projects
+              browse projects
             </button>
+            {userProfile?.role === 'builder' && (
+              <button 
+                onClick={() => navigate('/my-projects')}
+                className="text-sm text-warm-gray-600 hover:text-charcoal transition-colors lowercase tracking-relaxed"
+              >
+                my projects
+              </button>
+            )}
             <button 
               onClick={() => navigate('/messages')}
               className="text-sm text-warm-gray-600 hover:text-charcoal transition-colors lowercase tracking-relaxed"
             >
               messages
             </button>
-            {isOwnProfile && (
-              <button 
-                onClick={handleSignOut}
-                className="text-sm text-warm-gray-600 hover:text-rust transition-colors lowercase tracking-relaxed"
-              >
-                sign out
-              </button>
-            )}
-            {!isOwnProfile && (
+            {isOwnProfile ? (
+              <>
+                <button 
+                  onClick={() => navigate('/profile')}
+                  className="text-sm text-charcoal font-medium transition-colors lowercase tracking-relaxed"
+                >
+                  profile
+                </button>
+                <button 
+                  onClick={handleSignOut}
+                  className="text-sm text-warm-gray-600 hover:text-rust transition-colors lowercase tracking-relaxed"
+                >
+                  sign out
+                </button>
+              </>
+            ) : (
               <button 
                 onClick={() => navigate('/profile')}
                 className="text-sm text-warm-gray-600 hover:text-charcoal transition-colors lowercase tracking-relaxed"
@@ -375,11 +390,17 @@ const ProfilePage = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2 }}
-              className="mt-8 text-center"
+              className="mt-8 flex flex-col sm:flex-row gap-4 justify-center"
             >
               <button
-                onClick={() => navigate('/projects')}
+                onClick={() => navigate('/edit-profile')}
                 className="px-8 py-4 bg-charcoal text-cream rounded-sm hover:bg-warm-gray-900 transition-all font-sans tracking-relaxed lowercase"
+              >
+                edit profile
+              </button>
+              <button
+                onClick={() => navigate('/projects')}
+                className="px-8 py-4 bg-white text-charcoal border border-warm-gray-300 hover:border-charcoal rounded-sm transition-all font-sans tracking-relaxed lowercase"
               >
                 browse projects
               </button>

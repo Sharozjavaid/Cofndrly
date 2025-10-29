@@ -30,7 +30,7 @@ interface Conversation {
 
 const MessagesPage = () => {
   const navigate = useNavigate()
-  const { currentUser, signOut } = useAuth()
+  const { currentUser, userProfile, signOut } = useAuth()
   const [conversations, setConversations] = useState<Conversation[]>([])
   const [loading, setLoading] = useState(true)
 
@@ -155,7 +155,7 @@ const MessagesPage = () => {
         <div className="max-w-7xl mx-auto px-8 py-6 flex items-center justify-between">
           <div 
             className="text-xl font-serif tracking-tight lowercase text-charcoal cursor-pointer" 
-            onClick={() => navigate('/')}
+            onClick={() => navigate('/projects')}
           >
             cofndrly
           </div>
@@ -166,17 +166,25 @@ const MessagesPage = () => {
             >
               browse projects
             </button>
+            {userProfile?.role === 'builder' && (
+              <button 
+                onClick={() => navigate('/my-projects')}
+                className="text-sm text-warm-gray-600 hover:text-charcoal transition-colors lowercase tracking-relaxed"
+              >
+                my projects
+              </button>
+            )}
+            <button 
+              onClick={() => navigate('/messages')}
+              className="text-sm text-charcoal font-medium transition-colors lowercase tracking-relaxed"
+            >
+              messages
+            </button>
             <button 
               onClick={() => navigate('/profile')}
               className="text-sm text-warm-gray-600 hover:text-charcoal transition-colors lowercase tracking-relaxed"
             >
               profile
-            </button>
-            <button 
-              onClick={handleSignOut}
-              className="text-sm text-warm-gray-600 hover:text-rust transition-colors lowercase tracking-relaxed"
-            >
-              sign out
             </button>
           </div>
         </div>

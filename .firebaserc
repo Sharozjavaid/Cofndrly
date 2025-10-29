@@ -1,0 +1,13 @@
+{
+  "projects": {
+    "default": "cofndrly"
+  },
+  "targets": {},
+  "etags": {
+    "cofndrly": {
+      "extensionInstances": {
+        "firestore-send-email": "48e397426fc44474d516bd53733bd47796f282f9b0400c7ca18e23cf5f7c27f7"
+      }
+    }
+  }
+}

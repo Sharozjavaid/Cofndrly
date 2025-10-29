@@ -1,21 +1,16 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useNavigate } from 'react-router-dom'
 import { storage, db } from '../firebase/config'
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage'
-import { setDoc, doc } from 'firebase/firestore'
+import { doc, updateDoc } from 'firebase/firestore'
 import { useAuth } from '../contexts/AuthContext'
-import { generateInitialsImage } from '../utils/generateInitials'
-import SEO from '../components/SEO'
 
 interface FormData {
   name: string
-  email: string
-  password: string
-  role: 'builder' | 'marketer' | ''
-  experience: string
-  skills: string[]
   bio: string
+  skills: string[]
+  experience: string
   profileImage: File | null
   profileImagePreview: string
   customSkill: string
@@ -28,6 +23,7 @@ interface FormData {
     link: string
     logo: File | null
     logoPreview: string
+    logoUrl?: string // existing logo URL
   }>
   partnershipPreference: string[]
   
@@ -38,18 +34,15 @@ interface FormData {
   industries: string[]
 }
 
-const SignupPage = () => {
+const EditProfilePage = () => {
   const navigate = useNavigate()
-  const { signUp } = useAuth()
+  const { currentUser, userProfile } = useAuth()
   const [step, setStep] = useState(1)
   const [formData, setFormData] = useState<FormData>({
     name: '',
-    email: '',
-    password: '',
-    role: '',
-    experience: '',
-    skills: [],
     bio: '',
+    skills: [],
+    experience: '',
     profileImage: null,
     profileImagePreview: '',
     customSkill: '',
@@ -68,40 +61,67 @@ const SignupPage = () => {
   const [showCustomSkillInput, setShowCustomSkillInput] = useState(false)
   const [currentProjectIndex, setCurrentProjectIndex] = useState(0)
 
-  const totalSteps = 7 // Adjusted for new flow with projects
+  const totalSteps = userProfile?.role === 'builder' ? 5 : 4
+
+  // Load existing profile data
+  useEffect(() => {
+    if (!currentUser || !userProfile) {
+      navigate('/login')
+      return
+    }
+
+    setFormData({
+      name: userProfile.name || '',
+      bio: userProfile.bio || '',
+      skills: userProfile.skills || [],
+      experience: userProfile.experience || '',
+      profileImage: null,
+      profileImagePreview: userProfile.profileImageUrl || '',
+      customSkill: '',
+      
+      // Builder-specific
+      projects: userProfile.projects?.map((p: any) => ({
+        ...p,
+        logo: null,
+        logoPreview: p.logoUrl || ''
+      })) || [],
+      partnershipPreference: userProfile.partnershipPreference || [],
+      
+      // Marketer-specific
+      marketingExperience: userProfile.marketingExperience || '',
+      portfolioLinks: userProfile.portfolioLinks || '',
+      preferredArrangement: userProfile.preferredArrangement || [],
+      industries: userProfile.industries || []
+    })
+  }, [currentUser, userProfile, navigate])
 
   const handleNext = async () => {
     if (step < totalSteps) {
       setStep(step + 1)
     } else {
-      // Submit form with image upload
       await handleSubmit()
     }
   }
 
   const handleSubmit = async () => {
+    if (!currentUser) return
+
     try {
       setUploading(true)
       
-      // Create Firebase Auth account
-      const user = await signUp(formData.email, formData.password)
-      
-      let profileImageUrl = ''
+      let profileImageUrl = formData.profileImagePreview
 
-      // Upload profile image if exists, otherwise use initials
+      // Upload new profile image if changed
       if (formData.profileImage) {
         const imageRef = ref(storage, `profile-images/${Date.now()}_${formData.profileImage.name}`)
         await uploadBytes(imageRef, formData.profileImage)
         profileImageUrl = await getDownloadURL(imageRef)
-      } else {
-        // Generate initials image as data URL
-        profileImageUrl = generateInitialsImage(formData.name)
       }
 
       // Upload project logos for builders
       const projectsWithLogos = await Promise.all(
         formData.projects.map(async (project) => {
-          let logoUrl = ''
+          let logoUrl = project.logoUrl || project.logoPreview
           if (project.logo) {
             const logoRef = ref(storage, `project-logos/${Date.now()}_${project.logo.name}`)
             await uploadBytes(logoRef, project.logo)
@@ -117,46 +137,35 @@ const SignupPage = () => {
         })
       )
 
-      // Save user profile to Firestore with the same ID as auth user
-      await setDoc(doc(db, 'users', user.uid), {
+      // Update user profile in Firestore
+      const updateData: any = {
         name: formData.name,
-        email: formData.email,
-        role: formData.role,
-        experience: formData.experience,
-        skills: formData.skills,
         bio: formData.bio,
+        skills: formData.skills,
+        experience: formData.experience,
         profileImageUrl: profileImageUrl,
-        
-        // Builder-specific
-        ...(formData.role === 'builder' && {
-          projects: projectsWithLogos,
-          partnershipPreference: formData.partnershipPreference
-        }),
-        
-        // Marketer-specific
-        ...(formData.role === 'marketer' && {
-          marketingExperience: formData.marketingExperience,
-          portfolioLinks: formData.portfolioLinks,
-          preferredArrangement: formData.preferredArrangement,
-          industries: formData.industries
-        }),
-        
-        approved: false,
-        createdAt: new Date()
-      })
+      }
+
+      // Add role-specific fields
+      if (userProfile?.role === 'builder') {
+        updateData.projects = projectsWithLogos
+        updateData.partnershipPreference = formData.partnershipPreference
+      } else if (userProfile?.role === 'marketer') {
+        updateData.marketingExperience = formData.marketingExperience
+        updateData.portfolioLinks = formData.portfolioLinks
+        updateData.preferredArrangement = formData.preferredArrangement
+        updateData.industries = formData.industries
+      }
+
+      await updateDoc(doc(db, 'users', currentUser.uid), updateData)
 
       setUploading(false)
-      navigate('/waiting')
+      alert('✅ Profile updated successfully!')
+      navigate('/profile')
     } catch (error: any) {
-      console.error('Error submitting form:', error)
+      console.error('Error updating profile:', error)
       setUploading(false)
-      if (error.code === 'auth/email-already-in-use') {
-        alert('This email is already registered. Please sign in instead.')
-      } else if (error.code === 'auth/weak-password') {
-        alert('Password should be at least 6 characters.')
-      } else {
-        alert('Error submitting application. Please try again.')
-      }
+      alert('Error updating profile. Please try again.')
     }
   }
 
@@ -211,22 +220,18 @@ const SignupPage = () => {
       : [...array, item]
   }
 
+  if (!currentUser || !userProfile) {
+    return null
+  }
+
   return (
-    <>
-      <SEO
-        title="Apply to Join cofndrly — Find Your Co-Founder"
-        description="Apply to join our curated community of builders and storytellers. Get matched with your ideal co-founder and launch your next startup together."
-        keywords="apply co-founder, startup application, join cofndrly, find co-founder, co-founder matching"
-        canonicalUrl="https://cofndrly.com/signup"
-        noindex={true}
-      />
-      <div className="min-h-screen bg-cream grain">
-        {/* Minimal Navigation */}
+    <div className="min-h-screen bg-cream grain">
+      {/* Minimal Navigation */}
       <nav className="fixed top-0 w-full bg-cream/80 backdrop-blur-md border-b border-warm-gray-200/50 z-50">
         <div className="max-w-7xl mx-auto px-8 py-6 flex items-center justify-between">
           <div 
             className="text-xl font-serif tracking-tight lowercase text-charcoal cursor-pointer" 
-            onClick={() => navigate('/')}
+            onClick={() => navigate('/dashboard')}
           >
             cofndrly
           </div>
@@ -249,7 +254,7 @@ const SignupPage = () => {
       <div className="pt-32 pb-20 px-8">
         <div className="max-w-2xl mx-auto">
           <AnimatePresence mode="wait">
-            {/* Step 1: Basic Info */}
+            {/* Step 1: Basic Info & Experience */}
             {step === 1 && (
               <motion.div
                 key="step1"
@@ -261,13 +266,13 @@ const SignupPage = () => {
               >
                 <div className="space-y-4">
                   <p className="text-xs uppercase tracking-loose text-warm-gray-600 font-sans">
-                    Introduction
+                    Basic Info
                   </p>
                   <h1 className="font-serif text-5xl md:text-6xl text-charcoal lowercase leading-tight">
-                    let's begin
+                    edit your profile
                   </h1>
                   <p className="text-lg text-warm-gray-700 font-light max-w-lg">
-                    first, tell us who you are
+                    update your information
                   </p>
                 </div>
 
@@ -287,124 +292,6 @@ const SignupPage = () => {
 
                   <div>
                     <label className="block text-xs uppercase tracking-loose text-warm-gray-600 mb-3 font-sans">
-                      email
-                    </label>
-                    <input
-                      type="email"
-                      value={formData.email}
-                      onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                      className="w-full px-0 py-4 bg-transparent border-b-2 border-warm-gray-300 focus:border-charcoal focus:outline-none transition-colors text-xl text-charcoal font-light"
-                      placeholder="jane@example.com"
-                    />
-                  </div>
-
-                  <div className="pt-6">
-                    <label className="block text-xs uppercase tracking-loose text-warm-gray-600 mb-6 font-sans">
-                      i am a...
-                    </label>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                      <button
-                        onClick={() => setFormData({ ...formData, role: 'builder' })}
-                        className={`p-8 rounded-sm border-2 transition-all text-left ${
-                          formData.role === 'builder'
-                            ? 'border-charcoal bg-white'
-                            : 'border-warm-gray-200 hover:border-warm-gray-400 bg-white/50'
-                        }`}
-                      >
-                        <div className="text-4xl mb-4">⚙️</div>
-                        <div className="font-serif text-2xl mb-2 lowercase text-charcoal">builder</div>
-                        <div className="text-sm text-warm-gray-600 font-light">
-                          i build products and have shelf projects
-                        </div>
-                      </button>
-                      <button
-                        onClick={() => setFormData({ ...formData, role: 'marketer' })}
-                        className={`p-8 rounded-sm border-2 transition-all text-left ${
-                          formData.role === 'marketer'
-                            ? 'border-charcoal bg-white'
-                            : 'border-warm-gray-200 hover:border-warm-gray-400 bg-white/50'
-                        }`}
-                      >
-                        <div className="text-4xl mb-4">📈</div>
-                        <div className="font-serif text-2xl mb-2 lowercase text-charcoal">marketer</div>
-                        <div className="text-sm text-warm-gray-600 font-light">
-                          i market products and can help launch projects
-                        </div>
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </motion.div>
-            )}
-
-            {/* Step 2: Password */}
-            {step === 2 && (
-              <motion.div
-                key="step2"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -20 }}
-                transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-                className="space-y-12"
-              >
-                <div className="space-y-4">
-                  <p className="text-xs uppercase tracking-loose text-warm-gray-600 font-sans">
-                    Security
-                  </p>
-                  <h1 className="font-serif text-5xl md:text-6xl text-charcoal lowercase leading-tight">
-                    create password
-                  </h1>
-                  <p className="text-lg text-warm-gray-700 font-light max-w-lg">
-                    secure your account
-                  </p>
-                </div>
-
-                <div className="space-y-8">
-                  <div>
-                    <label className="block text-xs uppercase tracking-loose text-warm-gray-600 mb-3 font-sans">
-                      password (minimum 6 characters)
-                    </label>
-                    <input
-                      type="password"
-                      value={formData.password}
-                      onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                      className="w-full px-0 py-4 bg-transparent border-b-2 border-warm-gray-300 focus:border-charcoal focus:outline-none transition-colors text-xl text-charcoal font-light"
-                      placeholder="••••••••"
-                      minLength={6}
-                    />
-                    <p className="mt-2 text-sm text-warm-gray-600 font-light">
-                      you'll use this to sign in and access your matches
-                    </p>
-                  </div>
-                </div>
-              </motion.div>
-            )}
-
-            {/* Step 3: Professional Background */}
-            {step === 3 && (
-              <motion.div
-                key="step3"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -20 }}
-                transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-                className="space-y-12"
-              >
-                <div className="space-y-4">
-                  <p className="text-xs uppercase tracking-loose text-warm-gray-600 font-sans">
-                    Background
-                  </p>
-                  <h1 className="font-serif text-5xl md:text-6xl text-charcoal lowercase leading-tight">
-                    your experience
-                  </h1>
-                  <p className="text-lg text-warm-gray-700 font-light max-w-lg">
-                    what have you built or grown?
-                  </p>
-                </div>
-
-                <div className="space-y-8">
-                  <div>
-                    <label className="block text-xs uppercase tracking-loose text-warm-gray-600 mb-3 font-sans">
                       professional background
                     </label>
                     <textarea
@@ -415,18 +302,57 @@ const SignupPage = () => {
                       placeholder="share your journey..."
                       required
                     />
-                    <p className="mt-2 text-sm text-warm-gray-500 font-light italic">
-                      fill this in to continue
-                    </p>
+                  </div>
+
+                  {/* Profile Image */}
+                  <div>
+                    <label className="block text-xs uppercase tracking-loose text-warm-gray-600 mb-4 font-sans">
+                      profile photo
+                    </label>
+                    
+                    {formData.profileImagePreview && (
+                      <div className="mb-4">
+                        <img
+                          src={formData.profileImagePreview}
+                          alt="Profile preview"
+                          className="w-32 h-32 object-cover rounded-full border-2 border-warm-gray-200"
+                        />
+                      </div>
+                    )}
+
+                    <div className="relative">
+                      <input
+                        type="file"
+                        accept="image/*"
+                        onChange={(e) => {
+                          const file = e.target.files?.[0]
+                          if (file) {
+                            setFormData({
+                              ...formData,
+                              profileImage: file,
+                              profileImagePreview: URL.createObjectURL(file)
+                            })
+                          }
+                        }}
+                        className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                        id="profile-image"
+                      />
+                      <label
+                        htmlFor="profile-image"
+                        className="px-8 py-3 bg-white text-charcoal border border-warm-gray-300 hover:border-charcoal rounded-sm transition-all font-sans tracking-relaxed lowercase cursor-pointer inline-block"
+                      >
+                        {formData.profileImage ? 'change photo' : 'upload new photo'}
+                      </label>
+                    </div>
                   </div>
                 </div>
               </motion.div>
             )}
 
-            {/* Step 4: Skills & Expertise */}
-            {step === 4 && (
+            {/* Step 2: Skills & Expertise */}
+            {step === 2 && (
               <motion.div
-                key="step4"
+                key="step2"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -20 }}
@@ -441,7 +367,7 @@ const SignupPage = () => {
                     your skills
                   </h1>
                   <p className="text-lg text-warm-gray-700 font-light max-w-lg">
-                    select at least one skill to continue
+                    update your skills
                   </p>
                 </div>
 
@@ -453,7 +379,7 @@ const SignupPage = () => {
                     
                     {/* Predefined Skills */}
                     <div className="flex flex-wrap gap-3 mb-4">
-                      {(formData.role === 'builder' ? builderSkills : marketerSkills).map(skill => (
+                      {(userProfile?.role === 'builder' ? builderSkills : marketerSkills).map(skill => (
                         <button
                           key={skill}
                           onClick={() => toggleSkill(skill)}
@@ -470,7 +396,7 @@ const SignupPage = () => {
 
                     {/* Custom Skills Added */}
                     {formData.skills.filter(skill => 
-                      !(formData.role === 'builder' ? builderSkills : marketerSkills).includes(skill)
+                      !(userProfile?.role === 'builder' ? builderSkills : marketerSkills).includes(skill)
                     ).length > 0 && (
                       <div className="mb-4">
                         <p className="text-xs uppercase tracking-loose text-warm-gray-500 mb-2 font-sans">
@@ -478,7 +404,7 @@ const SignupPage = () => {
                         </p>
                         <div className="flex flex-wrap gap-3">
                           {formData.skills
-                            .filter(skill => !(formData.role === 'builder' ? builderSkills : marketerSkills).includes(skill))
+                            .filter(skill => !(userProfile?.role === 'builder' ? builderSkills : marketerSkills).includes(skill))
                             .map(skill => (
                               <div
                                 key={skill}
@@ -543,35 +469,37 @@ const SignupPage = () => {
               </motion.div>
             )}
 
-            {/* Step 5: Add Projects (Builders) or Marketing Experience (Marketers) */}
-            {step === 5 && (
+            {/* Step 3: Projects (Builders) or Marketing Experience (Marketers) */}
+            {step === 3 && (
               <motion.div
-                key="step5"
+                key="step3"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -20 }}
                 transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
                 className="space-y-12"
               >
-                {formData.role === 'builder' ? (
+                {userProfile?.role === 'builder' ? (
                   <>
                     <div className="space-y-4">
                       <p className="text-xs uppercase tracking-loose text-warm-gray-600 font-sans">
                         Your Projects
                       </p>
                       <h1 className="font-serif text-5xl md:text-6xl text-charcoal lowercase leading-tight">
-                        add your projects
+                        manage projects
                       </h1>
                       <p className="text-lg text-warm-gray-700 font-light max-w-lg">
-                        add at least one project. you can add more later.
+                        add, edit, or remove your projects
                       </p>
                     </div>
 
                     {/* Current Project Form */}
-                    {currentProjectIndex < formData.projects.length || formData.projects.length === 0 ? (
+                    {currentProjectIndex <= formData.projects.length && (
                       <div className="space-y-8 p-8 bg-white rounded-sm border border-warm-gray-200">
                         <h3 className="font-serif text-2xl text-charcoal lowercase">
-                          Project {formData.projects.length + 1}
+                          {currentProjectIndex < formData.projects.length 
+                            ? `Edit Project ${currentProjectIndex + 1}` 
+                            : `Add New Project`}
                         </h3>
 
                         {/* Project Name */}
@@ -675,10 +603,10 @@ const SignupPage = () => {
                             project logo <span className="text-warm-gray-400">(optional)</span>
                           </label>
                           
-                          {formData.projects[currentProjectIndex]?.logoPreview && (
+                          {(formData.projects[currentProjectIndex]?.logoPreview || formData.projects[currentProjectIndex]?.logoUrl) && (
                             <div className="mb-4">
                               <img
-                                src={formData.projects[currentProjectIndex].logoPreview}
+                                src={formData.projects[currentProjectIndex]?.logoPreview || formData.projects[currentProjectIndex]?.logoUrl}
                                 alt="Logo preview"
                                 className="w-24 h-24 object-cover rounded-sm border border-warm-gray-200"
                               />
@@ -713,61 +641,83 @@ const SignupPage = () => {
                           </div>
                         </div>
 
-                        {/* Add Another Project Button */}
-                        <div className="pt-6 border-t border-warm-gray-200">
+                        {/* Save or Add Another Project */}
+                        <div className="pt-6 border-t border-warm-gray-200 flex gap-3">
+                          {currentProjectIndex < formData.projects.length && (
+                            <button
+                              onClick={() => {
+                                if (currentProjectIndex < formData.projects.length - 1) {
+                                  setCurrentProjectIndex(currentProjectIndex + 1)
+                                } else {
+                                  setCurrentProjectIndex(formData.projects.length)
+                                }
+                              }}
+                              className="text-sm text-charcoal hover:text-rust transition-colors lowercase"
+                            >
+                              → next project
+                            </button>
+                          )}
                           <button
                             onClick={() => {
                               const currentProject = formData.projects[currentProjectIndex]
                               if (currentProject && currentProject.name && currentProject.description && currentProject.stage && currentProject.link) {
-                                setCurrentProjectIndex(currentProjectIndex + 1)
+                                setCurrentProjectIndex(formData.projects.length)
                               } else {
                                 alert('Please complete the current project before adding another.')
                               }
                             }}
                             className="text-sm text-rust hover:text-charcoal transition-colors lowercase"
                           >
-                            + add another project (optional)
+                            + add another project
                           </button>
                         </div>
                       </div>
-                    ) : null}
+                    )}
 
-                    {/* List of Added Projects */}
+                    {/* List of Projects */}
                     {formData.projects.length > 0 && (
                       <div className="space-y-4">
                         <p className="text-xs uppercase tracking-loose text-warm-gray-600 font-sans">
-                          Added Projects ({formData.projects.length})
+                          Your Projects ({formData.projects.length})
                         </p>
                         {formData.projects.map((project, index) => (
                           <div key={index} className="p-4 bg-sand rounded-sm border border-warm-gray-200 flex items-center justify-between">
                             <div className="flex items-center gap-3">
-                              {project.logoPreview && (
-                                <img src={project.logoPreview} alt={project.name} className="w-12 h-12 object-cover rounded-sm" />
+                              {(project.logoPreview || project.logoUrl) && (
+                                <img src={project.logoPreview || project.logoUrl} alt={project.name} className="w-12 h-12 object-cover rounded-sm" />
                               )}
                               <div>
                                 <p className="font-serif text-lg text-charcoal lowercase">{project.name}</p>
                                 <p className="text-xs text-warm-gray-600">{project.stage}</p>
                               </div>
                             </div>
-                            <button
-                              onClick={() => {
-                                const newProjects = formData.projects.filter((_, i) => i !== index)
-                                setFormData({ ...formData, projects: newProjects })
-                                if (currentProjectIndex > newProjects.length) {
-                                  setCurrentProjectIndex(newProjects.length)
-                                }
-                              }}
-                              className="text-warm-gray-500 hover:text-rust transition-colors"
-                            >
-                              remove
-                            </button>
+                            <div className="flex gap-2">
+                              <button
+                                onClick={() => setCurrentProjectIndex(index)}
+                                className="text-sm text-charcoal hover:text-rust transition-colors lowercase"
+                              >
+                                edit
+                              </button>
+                              <button
+                                onClick={() => {
+                                  const newProjects = formData.projects.filter((_, i) => i !== index)
+                                  setFormData({ ...formData, projects: newProjects })
+                                  if (currentProjectIndex >= newProjects.length) {
+                                    setCurrentProjectIndex(Math.max(0, newProjects.length - 1))
+                                  }
+                                }}
+                                className="text-sm text-warm-gray-500 hover:text-rust transition-colors lowercase"
+                              >
+                                remove
+                              </button>
+                            </div>
                           </div>
                         ))}
                       </div>
                     )}
                   </>
                 ) : (
-                  // Marketer Experience (same as before)
+                  // Marketer Experience
                   <>
                     <div className="space-y-4">
                       <p className="text-xs uppercase tracking-loose text-warm-gray-600 font-sans">
@@ -777,7 +727,7 @@ const SignupPage = () => {
                         your marketing background
                       </h1>
                       <p className="text-lg text-warm-gray-700 font-light max-w-lg">
-                        what marketing experience do you have?
+                        update your marketing experience
                       </p>
                     </div>
 
@@ -819,10 +769,10 @@ const SignupPage = () => {
               </motion.div>
             )}
 
-            {/* Step 6: Partnership Preferences */}
-            {step === 6 && (
+            {/* Step 4: Partnership Preferences (Builders) or Step 4: Industries (Marketers) */}
+            {step === 4 && (
               <motion.div
-                key="step6"
+                key="step4"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -20 }}
@@ -837,7 +787,7 @@ const SignupPage = () => {
                     partnership terms
                   </h1>
                   <p className="text-lg text-warm-gray-700 font-light max-w-lg">
-                    {formData.role === 'builder' 
+                    {userProfile?.role === 'builder' 
                       ? 'what arrangement are you open to with marketers?'
                       : 'what arrangement are you looking for?'
                     }
@@ -850,7 +800,7 @@ const SignupPage = () => {
                       select all that apply
                     </label>
                     <div className="space-y-3">
-                      {formData.role === 'builder' ? (
+                      {userProfile?.role === 'builder' ? (
                         <>
                           {['co-founder / equity partner', 'revenue share', 'pay for marketing services', 'open to discussion'].map(option => (
                             <button
@@ -893,7 +843,7 @@ const SignupPage = () => {
                   </div>
 
                   {/* Industries for Marketers */}
-                  {formData.role === 'marketer' && (
+                  {userProfile?.role === 'marketer' && (
                     <div>
                       <label className="block text-xs uppercase tracking-loose text-warm-gray-600 mb-4 font-sans">
                         what industries interest you? (optional)
@@ -922,10 +872,10 @@ const SignupPage = () => {
               </motion.div>
             )}
 
-            {/* Step 7: Bio */}
-            {step === 7 && (
+            {/* Step 5: Bio (Builders only) */}
+            {step === 5 && userProfile?.role === 'builder' && (
               <motion.div
-                key="step7"
+                key="step5"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -20 }}
@@ -940,10 +890,7 @@ const SignupPage = () => {
                     tell your story
                   </h1>
                   <p className="text-lg text-warm-gray-700 font-light max-w-lg">
-                    {formData.role === 'builder' 
-                      ? 'this is what marketers will see when browsing your projects'
-                      : 'this is what builders will see when you reach out'
-                    }
+                    this is what marketers will see when browsing your projects
                   </p>
                 </div>
 
@@ -951,6 +898,51 @@ const SignupPage = () => {
                   <div>
                     <label className="block text-xs uppercase tracking-loose text-warm-gray-600 mb-3 font-sans">
                       your bio
+                    </label>
+                    <textarea
+                      value={formData.bio}
+                      onChange={(e) => setFormData({ ...formData, bio: e.target.value })}
+                      className="w-full px-0 py-4 bg-transparent border-b-2 border-warm-gray-300 focus:border-charcoal focus:outline-none transition-colors text-lg text-charcoal resize-none font-light"
+                      rows={6}
+                      placeholder="make it compelling. make it you."
+                    />
+                  </div>
+
+                  <div className="p-6 rounded-sm bg-sand border-l-2 border-rust">
+                    <p className="text-sm text-warm-gray-700 font-light italic">
+                      be authentic. be specific. be human. the best connections come from real stories.
+                    </p>
+                  </div>
+                </div>
+              </motion.div>
+            )}
+
+            {/* Bio step for Marketers (step 4 becomes final) */}
+            {step === 4 && userProfile?.role === 'marketer' && (
+              <motion.div
+                key="step4-marketer-bio"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+                className="space-y-12"
+              >
+                <div className="space-y-4">
+                  <p className="text-xs uppercase tracking-loose text-warm-gray-600 font-sans">
+                    Bio
+                  </p>
+                  <h1 className="font-serif text-5xl md:text-6xl text-charcoal lowercase leading-tight">
+                    your bio
+                  </h1>
+                  <p className="text-lg text-warm-gray-700 font-light max-w-lg">
+                    this is what builders will see when you reach out
+                  </p>
+                </div>
+
+                <div className="space-y-8">
+                  <div>
+                    <label className="block text-xs uppercase tracking-loose text-warm-gray-600 mb-3 font-sans">
+                      tell your story
                     </label>
                     <textarea
                       value={formData.bio}
@@ -986,25 +978,23 @@ const SignupPage = () => {
               className="flex-1 px-6 py-3 bg-charcoal text-cream rounded-sm hover:bg-warm-gray-900 transition-all font-sans tracking-relaxed lowercase disabled:opacity-30 disabled:cursor-not-allowed"
               disabled={
                 uploading ||
-                (step === 1 && (!formData.name || !formData.email || !formData.role)) ||
-                (step === 2 && (!formData.password || formData.password.length < 6)) ||
-                (step === 3 && !formData.experience) ||
-                (step === 4 && formData.skills.length === 0) ||
-                (step === 5 && formData.role === 'builder' && formData.projects.length === 0) ||
-                (step === 5 && formData.role === 'marketer' && (!formData.marketingExperience || !formData.portfolioLinks)) ||
-                (step === 6 && formData.role === 'builder' && formData.partnershipPreference.length === 0) ||
-                (step === 6 && formData.role === 'marketer' && formData.preferredArrangement.length === 0) ||
-                (step === 7 && !formData.bio)
+                (step === 1 && (!formData.name || !formData.experience)) ||
+                (step === 2 && formData.skills.length === 0) ||
+                (step === 3 && userProfile?.role === 'builder' && formData.projects.length === 0) ||
+                (step === 3 && userProfile?.role === 'marketer' && (!formData.marketingExperience || !formData.portfolioLinks)) ||
+                (step === 4 && userProfile?.role === 'builder' && formData.partnershipPreference.length === 0) ||
+                (step === 4 && userProfile?.role === 'marketer' && (!formData.preferredArrangement.length || !formData.bio)) ||
+                (step === 5 && userProfile?.role === 'builder' && !formData.bio)
               }
             >
-              {uploading ? 'uploading...' : step === totalSteps ? 'submit application' : 'continue'}
+              {uploading ? 'saving...' : step === totalSteps ? 'save changes' : 'continue'}
             </button>
           </div>
         </div>
       </div>
     </div>
-    </>
   )
 }
 
-export default SignupPage
+export default EditProfilePage
+

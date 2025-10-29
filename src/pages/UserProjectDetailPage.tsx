@@ -132,16 +132,38 @@ const UserProjectDetailPage = () => {
         <div className="max-w-7xl mx-auto px-8 py-6 flex items-center justify-between">
           <div 
             className="text-xl font-serif tracking-tight lowercase text-charcoal cursor-pointer" 
-            onClick={() => navigate('/')}
+            onClick={() => navigate('/projects')}
           >
             cofndrly
           </div>
-          <button
-            onClick={() => navigate('/projects')}
-            className="text-sm text-warm-gray-600 hover:text-charcoal transition-colors lowercase tracking-relaxed"
-          >
-            ← back to projects
-          </button>
+          <div className="flex gap-4 items-center">
+            <button 
+              onClick={() => navigate('/projects')}
+              className="text-sm text-charcoal font-medium transition-colors lowercase tracking-relaxed"
+            >
+              browse projects
+            </button>
+            {userProfile?.role === 'builder' && (
+              <button 
+                onClick={() => navigate('/my-projects')}
+                className="text-sm text-warm-gray-600 hover:text-charcoal transition-colors lowercase tracking-relaxed"
+              >
+                my projects
+              </button>
+            )}
+            <button 
+              onClick={() => navigate('/messages')}
+              className="text-sm text-warm-gray-600 hover:text-charcoal transition-colors lowercase tracking-relaxed"
+            >
+              messages
+            </button>
+            <button 
+              onClick={() => navigate('/profile')}
+              className="text-sm text-warm-gray-600 hover:text-charcoal transition-colors lowercase tracking-relaxed"
+            >
+              profile
+            </button>
+          </div>
         </div>
       </nav>
 
