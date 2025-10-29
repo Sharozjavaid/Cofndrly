@@ -128,15 +128,6 @@ const MessagesPage = () => {
     loadConversations()
   }, [currentUser, navigate])
 
-  const handleSignOut = async () => {
-    try {
-      await signOut()
-      navigate('/login')
-    } catch (error) {
-      console.error('Error signing out:', error)
-    }
-  }
-
   if (loading) {
     return (
       <div className="min-h-screen bg-cream grain flex items-center justify-center">
