@@ -16,6 +16,7 @@ interface Project {
   userProfileImage: string
   userBio: string
   partnershipPreference: string[]
+  projectIndex: number // Original index in user's projects array
 }
 
 const ProjectsPage = () => {
@@ -38,14 +39,15 @@ const ProjectsPage = () => {
         snapshot.docs.forEach(doc => {
           const userData = doc.data()
           if (userData.projects && Array.isArray(userData.projects)) {
-            userData.projects.forEach((project: any) => {
+            userData.projects.forEach((project: any, projectIndex: number) => {
               allProjects.push({
                 ...project,
                 userId: doc.id,
                 userName: userData.name,
                 userProfileImage: userData.profileImageUrl,
                 userBio: userData.bio,
-                partnershipPreference: userData.partnershipPreference || []
+                partnershipPreference: userData.partnershipPreference || [],
+                projectIndex: projectIndex // Store the original index
               })
             })
           }
@@ -187,7 +189,7 @@ const ProjectsPage = () => {
                   initial={{ opacity: 0, y: 40 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.6, delay: index * 0.05 }}
-                  onClick={() => navigate(`/user/${project.userId}/project/${index}`)}
+                  onClick={() => navigate(`/user/${project.userId}/project/${project.projectIndex}`)}
                   className="group cursor-pointer"
                 >
                   <div className="bg-white rounded-sm border border-warm-gray-200 hover:border-charcoal transition-all duration-300 overflow-hidden h-full flex flex-col">
