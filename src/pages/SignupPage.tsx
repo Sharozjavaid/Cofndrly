@@ -193,29 +193,6 @@ const SignupPage = () => {
     }))
   }
 
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0]
-    if (file) {
-      // Validate file size (max 5MB)
-      if (file.size > 5 * 1024 * 1024) {
-        alert('Image size should be less than 5MB')
-        return
-      }
-
-      // Validate file type
-      if (!file.type.startsWith('image/')) {
-        alert('Please upload an image file')
-        return
-      }
-
-      setFormData({
-        ...formData,
-        profileImage: file,
-        profileImagePreview: URL.createObjectURL(file)
-      })
-    }
-  }
-
   const builderSkills = [
     'react', 'node.js', 'python', 'ios', 'android',
     'ai/ml', 'blockchain', 'devops', 'ui/ux', 'full stack'

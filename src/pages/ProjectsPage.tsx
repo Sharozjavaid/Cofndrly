@@ -3,7 +3,6 @@ import { motion } from 'framer-motion'
 import { useNavigate } from 'react-router-dom'
 import { db } from '../firebase/config'
 import { collection, query, getDocs, where } from 'firebase/firestore'
-import { useAuth } from '../contexts/AuthContext'
 
 interface Project {
   name: string
@@ -20,7 +19,6 @@ interface Project {
 
 const ProjectsPage = () => {
   const navigate = useNavigate()
-  const { currentUser, userProfile } = useAuth()
   const [projects, setProjects] = useState<Project[]>([])
   const [loading, setLoading] = useState(true)
   const [filter, setFilter] = useState<string>('all')

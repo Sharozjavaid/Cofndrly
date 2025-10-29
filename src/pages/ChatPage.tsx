@@ -172,7 +172,7 @@ const ChatPage = () => {
               <div>
                 <div className="font-serif text-lg lowercase text-charcoal">{otherUser.name}</div>
                 <div className="text-xs text-warm-gray-600 uppercase tracking-wider">
-                  {otherUser.role === 'technical' ? 'builder' : 'storyteller'}
+                  {otherUser.role === 'builder' ? 'builder' : 'marketer'}
                 </div>
               </div>
             </div>

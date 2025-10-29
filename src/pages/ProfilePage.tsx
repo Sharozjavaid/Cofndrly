@@ -161,16 +161,16 @@ const ProfilePage = () => {
               {/* Role Badge - Overlay on image */}
               <div className="absolute top-6 right-6">
                 <div className={`px-6 py-3 rounded-sm backdrop-blur-md border-2 ${
-                  displayProfile.role === 'technical'
+                  displayProfile.role === 'builder'
                     ? 'bg-charcoal/90 border-charcoal text-cream'
                     : 'bg-sage/90 border-sage text-white'
                 }`}>
                   <div className="flex items-center gap-3">
                     <span className="text-2xl">
-                      {displayProfile.role === 'technical' ? '⚙️' : '📈'}
+                      {displayProfile.role === 'builder' ? '⚙️' : '📈'}
                     </span>
                     <span className="font-serif text-xl lowercase tracking-tight">
-                      {displayProfile.role === 'technical' ? 'builder' : 'storyteller'}
+                      {displayProfile.role === 'builder' ? 'builder' : 'marketer'}
                     </span>
                   </div>
                 </div>

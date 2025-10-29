@@ -520,7 +520,7 @@ const MatchingPage = () => {
                           {currentProfile.name}
                         </h2>
                         <p className="text-xs uppercase tracking-loose text-warm-gray-600">
-                          {currentProfile.role === 'technical' ? 'builder' : 'storyteller'}
+                          {currentProfile.role === 'builder' ? 'builder' : 'marketer'}
                         </p>
                       </div>
                       <button

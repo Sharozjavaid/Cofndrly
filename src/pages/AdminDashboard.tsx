@@ -9,7 +9,7 @@ interface User {
   id: string
   name: string
   email: string
-  role: 'technical' | 'non-technical'
+  role: 'builder' | 'marketer'
   experience: string
   skills: string[]
   passions: string
@@ -213,7 +213,7 @@ const AdminDashboard = () => {
                   <span className="text-sm text-warm-gray-600">{user.email}</span>
                 </div>
                 <div className="inline-block px-3 py-1 bg-sand rounded-sm text-xs text-warm-gray-700 uppercase tracking-wider">
-                  {user.role === 'technical' ? '⚙️ builder' : '📸 storyteller'}
+                  {user.role === 'builder' ? '⚙️ builder' : '📈 marketer'}
                 </div>
                 <div className="mt-4 flex gap-2">
                   {user.skills.slice(0, 2).map(skill => (
@@ -280,7 +280,7 @@ const AdminDashboard = () => {
                 <h2 className="font-serif text-4xl text-charcoal lowercase mb-2">{selectedUser.name}</h2>
                 <p className="text-warm-gray-600">{selectedUser.email}</p>
                 <div className="mt-3 inline-block px-4 py-2 bg-sand rounded-sm text-sm text-warm-gray-700 uppercase tracking-wider">
-                  {selectedUser.role === 'technical' ? '⚙️ builder' : '📸 storyteller'}
+                  {selectedUser.role === 'builder' ? '⚙️ builder' : '📈 marketer'}
                 </div>
               </div>
 
