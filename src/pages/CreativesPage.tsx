@@ -8,61 +8,61 @@ const CreativesPage = () => {
 
   const problems = [
     {
-      title: "ideas with no execution",
-      description: "You have a vision for an amazing product or campaign, but you can't build it yourself. You need someone who can turn your ideas into reality.",
-      emoji: "💡"
+      title: "stuck in gig work hell",
+      description: "You're making $15 per TikTok, $25 per Instagram post, grinding on Fiverr and Upwork. You're talented, but you're trading hours for pennies with no upside.",
+      emoji: "💸"
     },
     {
-      title: "dependent on others' timelines",
-      description: "You've worked with freelancers and agencies, but they're slow, expensive, and don't care about your vision as much as you do. You need a partner, not a vendor.",
-      emoji: "⏳"
+      title: "building someone else's brand",
+      description: "You pour creativity into content that grows other people's businesses. They get equity and recurring revenue. You get a one-time payment and move to the next gig.",
+      emoji: "🎪"
     },
     {
-      title: "limited by technical skills",
-      description: "You know what good UX looks like. You know what features users want. But you can't code, so you're stuck explaining your vision to developers who don't get it.",
+      title: "no product to promote",
+      description: "You know how to make things go viral. You can grow audiences, drive traffic, create content that converts. But you have nothing of your own to sell.",
       emoji: "🚧"
     },
     {
-      title: "audience without a product",
-      description: "You've grown a following, mastered social media, or built an email list. But you have nothing to sell them. You need a product as good as your marketing.",
-      emoji: "📱"
+      title: "income ceiling",
+      description: "There's a limit to how much you can charge per hour or per deliverable. You can't scale yourself. More money means more hours, and you're already maxed out.",
+      emoji: "⏰"
     },
     {
       title: "creative energy wasted",
-      description: "Instead of focusing on growth, storytelling, and strategy, you're stuck learning to code or managing contractors. Your creativity is being drained by logistics.",
+      description: "Your best ideas and campaigns go to clients who don't even appreciate them. What if you poured that energy into something you actually owned?",
       emoji: "🔋"
     },
     {
-      title: "can't scale alone",
-      description: "You can create content, run ads, and grow communities. But building, maintaining, and scaling a product? That's a full-time job you weren't meant to do.",
-      emoji: "📈"
+      title: "no leverage",
+      description: "You're building skills, creating content, growing audiences — but none of it compounds. Every month you start from zero. You need equity, not invoices.",
+      emoji: "📉"
     }
   ]
 
   const benefits = [
     {
-      title: "bring your vision to life",
-      description: "Stop compromising on your ideas. A technical co-founder can build exactly what you envision, and iterate as fast as you can think of new features."
+      title: "equity over hourly rates",
+      description: "Stop selling your time for $15/video. Partner with a developer, take equity, and earn recurring revenue as the product grows."
     },
     {
-      title: "focus on what drives growth",
-      description: "You handle the storytelling, community building, and user acquisition. Let your co-founder worry about servers, bugs, and code."
+      title: "promote something you own",
+      description: "Your content, your strategy, your growth skills — finally directed toward something you have a stake in. Every view, every conversion benefits you directly."
     },
     {
-      title: "move at startup speed",
-      description: "No more waiting weeks for a contractor to finish a feature. With a technical co-founder, you can ship updates daily and respond to user feedback instantly."
+      title: "leverage existing products",
+      description: "Developers have finished projects sitting idle. You don't need to start from scratch. Take a working product and make it successful."
     },
     {
       title: "true partnership",
-      description: "Unlike hiring developers, a co-founder is invested in the success of the business. They care as much as you do because their equity depends on it."
+      description: "This isn't a client relationship. You're co-founders. Equal stake, equal say, shared upside. You're building wealth together, not trading time for money."
     },
     {
-      title: "monetize your audience",
-      description: "You've built the audience. Now build something to sell them. A technical co-founder can help you turn followers into customers."
+      title: "focus on what you're great at",
+      description: "No more learning Python or figuring out APIs. You handle marketing, growth, and storytelling. They handle the tech. Division of labor at its finest."
     },
     {
-      title: "learn and grow together",
-      description: "You'll pick up technical knowledge, they'll learn marketing. Together, you become a more well-rounded founding team that can tackle anything."
+      title: "compounding growth",
+      description: "Your marketing efforts compound. Every piece of content, every campaign, every user you bring in builds long-term value in something you co-own."
     }
   ]
 
@@ -113,12 +113,12 @@ const CreativesPage = () => {
             For storytellers
           </p>
           <h1 className="font-serif text-6xl md:text-7xl lg:text-8xl leading-[0.95] text-charcoal">
-            you can market<br />
-            anything.<br />
-            <span className="italic text-rust">but can you build it?</span>
+            stop making<br />
+            $15 per video.<br />
+            <span className="italic text-rust">own something real.</span>
           </h1>
           <p className="text-2xl md:text-3xl text-warm-gray-700 leading-relaxed font-light max-w-3xl mx-auto">
-            great marketing needs a great product. you need someone who knows how to build.
+            find a developer with a finished product. become partners. promote something you own. make real money.
           </p>
         </motion.div>
       </section>
@@ -186,10 +186,10 @@ const CreativesPage = () => {
                 you don't need to learn to code.
               </p>
               <p className="opacity-90">
-                you need to <span className="italic text-rust">find a builder</span>.
+                you need to <span className="italic text-rust">partner with someone who already built something</span>.
               </p>
               <p className="text-2xl md:text-3xl text-warm-gray-600 font-sans font-light mt-12 max-w-2xl mx-auto">
-                someone who can build your vision while you grow the audience.
+                find a developer with a shelf project. become co-founders. market it. split the profits.
               </p>
             </div>
           </motion.div>
@@ -305,10 +305,10 @@ const CreativesPage = () => {
             transition={{ duration: 0.8 }}
           >
             <h2 className="font-serif text-6xl md:text-7xl text-charcoal mb-8 leading-tight lowercase">
-              turn your audience<br />into a business
+              stop creating<br />for pennies
             </h2>
             <p className="text-xl md:text-2xl text-warm-gray-700 font-light mb-12">
-              find a builder who can bring your vision to life
+              find a builder who can give you equity, not invoices
             </p>
             <button
               onClick={() => navigate('/signup')}
