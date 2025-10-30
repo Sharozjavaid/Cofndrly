@@ -35,40 +35,46 @@ const MyProjectsPage = () => {
   const projects: Project[] = userProfile.projects || []
 
   return (
-    <div className="min-h-screen bg-cream grain">
+    <div className="min-h-screen bg-white">
       {/* Navigation */}
-      <nav className="fixed top-0 w-full bg-cream/80 backdrop-blur-md border-b border-warm-gray-200/50 z-50">
-        <div className="max-w-7xl mx-auto px-8 py-6 flex items-center justify-between">
-          <div 
-            className="text-xl font-serif tracking-tight lowercase text-charcoal cursor-pointer" 
+      <nav className="fixed top-0 w-full bg-white/95 backdrop-blur-md border-b border-warm-gray-200 z-50">
+        <div className="max-w-7xl mx-auto px-8 py-4 flex items-center justify-between">
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="flex items-center gap-2 cursor-pointer"
             onClick={() => navigate('/projects')}
           >
-            cofndrly
-          </div>
-          <div className="flex gap-4 items-center">
+            <img src="/logo-bg.png" alt="GrowMyApp Logo" className="w-10 h-10" />
+            <span className="text-xl font-bold tracking-tight text-forest" style={{ color: '#456456' }}>
+              GrowMyApp
+            </span>
+          </motion.div>
+          <div className="flex gap-6 items-center">
             <button 
               onClick={() => navigate('/projects')}
-              className="text-sm text-warm-gray-600 hover:text-charcoal transition-colors lowercase tracking-relaxed"
+              className="text-sm text-warm-gray-600 hover:text-forest transition-colors font-medium"
             >
-              browse projects
+              Browse Projects
             </button>
             <button 
               onClick={() => navigate('/my-projects')}
-              className="text-sm text-charcoal font-medium transition-colors lowercase tracking-relaxed"
+              className="text-sm text-forest font-semibold transition-colors"
+              style={{ color: '#456456' }}
             >
-              my projects
+              My Projects
             </button>
             <button 
               onClick={() => navigate('/messages')}
-              className="text-sm text-warm-gray-600 hover:text-charcoal transition-colors lowercase tracking-relaxed"
+              className="text-sm text-warm-gray-600 hover:text-forest transition-colors font-medium"
             >
-              messages
+              Messages
             </button>
             <button 
               onClick={() => navigate('/profile')}
-              className="text-sm text-warm-gray-600 hover:text-charcoal transition-colors lowercase tracking-relaxed"
+              className="text-sm text-warm-gray-600 hover:text-forest transition-colors font-medium"
             >
-              profile
+              Profile
             </button>
           </div>
         </div>
@@ -83,18 +89,19 @@ const MyProjectsPage = () => {
             transition={{ duration: 0.6 }}
             className="mb-12"
           >
-            <h1 className="font-serif text-5xl md:text-6xl text-charcoal lowercase leading-tight mb-4">
-              my projects
+            <h1 className="font-sans font-extrabold text-5xl md:text-6xl text-forest leading-tight mb-4" style={{ color: '#456456' }}>
+              My Projects
             </h1>
             <div className="flex items-center gap-4">
-              <p className="text-lg text-warm-gray-700 font-light">
-                manage your shelf projects
+              <p className="text-lg text-warm-gray-700 font-normal">
+                Manage your shelf projects
               </p>
               <button
                 onClick={() => navigate('/edit-profile')}
-                className="ml-auto px-8 py-3 bg-charcoal text-cream rounded-sm hover:bg-warm-gray-900 transition-all font-sans tracking-relaxed lowercase"
+                className="ml-auto px-8 py-3 bg-forest text-white rounded-xl hover:bg-dark-green transition-all font-sans font-semibold shadow-lg hover:shadow-xl"
+                style={{ backgroundColor: '#456456', color: '#FFFFFF' }}
               >
-                + add/edit projects
+                + Add/Edit Projects
               </button>
             </div>
           </motion.div>
@@ -103,15 +110,16 @@ const MyProjectsPage = () => {
           {projects.length === 0 ? (
             <div className="text-center py-20">
               <div className="text-6xl mb-6">📦</div>
-              <h2 className="font-serif text-3xl text-charcoal lowercase mb-4">no projects yet</h2>
-              <p className="text-warm-gray-600 mb-8">
-                add your first shelf project and connect with marketers
+              <h2 className="font-sans font-bold text-3xl text-forest mb-4" style={{ color: '#456456' }}>No Projects Yet</h2>
+              <p className="text-warm-gray-600 mb-8 font-normal">
+                Add your first shelf project and connect with marketers
               </p>
               <button
                 onClick={() => navigate('/edit-profile')}
-                className="px-8 py-3 bg-charcoal text-cream rounded-sm hover:bg-warm-gray-900 transition-all"
+                className="px-8 py-3 bg-forest text-white rounded-xl hover:bg-dark-green transition-all font-sans font-semibold shadow-lg"
+                style={{ backgroundColor: '#456456', color: '#FFFFFF' }}
               >
-                add a project
+                Add a Project
               </button>
             </div>
           ) : (
@@ -125,9 +133,9 @@ const MyProjectsPage = () => {
                   onClick={() => navigate(`/user/${currentUser.uid}/project/${index}`)}
                   className="group cursor-pointer"
                 >
-                  <div className="bg-white rounded-sm border border-warm-gray-200 hover:border-charcoal transition-all duration-300 overflow-hidden h-full flex flex-col">
+                  <div className="bg-white rounded-xl border-2 border-warm-gray-200 hover:border-mint transition-all duration-300 overflow-hidden h-full flex flex-col shadow-md hover:shadow-xl">
                     {/* Project Logo */}
-                    <div className="h-48 bg-gradient-to-br from-sand to-warm-gray-200 relative overflow-hidden flex items-center justify-center">
+                    <div className="h-48 bg-gradient-to-br from-light-mint to-warm-gray-100 relative overflow-hidden flex items-center justify-center" style={{ background: 'linear-gradient(135deg, #E8F4EA 0%, #F3F4F6 100%)' }}>
                       {project.logoUrl ? (
                         <img 
                           src={project.logoUrl} 
@@ -140,8 +148,8 @@ const MyProjectsPage = () => {
                       
                       {/* Stage Badge */}
                       <div className="absolute top-4 right-4">
-                        <div className="px-3 py-1.5 bg-sage/90 backdrop-blur-sm rounded-sm text-xs lowercase text-charcoal font-sans">
-                          {project.stage}
+                        <div className="px-3 py-1.5 bg-mint/90 backdrop-blur-sm rounded-lg text-xs text-white font-sans font-medium shadow-md" style={{ backgroundColor: 'rgba(127, 182, 133, 0.9)' }}>
+                          ✓ {project.stage}
                         </div>
                       </div>
                     </div>
@@ -149,24 +157,25 @@ const MyProjectsPage = () => {
                     {/* Project Info */}
                     <div className="p-6 flex-1 flex flex-col">
                       {/* Title */}
-                      <h3 className="font-serif text-2xl text-charcoal lowercase mb-3 group-hover:text-rust transition-colors">
+                      <h3 className="font-sans font-bold text-2xl text-forest mb-3 group-hover:text-mint transition-colors" style={{ color: '#456456' }}>
                         {project.name}
                       </h3>
 
                       {/* Description */}
-                      <p className="text-sm text-warm-gray-700 leading-relaxed font-light mb-4 line-clamp-3">
+                      <p className="text-sm text-warm-gray-700 leading-relaxed font-normal mb-4 line-clamp-3">
                         {project.description}
                       </p>
 
                       {/* Link */}
                       {project.link && (
-                        <div className="mt-auto pt-4 border-t border-warm-gray-200">
+                        <div className="mt-auto pt-4 border-t-2 border-warm-gray-200">
                           <a 
                             href={project.link}
                             target="_blank"
                             rel="noopener noreferrer"
                             onClick={(e) => e.stopPropagation()}
-                            className="text-xs text-sage hover:underline"
+                            className="text-xs text-mint hover:text-forest transition-colors font-medium flex items-center gap-1"
+                            style={{ color: '#7FB685' }}
                           >
                             View Project →
                           </a>

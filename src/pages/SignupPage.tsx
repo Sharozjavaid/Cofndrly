@@ -67,6 +67,7 @@ const SignupPage = () => {
   const [uploading, setUploading] = useState(false)
   const [showCustomSkillInput, setShowCustomSkillInput] = useState(false)
   const [currentProjectIndex, setCurrentProjectIndex] = useState(0)
+  const [isEditingProject, setIsEditingProject] = useState(true)
 
   const totalSteps = 7 // Adjusted for new flow with projects
 
@@ -214,23 +215,28 @@ const SignupPage = () => {
   return (
     <>
       <SEO
-        title="Apply to Join cofndrly — Find Your Co-Founder"
-        description="Apply to join our curated community of builders and storytellers. Get matched with your ideal co-founder and launch your next startup together."
-        keywords="apply co-founder, startup application, join cofndrly, find co-founder, co-founder matching"
-        canonicalUrl="https://cofndrly.com/signup"
+        title="Apply to Join GrowMyApp — Turn Your Shelf Projects Into Revenue"
+        description="Join our curated community of builders and marketers. Get matched with your ideal partner and launch your projects together."
+        keywords="apply GrowMyApp, startup application, find marketer, find builder, project matching"
+        canonicalUrl="https://GrowMyApp.com/signup"
         noindex={true}
       />
-      <div className="min-h-screen bg-cream grain">
-        {/* Minimal Navigation */}
-      <nav className="fixed top-0 w-full bg-cream/80 backdrop-blur-md border-b border-warm-gray-200/50 z-50">
-        <div className="max-w-7xl mx-auto px-8 py-6 flex items-center justify-between">
-          <div 
-            className="text-xl font-serif tracking-tight lowercase text-charcoal cursor-pointer" 
+      <div className="min-h-screen bg-white">
+        {/* Minimal Navigation - Same as Landing Page */}
+      <nav className="fixed top-0 w-full bg-white/95 backdrop-blur-md border-b border-warm-gray-200 z-50">
+        <div className="max-w-7xl mx-auto px-8 py-4 flex items-center justify-between">
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="flex items-center gap-2 cursor-pointer"
             onClick={() => navigate('/')}
           >
-            cofndrly
-          </div>
-          <div className="text-xs uppercase tracking-loose text-warm-gray-600 font-sans">
+            <img src="/logo-bg.png" alt="GrowMyApp Logo" className="w-10 h-10" />
+            <span className="text-xl font-bold tracking-tight text-forest" style={{ color: '#456456' }}>
+              GrowMyApp
+            </span>
+          </motion.div>
+          <div className="text-xs uppercase tracking-loose text-warm-gray-600 font-sans font-semibold">
             step {step} of {totalSteps}
           </div>
         </div>
@@ -239,7 +245,8 @@ const SignupPage = () => {
       {/* Subtle Progress Bar */}
       <div className="fixed top-[73px] w-full h-px bg-warm-gray-200 z-40">
         <motion.div
-          className="h-full bg-rust"
+          className="h-full bg-mint"
+          style={{ backgroundColor: '#7FB685' }}
           initial={{ width: 0 }}
           animate={{ width: `${(step / totalSteps) * 100}%` }}
           transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
@@ -260,75 +267,79 @@ const SignupPage = () => {
                 className="space-y-12"
               >
                 <div className="space-y-4">
-                  <p className="text-xs uppercase tracking-loose text-warm-gray-600 font-sans">
+                  <p className="text-xs uppercase tracking-loose text-mint font-sans font-semibold" style={{ color: '#7FB685' }}>
                     Introduction
                   </p>
-                  <h1 className="font-serif text-5xl md:text-6xl text-charcoal lowercase leading-tight">
-                    let's begin
+                  <h1 className="font-sans font-extrabold text-5xl md:text-6xl text-forest leading-tight" style={{ color: '#456456' }}>
+                    Let's Begin
                   </h1>
-                  <p className="text-lg text-warm-gray-700 font-light max-w-lg">
-                    first, tell us who you are
+                  <p className="text-lg text-warm-gray-700 font-normal max-w-lg">
+                    First, tell us who you are
                   </p>
                 </div>
 
                 <div className="space-y-8">
                   <div>
-                    <label className="block text-xs uppercase tracking-loose text-warm-gray-600 mb-3 font-sans">
+                    <label className="block text-xs uppercase tracking-loose text-warm-gray-600 mb-3 font-sans font-semibold">
                       name
                     </label>
                     <input
                       type="text"
                       value={formData.name}
                       onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                      className="w-full px-0 py-4 bg-transparent border-b-2 border-warm-gray-300 focus:border-charcoal focus:outline-none transition-colors text-xl text-charcoal font-light"
-                      placeholder="jane doe"
+                      className="w-full px-0 py-4 bg-transparent border-b-2 border-warm-gray-300 focus:border-forest focus:outline-none transition-colors text-xl text-forest font-normal"
+                      style={{ borderColor: formData.name ? '#456456' : undefined }}
+                      placeholder="Jane Doe"
                     />
                   </div>
 
                   <div>
-                    <label className="block text-xs uppercase tracking-loose text-warm-gray-600 mb-3 font-sans">
+                    <label className="block text-xs uppercase tracking-loose text-warm-gray-600 mb-3 font-sans font-semibold">
                       email
                     </label>
                     <input
                       type="email"
                       value={formData.email}
                       onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                      className="w-full px-0 py-4 bg-transparent border-b-2 border-warm-gray-300 focus:border-charcoal focus:outline-none transition-colors text-xl text-charcoal font-light"
+                      className="w-full px-0 py-4 bg-transparent border-b-2 border-warm-gray-300 focus:border-forest focus:outline-none transition-colors text-xl text-forest font-normal"
+                      style={{ borderColor: formData.email ? '#456456' : undefined }}
                       placeholder="jane@example.com"
                     />
                   </div>
 
                   <div className="pt-6">
-                    <label className="block text-xs uppercase tracking-loose text-warm-gray-600 mb-6 font-sans">
-                      i am a...
+                    <label className="block text-xs uppercase tracking-loose text-warm-gray-600 mb-6 font-sans font-semibold">
+                      I am a...
                     </label>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       <button
                         onClick={() => setFormData({ ...formData, role: 'builder' })}
-                        className={`p-8 rounded-sm border-2 transition-all text-left ${
+                        className={`p-8 rounded-xl border-2 transition-all text-left shadow-md hover:shadow-lg ${
                           formData.role === 'builder'
-                            ? 'border-charcoal bg-white'
-                            : 'border-warm-gray-200 hover:border-warm-gray-400 bg-white/50'
+                            ? 'border-forest bg-light-mint'
+                            : 'border-warm-gray-200 hover:border-mint bg-white'
                         }`}
+                        style={formData.role === 'builder' ? { borderColor: '#456456', backgroundColor: '#E8F4EA' } : {}}
                       >
                         <div className="text-4xl mb-4">⚙️</div>
-                        <div className="font-serif text-2xl mb-2 lowercase text-charcoal">builder</div>
-                        <div className="text-sm text-warm-gray-600 font-light">
-                          i build products and have shelf projects
+                        <div className="font-sans font-bold text-2xl mb-2 text-forest" style={{ color: '#456456' }}>Builder</div>
+                        <div className="text-sm text-warm-gray-600 font-normal">
+                          I build products and have shelf projects
                         </div>
                       </button>
                       <button
                         onClick={() => setFormData({ ...formData, role: 'marketer' })}
-                        className={`p-8 rounded-sm border-2 transition-all text-left ${
+                        className={`p-8 rounded-xl border-2 transition-all text-left shadow-md hover:shadow-lg ${
                           formData.role === 'marketer'
-                            ? 'border-charcoal bg-white'
-                            : 'border-warm-gray-200 hover:border-warm-gray-400 bg-white/50'
+                            ? 'border-bright-orange bg-peach/20'
+                            : 'border-warm-gray-200 hover:border-bright-orange bg-white'
                         }`}
+                        style={formData.role === 'marketer' ? { borderColor: '#F5A65B', backgroundColor: 'rgba(245, 166, 91, 0.1)' } : {}}
                       >
                         <div className="text-4xl mb-4">📈</div>
-                        <div className="font-serif text-2xl mb-2 lowercase text-charcoal">marketer</div>
-                        <div className="text-sm text-warm-gray-600 font-light">
-                          i market products and can help launch projects
+                        <div className="font-sans font-bold text-2xl mb-2 text-forest" style={{ color: '#456456' }}>Marketer</div>
+                        <div className="text-sm text-warm-gray-600 font-normal">
+                          I market products and can help launch projects
                         </div>
                       </button>
                     </div>
@@ -348,32 +359,33 @@ const SignupPage = () => {
                 className="space-y-12"
               >
                 <div className="space-y-4">
-                  <p className="text-xs uppercase tracking-loose text-warm-gray-600 font-sans">
+                  <p className="text-xs uppercase tracking-loose text-mint font-sans font-semibold" style={{ color: '#7FB685' }}>
                     Security
                   </p>
-                  <h1 className="font-serif text-5xl md:text-6xl text-charcoal lowercase leading-tight">
-                    create password
+                  <h1 className="font-sans font-extrabold text-5xl md:text-6xl text-forest leading-tight" style={{ color: '#456456' }}>
+                    Create Password
                   </h1>
-                  <p className="text-lg text-warm-gray-700 font-light max-w-lg">
-                    secure your account
+                  <p className="text-lg text-warm-gray-700 font-normal max-w-lg">
+                    Secure your account
                   </p>
                 </div>
 
                 <div className="space-y-8">
                   <div>
-                    <label className="block text-xs uppercase tracking-loose text-warm-gray-600 mb-3 font-sans">
+                    <label className="block text-xs uppercase tracking-loose text-warm-gray-600 mb-3 font-sans font-semibold">
                       password (minimum 6 characters)
                     </label>
                     <input
                       type="password"
                       value={formData.password}
                       onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                      className="w-full px-0 py-4 bg-transparent border-b-2 border-warm-gray-300 focus:border-charcoal focus:outline-none transition-colors text-xl text-charcoal font-light"
+                      className="w-full px-0 py-4 bg-transparent border-b-2 border-warm-gray-300 focus:border-forest focus:outline-none transition-colors text-xl text-forest font-normal"
+                      style={{ borderColor: formData.password ? '#456456' : undefined }}
                       placeholder="••••••••"
                       minLength={6}
                     />
-                    <p className="mt-2 text-sm text-warm-gray-600 font-light">
-                      you'll use this to sign in and access your matches
+                    <p className="mt-2 text-sm text-warm-gray-600 font-normal">
+                      You'll use this to sign in and access your matches
                     </p>
                   </div>
                 </div>
@@ -391,32 +403,33 @@ const SignupPage = () => {
                 className="space-y-12"
               >
                 <div className="space-y-4">
-                  <p className="text-xs uppercase tracking-loose text-warm-gray-600 font-sans">
+                  <p className="text-xs uppercase tracking-loose text-mint font-sans font-semibold" style={{ color: '#7FB685' }}>
                     Background
                   </p>
-                  <h1 className="font-serif text-5xl md:text-6xl text-charcoal lowercase leading-tight">
-                    your experience
+                  <h1 className="font-sans font-extrabold text-5xl md:text-6xl text-forest leading-tight" style={{ color: '#456456' }}>
+                    Your Experience
                   </h1>
-                  <p className="text-lg text-warm-gray-700 font-light max-w-lg">
-                    what have you built or grown?
+                  <p className="text-lg text-warm-gray-700 font-normal max-w-lg">
+                    What have you built or grown?
                   </p>
                 </div>
 
                 <div className="space-y-8">
                   <div>
-                    <label className="block text-xs uppercase tracking-loose text-warm-gray-600 mb-3 font-sans">
+                    <label className="block text-xs uppercase tracking-loose text-warm-gray-600 mb-3 font-sans font-semibold">
                       professional background
                     </label>
                     <textarea
                       value={formData.experience}
                       onChange={(e) => setFormData({ ...formData, experience: e.target.value })}
-                      className="w-full px-0 py-4 bg-transparent border-b-2 border-warm-gray-300 focus:border-charcoal focus:outline-none transition-colors text-lg text-charcoal resize-none font-light"
+                      className="w-full px-0 py-4 bg-transparent border-b-2 border-warm-gray-300 focus:border-forest focus:outline-none transition-colors text-lg text-forest resize-none font-normal"
+                      style={{ borderColor: formData.experience ? '#456456' : undefined }}
                       rows={5}
-                      placeholder="share your journey..."
+                      placeholder="Share your journey..."
                       required
                     />
-                    <p className="mt-2 text-sm text-warm-gray-500 font-light italic">
-                      fill this in to continue
+                    <p className="mt-2 text-sm text-warm-gray-500 font-normal italic">
+                      Fill this in to continue
                     </p>
                   </div>
                 </div>
@@ -434,20 +447,20 @@ const SignupPage = () => {
                 className="space-y-12"
               >
                 <div className="space-y-4">
-                  <p className="text-xs uppercase tracking-loose text-warm-gray-600 font-sans">
+                  <p className="text-xs uppercase tracking-loose text-mint font-sans font-semibold" style={{ color: '#7FB685' }}>
                     Expertise
                   </p>
-                  <h1 className="font-serif text-5xl md:text-6xl text-charcoal lowercase leading-tight">
-                    your skills
+                  <h1 className="font-sans font-extrabold text-5xl md:text-6xl text-forest leading-tight" style={{ color: '#456456' }}>
+                    Your Skills
                   </h1>
-                  <p className="text-lg text-warm-gray-700 font-light max-w-lg">
-                    select at least one skill to continue
+                  <p className="text-lg text-warm-gray-700 font-normal max-w-lg">
+                    Select at least one skill to continue
                   </p>
                 </div>
 
                 <div className="space-y-8">
                   <div>
-                    <label className="block text-xs uppercase tracking-loose text-warm-gray-600 mb-4 font-sans">
+                    <label className="block text-xs uppercase tracking-loose text-warm-gray-600 mb-4 font-sans font-semibold">
                       skills & expertise
                     </label>
                     
@@ -457,11 +470,12 @@ const SignupPage = () => {
                         <button
                           key={skill}
                           onClick={() => toggleSkill(skill)}
-                          className={`px-5 py-2.5 rounded-sm transition-all text-sm lowercase ${
+                          className={`px-5 py-2.5 rounded-lg transition-all text-sm font-sans font-medium shadow-sm hover:shadow-md ${
                             formData.skills.includes(skill)
-                              ? 'bg-charcoal text-cream'
-                              : 'bg-white text-warm-gray-700 border border-warm-gray-300 hover:border-charcoal'
+                              ? 'bg-forest text-white'
+                              : 'bg-white text-warm-gray-700 border border-warm-gray-300 hover:border-mint'
                           }`}
+                          style={formData.skills.includes(skill) ? { backgroundColor: '#456456', color: '#FFFFFF' } : {}}
                         >
                           {skill}
                         </button>
@@ -473,7 +487,7 @@ const SignupPage = () => {
                       !(formData.role === 'builder' ? builderSkills : marketerSkills).includes(skill)
                     ).length > 0 && (
                       <div className="mb-4">
-                        <p className="text-xs uppercase tracking-loose text-warm-gray-500 mb-2 font-sans">
+                        <p className="text-xs uppercase tracking-loose text-warm-gray-500 mb-2 font-sans font-semibold">
                           custom skills
                         </p>
                         <div className="flex flex-wrap gap-3">
@@ -482,12 +496,14 @@ const SignupPage = () => {
                             .map(skill => (
                               <div
                                 key={skill}
-                                className="px-5 py-2.5 rounded-sm bg-rust/10 text-charcoal border border-rust/30 text-sm lowercase flex items-center gap-2"
+                                className="px-5 py-2.5 rounded-lg bg-bright-orange/10 text-forest border border-bright-orange/30 text-sm font-sans font-medium flex items-center gap-2 shadow-sm"
+                                style={{ color: '#456456' }}
                               >
                                 {skill}
                                 <button
                                   onClick={() => removeSkill(skill)}
-                                  className="text-rust hover:text-charcoal transition-colors"
+                                  className="text-bright-orange hover:text-forest transition-colors"
+                                  style={{ color: '#F5A65B' }}
                                 >
                                   ×
                                 </button>
@@ -501,9 +517,9 @@ const SignupPage = () => {
                     {!showCustomSkillInput ? (
                       <button
                         onClick={() => setShowCustomSkillInput(true)}
-                        className="px-5 py-2.5 rounded-sm bg-sand text-warm-gray-700 border border-warm-gray-300 hover:border-charcoal transition-all text-sm lowercase"
+                        className="px-5 py-2.5 rounded-lg bg-white text-warm-gray-700 border border-warm-gray-300 hover:border-mint transition-all text-sm font-sans font-medium shadow-sm hover:shadow-md"
                       >
-                        + add other skill
+                        + Add Other Skill
                       </button>
                     ) : (
                       <div className="flex gap-3 items-center">
@@ -517,24 +533,25 @@ const SignupPage = () => {
                               addCustomSkill()
                             }
                           }}
-                          className="px-4 py-2.5 bg-white border border-warm-gray-300 focus:border-charcoal focus:outline-none rounded-sm text-sm text-charcoal lowercase flex-1"
-                          placeholder="type your skill..."
+                          className="px-4 py-2.5 bg-white border border-warm-gray-300 focus:border-forest focus:outline-none rounded-lg text-sm text-forest font-sans font-medium flex-1"
+                          placeholder="Type your skill..."
                           autoFocus
                         />
                         <button
                           onClick={addCustomSkill}
-                          className="px-5 py-2.5 rounded-sm bg-charcoal text-cream hover:bg-warm-gray-900 transition-all text-sm lowercase"
+                          className="px-5 py-2.5 rounded-lg bg-forest text-white hover:bg-dark-green transition-all text-sm font-sans font-medium shadow-md"
+                          style={{ backgroundColor: '#456456', color: '#FFFFFF' }}
                         >
-                          add
+                          Add
                         </button>
                         <button
                           onClick={() => {
                             setShowCustomSkillInput(false)
                             setFormData({ ...formData, customSkill: '' })
                           }}
-                          className="px-5 py-2.5 rounded-sm bg-white text-warm-gray-700 border border-warm-gray-300 hover:border-charcoal transition-all text-sm lowercase"
+                          className="px-5 py-2.5 rounded-lg bg-white text-warm-gray-700 border border-warm-gray-300 hover:border-forest transition-all text-sm font-sans font-medium"
                         >
-                          cancel
+                          Cancel
                         </button>
                       </div>
                     )}
@@ -556,28 +573,28 @@ const SignupPage = () => {
                 {formData.role === 'builder' ? (
                   <>
                     <div className="space-y-4">
-                      <p className="text-xs uppercase tracking-loose text-warm-gray-600 font-sans">
+                      <p className="text-xs uppercase tracking-loose text-mint font-sans font-semibold" style={{ color: '#7FB685' }}>
                         Your Projects
                       </p>
-                      <h1 className="font-serif text-5xl md:text-6xl text-charcoal lowercase leading-tight">
-                        add your projects
+                      <h1 className="font-sans font-extrabold text-5xl md:text-6xl text-forest leading-tight" style={{ color: '#456456' }}>
+                        Add Your Projects
                       </h1>
-                      <p className="text-lg text-warm-gray-700 font-light max-w-lg">
-                        add at least one project. you can add more later.
+                      <p className="text-lg text-warm-gray-700 font-normal max-w-lg">
+                        Add at least one project. You can add more later.
                       </p>
                     </div>
 
                     {/* Current Project Form */}
-                    {currentProjectIndex < formData.projects.length || formData.projects.length === 0 ? (
-                      <div className="space-y-8 p-8 bg-white rounded-sm border border-warm-gray-200">
-                        <h3 className="font-serif text-2xl text-charcoal lowercase">
-                          Project {formData.projects.length + 1}
-                        </h3>
+                      {isEditingProject && (
+                       <div className="space-y-8 p-8 bg-white rounded-xl border-2 border-mint shadow-md" style={{ borderColor: '#7FB685' }}>
+                         <h3 className="font-sans font-bold text-2xl text-forest" style={{ color: '#456456' }}>
+                            Project {currentProjectIndex + 1}
+                          </h3>
 
                         {/* Project Name */}
                         <div>
-                          <label className="block text-xs uppercase tracking-loose text-warm-gray-600 mb-3 font-sans">
-                            project name <span className="text-rust">*</span>
+                          <label className="block text-xs uppercase tracking-loose text-warm-gray-600 mb-3 font-sans font-semibold">
+                            project name <span className="text-bright-orange" style={{ color: '#F5A65B' }}>*</span>
                           </label>
                           <input
                             type="text"
@@ -590,15 +607,16 @@ const SignupPage = () => {
                               newProjects[currentProjectIndex].name = e.target.value
                               setFormData({ ...formData, projects: newProjects })
                             }}
-                            className="w-full px-0 py-4 bg-transparent border-b-2 border-warm-gray-300 focus:border-charcoal focus:outline-none transition-colors text-xl text-charcoal font-light"
-                            placeholder="my awesome app"
+                            className="w-full px-0 py-4 bg-transparent border-b-2 border-warm-gray-300 focus:border-forest focus:outline-none transition-colors text-xl text-forest font-normal"
+                            style={{ borderColor: formData.projects[currentProjectIndex]?.name ? '#456456' : undefined }}
+                            placeholder="My Awesome App"
                           />
                         </div>
 
                         {/* Project Description */}
                         <div>
-                          <label className="block text-xs uppercase tracking-loose text-warm-gray-600 mb-3 font-sans">
-                            description <span className="text-rust">*</span>
+                          <label className="block text-xs uppercase tracking-loose text-warm-gray-600 mb-3 font-sans font-semibold">
+                            description <span className="text-bright-orange" style={{ color: '#F5A65B' }}>*</span>
                           </label>
                           <textarea
                             value={formData.projects[currentProjectIndex]?.description || ''}
@@ -610,16 +628,17 @@ const SignupPage = () => {
                               newProjects[currentProjectIndex].description = e.target.value
                               setFormData({ ...formData, projects: newProjects })
                             }}
-                            className="w-full px-0 py-4 bg-transparent border-b-2 border-warm-gray-300 focus:border-charcoal focus:outline-none transition-colors text-lg text-charcoal resize-none font-light"
+                            className="w-full px-0 py-4 bg-transparent border-b-2 border-warm-gray-300 focus:border-forest focus:outline-none transition-colors text-lg text-forest resize-none font-normal"
+                            style={{ borderColor: formData.projects[currentProjectIndex]?.description ? '#456456' : undefined }}
                             rows={4}
-                            placeholder="what does it do? who is it for?"
+                            placeholder="What does it do? Who is it for?"
                           />
                         </div>
 
                         {/* Project Stage */}
                         <div>
-                          <label className="block text-xs uppercase tracking-loose text-warm-gray-600 mb-4 font-sans">
-                            project stage <span className="text-rust">*</span>
+                          <label className="block text-xs uppercase tracking-loose text-warm-gray-600 mb-4 font-sans font-semibold">
+                            project stage <span className="text-bright-orange" style={{ color: '#F5A65B' }}>*</span>
                           </label>
                           <div className="space-y-3">
                             {['💡 Idea / Concept', '🔨 In Development', '🚀 MVP Launched', '📈 Early Traction (<100 users)', '🎯 Growing (100-1K users)', '💪 Established (1K+ users)'].map(stage => (
@@ -633,13 +652,14 @@ const SignupPage = () => {
                                   newProjects[currentProjectIndex].stage = stage
                                   setFormData({ ...formData, projects: newProjects })
                                 }}
-                                className={`w-full p-4 rounded-sm border-2 transition-all text-left ${
+                                className={`w-full p-4 rounded-lg border-2 transition-all text-left shadow-sm hover:shadow-md ${
                                   formData.projects[currentProjectIndex]?.stage === stage
-                                    ? 'border-charcoal bg-white'
-                                    : 'border-warm-gray-200 hover:border-warm-gray-400 bg-white/50'
+                                    ? 'border-forest bg-white'
+                                    : 'border-warm-gray-200 hover:border-mint bg-white/50'
                                 }`}
+                                style={formData.projects[currentProjectIndex]?.stage === stage ? { borderColor: '#456456' } : {}}
                               >
-                                <div className="text-sm lowercase text-charcoal font-light">{stage}</div>
+                                <div className="text-sm text-forest font-sans font-medium" style={{ color: '#456456' }}>{stage}</div>
                               </button>
                             ))}
                           </div>
@@ -647,8 +667,8 @@ const SignupPage = () => {
 
                         {/* Project Link */}
                         <div>
-                          <label className="block text-xs uppercase tracking-loose text-warm-gray-600 mb-3 font-sans">
-                            project link <span className="text-rust">*</span>
+                          <label className="block text-xs uppercase tracking-loose text-warm-gray-600 mb-3 font-sans font-semibold">
+                            project link <span className="text-bright-orange" style={{ color: '#F5A65B' }}>*</span>
                           </label>
                           <input
                             type="url"
@@ -661,17 +681,18 @@ const SignupPage = () => {
                               newProjects[currentProjectIndex].link = e.target.value
                               setFormData({ ...formData, projects: newProjects })
                             }}
-                            className="w-full px-0 py-4 bg-transparent border-b-2 border-warm-gray-300 focus:border-charcoal focus:outline-none transition-colors text-lg text-charcoal font-light"
+                            className="w-full px-0 py-4 bg-transparent border-b-2 border-warm-gray-300 focus:border-forest focus:outline-none transition-colors text-lg text-forest font-normal"
+                            style={{ borderColor: formData.projects[currentProjectIndex]?.link ? '#456456' : undefined }}
                             placeholder="https://..."
                           />
-                          <p className="text-sm text-warm-gray-500 mt-2 font-light">
-                            website, app store, github, etc.
+                          <p className="text-sm text-warm-gray-500 mt-2 font-normal">
+                            Website, app store, GitHub, etc.
                           </p>
                         </div>
 
                         {/* Project Logo */}
                         <div>
-                          <label className="block text-xs uppercase tracking-loose text-warm-gray-600 mb-4 font-sans">
+                          <label className="block text-xs uppercase tracking-loose text-warm-gray-600 mb-4 font-sans font-semibold">
                             project logo <span className="text-warm-gray-400">(optional)</span>
                           </label>
                           
@@ -680,7 +701,7 @@ const SignupPage = () => {
                               <img
                                 src={formData.projects[currentProjectIndex].logoPreview}
                                 alt="Logo preview"
-                                className="w-24 h-24 object-cover rounded-sm border border-warm-gray-200"
+                                className="w-24 h-24 object-cover rounded-lg border-2 border-warm-gray-200 shadow-md"
                               />
                             </div>
                           )}
@@ -706,111 +727,138 @@ const SignupPage = () => {
                             />
                             <label
                               htmlFor="project-logo"
-                              className="px-8 py-3 bg-white text-charcoal border border-warm-gray-300 hover:border-charcoal rounded-sm transition-all font-sans tracking-relaxed lowercase cursor-pointer inline-block"
+                              className="px-8 py-3 bg-white text-forest border-2 border-mint hover:border-forest rounded-lg transition-all font-sans font-medium shadow-md hover:shadow-lg cursor-pointer inline-block"
+                              style={{ color: '#456456', borderColor: '#7FB685' }}
                             >
-                              {formData.projects[currentProjectIndex]?.logo ? 'change logo' : 'upload logo'}
+                              {formData.projects[currentProjectIndex]?.logo ? 'Change Logo' : 'Upload Logo'}
                             </label>
                           </div>
                         </div>
 
-                        {/* Add Another Project Button */}
-                        <div className="pt-6 border-t border-warm-gray-200">
+                        {/* Save Project Button */}
+                        <div className="pt-6 border-t-2 border-warm-gray-200">
                           <button
                             onClick={() => {
                               const currentProject = formData.projects[currentProjectIndex]
                               if (currentProject && currentProject.name && currentProject.description && currentProject.stage && currentProject.link) {
-                                setCurrentProjectIndex(currentProjectIndex + 1)
+                                // Project is complete, hide the form and show the list
+                                setIsEditingProject(false)
                               } else {
-                                alert('Please complete the current project before adding another.')
+                                alert('Please complete all required fields before saving.')
                               }
                             }}
-                            className="text-sm text-rust hover:text-charcoal transition-colors lowercase"
+                            disabled={
+                              !formData.projects[currentProjectIndex]?.name ||
+                              !formData.projects[currentProjectIndex]?.description ||
+                              !formData.projects[currentProjectIndex]?.stage ||
+                              !formData.projects[currentProjectIndex]?.link
+                            }
+                            className="px-8 py-3 bg-forest text-white rounded-lg hover:bg-dark-green transition-all font-sans font-medium shadow-md hover:shadow-lg disabled:opacity-30 disabled:cursor-not-allowed"
+                            style={{ backgroundColor: '#456456', color: '#FFFFFF' }}
                           >
-                            + add another project (optional)
+                            Save Project
                           </button>
                         </div>
                       </div>
-                    ) : null}
+                    )}
 
                     {/* List of Added Projects */}
-                    {formData.projects.length > 0 && (
+                    {formData.projects.length > 0 && !isEditingProject && (
                       <div className="space-y-4">
-                        <p className="text-xs uppercase tracking-loose text-warm-gray-600 font-sans">
+                        <p className="text-xs uppercase tracking-loose text-warm-gray-600 font-sans font-semibold">
                           Added Projects ({formData.projects.length})
                         </p>
                         {formData.projects.map((project, index) => (
-                          <div key={index} className="p-4 bg-sand rounded-sm border border-warm-gray-200 flex items-center justify-between">
+                          <div key={index} className="p-5 bg-white rounded-xl border-2 border-warm-gray-200 flex items-center justify-between shadow-md hover:shadow-lg transition-shadow">
                             <div className="flex items-center gap-3">
                               {project.logoPreview && (
-                                <img src={project.logoPreview} alt={project.name} className="w-12 h-12 object-cover rounded-sm" />
+                                <img src={project.logoPreview} alt={project.name} className="w-12 h-12 object-cover rounded-lg border border-warm-gray-200" />
                               )}
                               <div>
-                                <p className="font-serif text-lg text-charcoal lowercase">{project.name}</p>
-                                <p className="text-xs text-warm-gray-600">{project.stage}</p>
+                                <p className="font-sans font-bold text-lg text-forest" style={{ color: '#456456' }}>{project.name}</p>
+                                <p className="text-xs text-warm-gray-600 font-normal">{project.stage}</p>
                               </div>
                             </div>
                             <button
                               onClick={() => {
                                 const newProjects = formData.projects.filter((_, i) => i !== index)
                                 setFormData({ ...formData, projects: newProjects })
-                                if (currentProjectIndex > newProjects.length) {
-                                  setCurrentProjectIndex(newProjects.length)
+                                if (currentProjectIndex >= newProjects.length && newProjects.length > 0) {
+                                  setCurrentProjectIndex(newProjects.length - 1)
+                                } else if (newProjects.length === 0) {
+                                  setCurrentProjectIndex(0)
+                                  setIsEditingProject(true)
                                 }
                               }}
-                              className="text-warm-gray-500 hover:text-rust transition-colors"
+                              className="text-warm-gray-500 hover:text-bright-orange transition-colors font-sans font-medium text-sm"
+                              style={{ color: '#9CA3AF' }}
                             >
-                              remove
+                              Remove
                             </button>
                           </div>
                         ))}
+                        
+                        {/* Add Another Project Button */}
+                        <button
+                          onClick={() => {
+                            setCurrentProjectIndex(formData.projects.length)
+                            setIsEditingProject(true)
+                          }}
+                          className="w-full py-4 rounded-xl border-2 border-dashed border-mint hover:border-forest hover:bg-light-mint transition-all text-forest font-sans font-medium"
+                          style={{ borderColor: '#7FB685', color: '#456456' }}
+                        >
+                          + Add Another Project
+                        </button>
                       </div>
                     )}
                   </>
                 ) : (
-                  // Marketer Experience (same as before)
+                  // Marketer Experience
                   <>
                     <div className="space-y-4">
-                      <p className="text-xs uppercase tracking-loose text-warm-gray-600 font-sans">
+                      <p className="text-xs uppercase tracking-loose text-mint font-sans font-semibold" style={{ color: '#7FB685' }}>
                         Your Experience
                       </p>
-                      <h1 className="font-serif text-5xl md:text-6xl text-charcoal lowercase leading-tight">
-                        your marketing background
+                      <h1 className="font-sans font-extrabold text-5xl md:text-6xl text-forest leading-tight" style={{ color: '#456456' }}>
+                        Your Marketing Background
                       </h1>
-                      <p className="text-lg text-warm-gray-700 font-light max-w-lg">
-                        what marketing experience do you have?
+                      <p className="text-lg text-warm-gray-700 font-normal max-w-lg">
+                        What marketing experience do you have?
                       </p>
                     </div>
 
                     <div className="space-y-8">
                       {/* For Marketers: Marketing Experience */}
                       <div>
-                        <label className="block text-xs uppercase tracking-loose text-warm-gray-600 mb-3 font-sans">
+                        <label className="block text-xs uppercase tracking-loose text-warm-gray-600 mb-3 font-sans font-semibold">
                           describe your marketing experience
                         </label>
                         <textarea
                           value={formData.marketingExperience}
                           onChange={(e) => setFormData({ ...formData, marketingExperience: e.target.value })}
-                          className="w-full px-0 py-4 bg-transparent border-b-2 border-warm-gray-300 focus:border-charcoal focus:outline-none transition-colors text-lg text-charcoal resize-none font-light"
+                          className="w-full px-0 py-4 bg-transparent border-b-2 border-warm-gray-300 focus:border-forest focus:outline-none transition-colors text-lg text-forest resize-none font-normal"
+                          style={{ borderColor: formData.marketingExperience ? '#456456' : undefined }}
                           rows={5}
-                          placeholder="what have you marketed? what results did you achieve? include numbers if possible..."
+                          placeholder="What have you marketed? What results did you achieve? Include numbers if possible..."
                           required
                         />
                       </div>
 
                       {/* Portfolio Links */}
                       <div>
-                        <label className="block text-xs uppercase tracking-loose text-warm-gray-600 mb-3 font-sans">
+                        <label className="block text-xs uppercase tracking-loose text-warm-gray-600 mb-3 font-sans font-semibold">
                           portfolio & work samples
                         </label>
                         <textarea
                           value={formData.portfolioLinks}
                           onChange={(e) => setFormData({ ...formData, portfolioLinks: e.target.value })}
-                          className="w-full px-0 py-4 bg-transparent border-b-2 border-warm-gray-300 focus:border-charcoal focus:outline-none transition-colors text-lg text-charcoal resize-none font-light"
+                          className="w-full px-0 py-4 bg-transparent border-b-2 border-warm-gray-300 focus:border-forest focus:outline-none transition-colors text-lg text-forest resize-none font-normal"
+                          style={{ borderColor: formData.portfolioLinks ? '#456456' : undefined }}
                           rows={5}
-                          placeholder="share links to your best work...&#10;&#10;campaigns, content, case studies, social media accounts, etc."
+                          placeholder="Share links to your best work...&#10;&#10;Campaigns, content, case studies, social media accounts, etc."
                         />
-                        <p className="text-sm text-warm-gray-500 mt-2 font-light">
-                          paste links (one per line)
+                        <p className="text-sm text-warm-gray-500 mt-2 font-normal">
+                          Paste links (one per line)
                         </p>
                       </div>
                     </div>
@@ -830,61 +878,63 @@ const SignupPage = () => {
                 className="space-y-12"
               >
                 <div className="space-y-4">
-                  <p className="text-xs uppercase tracking-loose text-warm-gray-600 font-sans">
+                  <p className="text-xs uppercase tracking-loose text-mint font-sans font-semibold" style={{ color: '#7FB685' }}>
                     Arrangements
                   </p>
-                  <h1 className="font-serif text-5xl md:text-6xl text-charcoal lowercase leading-tight">
-                    partnership terms
+                  <h1 className="font-sans font-extrabold text-5xl md:text-6xl text-forest leading-tight" style={{ color: '#456456' }}>
+                    Partnership Terms
                   </h1>
-                  <p className="text-lg text-warm-gray-700 font-light max-w-lg">
+                  <p className="text-lg text-warm-gray-700 font-normal max-w-lg">
                     {formData.role === 'builder' 
-                      ? 'what arrangement are you open to with marketers?'
-                      : 'what arrangement are you looking for?'
+                      ? 'What arrangement are you open to with marketers?'
+                      : 'What arrangement are you looking for?'
                     }
                   </p>
                 </div>
 
                 <div className="space-y-8">
                   <div>
-                    <label className="block text-xs uppercase tracking-loose text-warm-gray-600 mb-4 font-sans">
+                    <label className="block text-xs uppercase tracking-loose text-warm-gray-600 mb-4 font-sans font-semibold">
                       select all that apply
                     </label>
                     <div className="space-y-3">
                       {formData.role === 'builder' ? (
                         <>
-                          {['co-founder / equity partner', 'revenue share', 'pay for marketing services', 'open to discussion'].map(option => (
+                          {['Co-founder / Equity Partner', 'Revenue Share', 'Pay for Marketing Services', 'Open to Discussion'].map(option => (
                             <button
                               key={option}
                               onClick={() => setFormData({ 
                                 ...formData, 
                                 partnershipPreference: toggleArrayItem(formData.partnershipPreference, option)
                               })}
-                              className={`w-full p-4 rounded-sm border-2 transition-all text-left ${
+                              className={`w-full p-5 rounded-xl border-2 transition-all text-left shadow-md hover:shadow-lg ${
                                 formData.partnershipPreference.includes(option)
-                                  ? 'border-charcoal bg-white'
-                                  : 'border-warm-gray-200 hover:border-warm-gray-400 bg-white/50'
+                                  ? 'border-forest bg-light-mint'
+                                  : 'border-warm-gray-200 hover:border-mint bg-white'
                               }`}
+                              style={formData.partnershipPreference.includes(option) ? { borderColor: '#456456', backgroundColor: '#E8F4EA' } : {}}
                             >
-                              <div className="text-sm lowercase text-charcoal font-light">{option}</div>
+                              <div className="text-base text-forest font-sans font-medium" style={{ color: '#456456' }}>{option}</div>
                             </button>
                           ))}
                         </>
                       ) : (
                         <>
-                          {['seeking co-founder / equity position', 'revenue share', 'paid marketing work', 'open to any arrangement'].map(option => (
+                          {['Seeking Co-founder / Equity Position', 'Revenue Share', 'Paid Marketing Work', 'Open to Any Arrangement'].map(option => (
                             <button
                               key={option}
                               onClick={() => setFormData({ 
                                 ...formData, 
                                 preferredArrangement: toggleArrayItem(formData.preferredArrangement, option)
                               })}
-                              className={`w-full p-4 rounded-sm border-2 transition-all text-left ${
+                              className={`w-full p-5 rounded-xl border-2 transition-all text-left shadow-md hover:shadow-lg ${
                                 formData.preferredArrangement.includes(option)
-                                  ? 'border-charcoal bg-white'
-                                  : 'border-warm-gray-200 hover:border-warm-gray-400 bg-white/50'
+                                  ? 'border-forest bg-light-mint'
+                                  : 'border-warm-gray-200 hover:border-mint bg-white'
                               }`}
+                              style={formData.preferredArrangement.includes(option) ? { borderColor: '#456456', backgroundColor: '#E8F4EA' } : {}}
                             >
-                              <div className="text-sm lowercase text-charcoal font-light">{option}</div>
+                              <div className="text-base text-forest font-sans font-medium" style={{ color: '#456456' }}>{option}</div>
                             </button>
                           ))}
                         </>
@@ -895,22 +945,23 @@ const SignupPage = () => {
                   {/* Industries for Marketers */}
                   {formData.role === 'marketer' && (
                     <div>
-                      <label className="block text-xs uppercase tracking-loose text-warm-gray-600 mb-4 font-sans">
+                      <label className="block text-xs uppercase tracking-loose text-warm-gray-600 mb-4 font-sans font-semibold">
                         what industries interest you? (optional)
                       </label>
                       <div className="flex flex-wrap gap-3">
-                        {['fintech', 'health & wellness', 'productivity', 'social', 'ai/ml', 'e-commerce', 'education', 'gaming', 'any'].map(industry => (
+                        {['Fintech', 'Health & Wellness', 'Productivity', 'Social', 'AI/ML', 'E-commerce', 'Education', 'Gaming', 'Any'].map(industry => (
                           <button
                             key={industry}
                             onClick={() => setFormData({ 
                               ...formData, 
                               industries: toggleArrayItem(formData.industries, industry)
                             })}
-                            className={`px-5 py-2.5 rounded-sm transition-all text-sm lowercase ${
+                            className={`px-5 py-2.5 rounded-lg transition-all text-sm font-sans font-medium shadow-sm hover:shadow-md ${
                               formData.industries.includes(industry)
-                                ? 'bg-charcoal text-cream'
-                                : 'bg-white text-warm-gray-700 border border-warm-gray-300 hover:border-charcoal'
+                                ? 'bg-forest text-white'
+                                : 'bg-white text-warm-gray-700 border border-warm-gray-300 hover:border-mint'
                             }`}
+                            style={formData.industries.includes(industry) ? { backgroundColor: '#456456', color: '#FFFFFF' } : {}}
                           >
                             {industry}
                           </button>
@@ -933,37 +984,38 @@ const SignupPage = () => {
                 className="space-y-12"
               >
                 <div className="space-y-4">
-                  <p className="text-xs uppercase tracking-loose text-warm-gray-600 font-sans">
+                  <p className="text-xs uppercase tracking-loose text-mint font-sans font-semibold" style={{ color: '#7FB685' }}>
                     Final step
                   </p>
-                  <h1 className="font-serif text-5xl md:text-6xl text-charcoal lowercase leading-tight">
-                    tell your story
+                  <h1 className="font-sans font-extrabold text-5xl md:text-6xl text-forest leading-tight" style={{ color: '#456456' }}>
+                    Tell Your Story
                   </h1>
-                  <p className="text-lg text-warm-gray-700 font-light max-w-lg">
+                  <p className="text-lg text-warm-gray-700 font-normal max-w-lg">
                     {formData.role === 'builder' 
-                      ? 'this is what marketers will see when browsing your projects'
-                      : 'this is what builders will see when you reach out'
+                      ? 'This is what marketers will see when browsing your projects'
+                      : 'This is what builders will see when you reach out'
                     }
                   </p>
                 </div>
 
                 <div className="space-y-8">
                   <div>
-                    <label className="block text-xs uppercase tracking-loose text-warm-gray-600 mb-3 font-sans">
+                    <label className="block text-xs uppercase tracking-loose text-warm-gray-600 mb-3 font-sans font-semibold">
                       your bio
                     </label>
                     <textarea
                       value={formData.bio}
                       onChange={(e) => setFormData({ ...formData, bio: e.target.value })}
-                      className="w-full px-0 py-4 bg-transparent border-b-2 border-warm-gray-300 focus:border-charcoal focus:outline-none transition-colors text-lg text-charcoal resize-none font-light"
+                      className="w-full px-0 py-4 bg-transparent border-b-2 border-warm-gray-300 focus:border-forest focus:outline-none transition-colors text-lg text-forest resize-none font-normal"
+                      style={{ borderColor: formData.bio ? '#456456' : undefined }}
                       rows={6}
-                      placeholder="make it compelling. make it you."
+                      placeholder="Make it compelling. Make it you."
                     />
                   </div>
 
-                  <div className="p-6 rounded-sm bg-sand border-l-2 border-rust">
-                    <p className="text-sm text-warm-gray-700 font-light italic">
-                      be authentic. be specific. be human. the best connections come from real stories.
+                  <div className="p-6 rounded-xl bg-light-mint border-l-4 border-mint shadow-md" style={{ backgroundColor: '#E8F4EA', borderColor: '#7FB685' }}>
+                    <p className="text-sm text-forest font-normal" style={{ color: '#456456' }}>
+                      Be authentic. Be specific. Be human. The best connections come from real stories.
                     </p>
                   </div>
                 </div>
@@ -976,14 +1028,16 @@ const SignupPage = () => {
             {step > 1 && (
               <button
                 onClick={handleBack}
-                className="px-6 py-3 rounded-sm border border-warm-gray-300 text-warm-gray-700 hover:border-charcoal hover:text-charcoal transition-all font-sans tracking-relaxed lowercase"
+                className="px-8 py-3.5 rounded-xl border-2 border-mint text-forest hover:border-forest transition-all font-sans font-semibold shadow-md hover:shadow-lg"
+                style={{ color: '#456456', borderColor: '#7FB685' }}
               >
-                back
+                Back
               </button>
             )}
             <button
               onClick={handleNext}
-              className="flex-1 px-6 py-3 bg-charcoal text-cream rounded-sm hover:bg-warm-gray-900 transition-all font-sans tracking-relaxed lowercase disabled:opacity-30 disabled:cursor-not-allowed"
+              className="flex-1 px-8 py-3.5 bg-forest text-white rounded-xl hover:bg-dark-green transition-all font-sans font-semibold shadow-lg hover:shadow-xl disabled:opacity-30 disabled:cursor-not-allowed"
+              style={{ backgroundColor: '#456456', color: '#FFFFFF' }}
               disabled={
                 uploading ||
                 (step === 1 && (!formData.name || !formData.email || !formData.role)) ||
@@ -997,7 +1051,7 @@ const SignupPage = () => {
                 (step === 7 && !formData.bio)
               }
             >
-              {uploading ? 'uploading...' : step === totalSteps ? 'submit application' : 'continue'}
+              {uploading ? 'Uploading...' : step === totalSteps ? 'Submit Application' : 'Continue'}
             </button>
           </div>
         </div>

@@ -29,6 +29,7 @@ interface UserProfile {
     logoUrl: string
   }>
   partnershipPreference?: string[]
+  currentProject?: string
   
   // Marketer-specific fields
   marketingExperience?: string

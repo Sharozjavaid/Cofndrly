@@ -99,10 +99,10 @@ const UserProjectDetailPage = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-cream grain flex items-center justify-center">
+      <div className="min-h-screen bg-white flex items-center justify-center">
         <div className="text-center">
           <div className="text-4xl mb-4">⏳</div>
-          <p className="text-warm-gray-600">loading project...</p>
+          <p className="text-warm-gray-600 font-normal">Loading project...</p>
         </div>
       </div>
     )
@@ -110,15 +110,16 @@ const UserProjectDetailPage = () => {
 
   if (!project || !builder) {
     return (
-      <div className="min-h-screen bg-cream grain flex items-center justify-center">
+      <div className="min-h-screen bg-white flex items-center justify-center">
         <div className="text-center">
           <div className="text-6xl mb-6">❌</div>
-          <h2 className="font-serif text-3xl text-charcoal lowercase mb-4">project not found</h2>
+          <h2 className="font-sans font-bold text-3xl text-forest mb-4" style={{ color: '#456456' }}>Project Not Found</h2>
           <button
             onClick={() => navigate('/projects')}
-            className="px-8 py-3 bg-charcoal text-cream rounded-sm hover:bg-warm-gray-900 transition-all"
+            className="px-8 py-3 bg-forest text-white rounded-xl hover:bg-dark-green transition-all font-sans font-semibold shadow-lg"
+            style={{ backgroundColor: '#456456', color: '#FFFFFF' }}
           >
-            back to projects
+            Back to Projects
           </button>
         </div>
       </div>
@@ -126,42 +127,48 @@ const UserProjectDetailPage = () => {
   }
 
   return (
-    <div className="min-h-screen bg-cream grain">
+    <div className="min-h-screen bg-white">
       {/* Navigation */}
-      <nav className="fixed top-0 w-full bg-cream/80 backdrop-blur-md border-b border-warm-gray-200/50 z-50">
-        <div className="max-w-7xl mx-auto px-8 py-6 flex items-center justify-between">
-          <div 
-            className="text-xl font-serif tracking-tight lowercase text-charcoal cursor-pointer" 
+      <nav className="fixed top-0 w-full bg-white/95 backdrop-blur-md border-b border-warm-gray-200 z-50">
+        <div className="max-w-7xl mx-auto px-8 py-4 flex items-center justify-between">
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="flex items-center gap-2 cursor-pointer"
             onClick={() => navigate('/projects')}
           >
-            cofndrly
-          </div>
-          <div className="flex gap-4 items-center">
+            <img src="/logo-bg.png" alt="GrowMyApp Logo" className="w-10 h-10" />
+            <span className="text-xl font-bold tracking-tight text-forest" style={{ color: '#456456' }}>
+              GrowMyApp
+            </span>
+          </motion.div>
+          <div className="flex gap-6 items-center">
             <button 
               onClick={() => navigate('/projects')}
-              className="text-sm text-charcoal font-medium transition-colors lowercase tracking-relaxed"
+              className="text-sm text-forest font-semibold transition-colors"
+              style={{ color: '#456456' }}
             >
-              browse projects
+              Browse Projects
             </button>
             {userProfile?.role === 'builder' && (
               <button 
                 onClick={() => navigate('/my-projects')}
-                className="text-sm text-warm-gray-600 hover:text-charcoal transition-colors lowercase tracking-relaxed"
+                className="text-sm text-warm-gray-600 hover:text-forest transition-colors font-medium"
               >
-                my projects
+                My Projects
               </button>
             )}
             <button 
               onClick={() => navigate('/messages')}
-              className="text-sm text-warm-gray-600 hover:text-charcoal transition-colors lowercase tracking-relaxed"
+              className="text-sm text-warm-gray-600 hover:text-forest transition-colors font-medium"
             >
-              messages
+              Messages
             </button>
             <button 
               onClick={() => navigate('/profile')}
-              className="text-sm text-warm-gray-600 hover:text-charcoal transition-colors lowercase tracking-relaxed"
+              className="text-sm text-warm-gray-600 hover:text-forest transition-colors font-medium"
             >
-              profile
+              Profile
             </button>
           </div>
         </div>
@@ -180,7 +187,8 @@ const UserProjectDetailPage = () => {
                 <img
                   src={project.logoUrl}
                   alt={project.name}
-                  className="w-48 h-48 object-contain rounded-sm border border-warm-gray-200 p-6 bg-white"
+                  className="w-48 h-48 object-contain rounded-xl border-2 border-mint p-6 bg-white shadow-lg"
+                  style={{ borderColor: '#7FB685' }}
                 />
               </div>
             )}
@@ -188,33 +196,43 @@ const UserProjectDetailPage = () => {
             {/* Header */}
             <div className="mb-12">
               <div className="flex flex-wrap items-center gap-3 mb-4">
-                <span className="px-4 py-2 bg-sage/20 border border-sage/30 rounded-sm text-xs lowercase text-charcoal font-sans">
-                  {project.stage}
+                <span className="px-4 py-2 bg-light-mint border-2 border-mint rounded-lg text-xs text-forest font-sans font-medium shadow-sm" style={{ backgroundColor: '#E8F4EA', borderColor: '#7FB685', color: '#456456' }}>
+                  ✓ {project.stage}
                 </span>
               </div>
 
-              <h1 className="font-serif text-5xl md:text-6xl text-charcoal lowercase leading-tight mb-6">
+              <h1 className="font-sans font-extrabold text-5xl md:text-6xl text-forest leading-tight mb-6" style={{ color: '#456456' }}>
                 {project.name}
               </h1>
 
               {/* Builder Info */}
               <div className="flex items-center gap-4 mb-8">
-                {builder.profileImageUrl ? (
-                  <img
-                    src={builder.profileImageUrl}
-                    alt={builder.name}
-                    className="w-12 h-12 rounded-full object-cover"
-                  />
-                ) : (
-                  <div className="w-12 h-12 rounded-full bg-rust/20 flex items-center justify-center text-lg text-charcoal">
-                    {builder.name.charAt(0).toUpperCase()}
-                  </div>
-                )}
+                <div 
+                  onClick={() => navigate(`/profile/${userId}`)}
+                  className="cursor-pointer"
+                >
+                  {builder.profileImageUrl && !builder.profileImageUrl.startsWith('data:image') ? (
+                    <img
+                      src={builder.profileImageUrl}
+                      alt={builder.name}
+                      className="w-14 h-14 rounded-full object-cover border-2 border-mint hover:border-forest shadow-md hover:shadow-lg transition-all"
+                      style={{ borderColor: '#7FB685' }}
+                    />
+                  ) : (
+                    <div className="w-14 h-14 rounded-full bg-gradient-to-br from-forest to-mint flex items-center justify-center text-lg text-white font-bold border-2 border-mint hover:border-forest shadow-md hover:shadow-lg transition-all" style={{ background: 'linear-gradient(135deg, #456456 0%, #7FB685 100%)', borderColor: '#7FB685' }}>
+                      {builder.name.charAt(0).toUpperCase()}
+                    </div>
+                  )}
+                </div>
                 <div>
-                  <p className="text-sm text-warm-gray-700">
-                    created by
+                  <p className="text-sm text-warm-gray-600 font-normal">
+                    Created by
                   </p>
-                  <p className="font-serif text-xl text-charcoal lowercase">
+                  <p 
+                    onClick={() => navigate(`/profile/${userId}`)}
+                    className="font-sans font-bold text-xl text-forest hover:text-mint transition-colors cursor-pointer" 
+                    style={{ color: '#456456' }}
+                  >
                     {builder.name}
                   </p>
                 </div>
@@ -224,19 +242,20 @@ const UserProjectDetailPage = () => {
               {currentUser && userId !== currentUser.uid && (
                 <button
                   onClick={() => setShowContactModal(true)}
-                  className="px-10 py-4 bg-charcoal text-cream rounded-sm hover:bg-warm-gray-900 transition-all font-sans tracking-relaxed lowercase text-lg"
+                  className="px-10 py-4 bg-forest text-white rounded-xl hover:bg-dark-green transition-all font-sans font-semibold text-lg shadow-lg hover:shadow-xl"
+                  style={{ backgroundColor: '#456456', color: '#FFFFFF' }}
                 >
-                  interested? reach out
+                  Interested? Reach Out
                 </button>
               )}
             </div>
 
             {/* Description */}
             <div className="mb-12">
-              <h2 className="text-xs uppercase tracking-loose text-warm-gray-600 mb-4 font-sans">
+              <h2 className="text-xs uppercase tracking-loose text-warm-gray-600 mb-4 font-sans font-semibold">
                 About the Project
               </h2>
-              <p className="text-lg text-warm-gray-800 leading-relaxed font-light whitespace-pre-wrap">
+              <p className="text-lg text-warm-gray-800 leading-relaxed font-normal whitespace-pre-wrap">
                 {project.description}
               </p>
             </div>
@@ -244,35 +263,36 @@ const UserProjectDetailPage = () => {
             {/* Link */}
             {project.link && (
               <div className="mb-12">
-                <h2 className="text-xs uppercase tracking-loose text-warm-gray-600 mb-4 font-sans">
+                <h2 className="text-xs uppercase tracking-loose text-warm-gray-600 mb-4 font-sans font-semibold">
                   Link
                 </h2>
                 <a
                   href={project.link}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-2 text-rust hover:text-charcoal transition-colors text-lg"
+                  className="flex items-center gap-2 text-mint hover:text-forest transition-colors text-lg font-medium"
+                  style={{ color: '#7FB685' }}
                 >
                   <span>→</span>
-                  <span className="lowercase">visit project</span>
+                  <span>Visit Project</span>
                 </a>
               </div>
             )}
 
             {/* Partnership Terms */}
             <div className="mb-12">
-              <h2 className="text-xs uppercase tracking-loose text-warm-gray-600 mb-4 font-sans">
+              <h2 className="text-xs uppercase tracking-loose text-warm-gray-600 mb-4 font-sans font-semibold">
                 Partnership Terms
               </h2>
-              <div className="bg-white rounded-sm border border-warm-gray-200 p-6">
-                <p className="text-sm text-warm-gray-600 mb-3 font-light">
-                  the builder is open to:
+              <div className="bg-white rounded-xl border-2 border-warm-gray-200 p-6 shadow-md">
+                <p className="text-sm text-warm-gray-600 mb-3 font-normal">
+                  The builder is open to:
                 </p>
                 <div className="space-y-2">
                   {builder.partnershipPreference.map(term => (
                     <div key={term} className="flex items-center gap-2">
-                      <span className="text-rust">✓</span>
-                      <span className="text-charcoal lowercase">{term}</span>
+                      <span className="text-mint font-bold" style={{ color: '#7FB685' }}>✓</span>
+                      <span className="text-forest font-medium" style={{ color: '#456456' }}>{term}</span>
                     </div>
                   ))}
                 </div>
@@ -281,10 +301,10 @@ const UserProjectDetailPage = () => {
 
             {/* About the Builder */}
             <div className="mb-12">
-              <h2 className="text-xs uppercase tracking-loose text-warm-gray-600 mb-4 font-sans">
+              <h2 className="text-xs uppercase tracking-loose text-warm-gray-600 mb-4 font-sans font-semibold">
                 About the Builder
               </h2>
-              <p className="text-lg text-warm-gray-800 leading-relaxed font-light">
+              <p className="text-lg text-warm-gray-800 leading-relaxed font-normal">
                 {builder.bio}
               </p>
             </div>
@@ -294,19 +314,19 @@ const UserProjectDetailPage = () => {
 
       {/* Contact Modal */}
       {showContactModal && (
-        <div className="fixed inset-0 bg-charcoal/60 backdrop-blur-sm z-50 flex items-center justify-center p-8">
+        <div className="fixed inset-0 bg-forest/60 backdrop-blur-sm z-50 flex items-center justify-center p-8">
           <motion.div
             initial={{ scale: 0.95, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
-            className="bg-white rounded-sm max-w-2xl w-full p-8 max-h-[90vh] overflow-y-auto"
+            className="bg-white rounded-xl max-w-2xl w-full p-8 max-h-[90vh] overflow-y-auto shadow-2xl"
           >
             <div className="flex items-start justify-between mb-8">
               <div>
-                <h2 className="font-serif text-3xl text-charcoal lowercase mb-1">
-                  reach out to {builder.name}
+                <h2 className="font-sans font-extrabold text-3xl text-forest mb-1" style={{ color: '#456456' }}>
+                  Reach Out to {builder.name}
                 </h2>
-                <p className="text-sm text-warm-gray-600">
-                  about: {project.name}
+                <p className="text-sm text-warm-gray-600 font-normal">
+                  About: {project.name}
                 </p>
               </div>
               <button
@@ -314,7 +334,7 @@ const UserProjectDetailPage = () => {
                   setShowContactModal(false)
                   setSelectedTemplate(null)
                 }}
-                className="text-warm-gray-500 hover:text-charcoal transition-colors"
+                className="text-warm-gray-500 hover:text-forest transition-colors"
               >
                 <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -324,19 +344,20 @@ const UserProjectDetailPage = () => {
 
             {/* Message Templates */}
             <div className="mb-6">
-              <label className="block text-xs uppercase tracking-loose text-warm-gray-600 mb-4 font-sans">
-                quick templates (optional)
+              <label className="block text-xs uppercase tracking-loose text-warm-gray-600 mb-4 font-sans font-semibold">
+                Quick Templates (Optional)
               </label>
               <div className="space-y-3">
                 {messageTemplates.map((template, index) => (
                   <button
                     key={index}
                     onClick={() => selectTemplate(template)}
-                    className={`w-full p-4 rounded-sm border-2 transition-all text-left text-sm ${
+                    className={`w-full p-4 rounded-xl border-2 transition-all text-left text-sm font-normal shadow-sm hover:shadow-md ${
                       selectedTemplate === template
-                        ? 'border-charcoal bg-sand'
-                        : 'border-warm-gray-200 hover:border-warm-gray-400 bg-white'
+                        ? 'border-forest bg-light-mint'
+                        : 'border-warm-gray-200 hover:border-mint bg-white'
                     }`}
+                    style={selectedTemplate === template ? { borderColor: '#456456', backgroundColor: '#E8F4EA' } : {}}
                   >
                     {template.substring(0, 80)}...
                   </button>
@@ -346,19 +367,20 @@ const UserProjectDetailPage = () => {
 
             {/* Message Input */}
             <div className="mb-6">
-              <label className="block text-xs uppercase tracking-loose text-warm-gray-600 mb-4 font-sans">
-                your message
+              <label className="block text-xs uppercase tracking-loose text-warm-gray-600 mb-4 font-sans font-semibold">
+                Your Message
               </label>
               <textarea
                 value={message}
                 onChange={(e) => setMessage(e.target.value)}
-                className="w-full px-4 py-4 bg-white border-2 border-warm-gray-300 focus:border-charcoal focus:outline-none transition-colors text-lg text-charcoal resize-none font-light rounded-sm"
+                className="w-full px-4 py-4 bg-white border-2 border-warm-gray-300 focus:border-forest focus:outline-none transition-colors text-lg text-forest resize-none font-normal rounded-xl"
+                style={{ borderColor: message ? '#456456' : undefined }}
                 rows={6}
-                placeholder="customize the template or write your own message..."
+                placeholder="Customize the template or write your own message..."
               />
               
-              <div className="mt-4 p-4 rounded-sm bg-sand border-l-2 border-rust">
-                <p className="text-xs text-warm-gray-700 font-light italic">
+              <div className="mt-4 p-4 rounded-xl bg-light-mint border-l-4 border-mint shadow-sm" style={{ backgroundColor: '#E8F4EA', borderColor: '#7FB685' }}>
+                <p className="text-xs text-forest font-normal" style={{ color: '#456456' }}>
                   💡 Be specific about your experience and how you can help. Mention what excites you about this project.
                 </p>
               </div>
@@ -367,9 +389,10 @@ const UserProjectDetailPage = () => {
             <button
               onClick={handleContact}
               disabled={!message.trim() || sending}
-              className="w-full py-4 rounded-sm bg-charcoal text-cream hover:bg-warm-gray-900 transition-all font-sans tracking-relaxed lowercase disabled:opacity-30 disabled:cursor-not-allowed"
+              className="w-full py-4 rounded-xl bg-forest text-white hover:bg-dark-green transition-all font-sans font-semibold shadow-lg hover:shadow-xl disabled:opacity-30 disabled:cursor-not-allowed"
+              style={{ backgroundColor: '#456456', color: '#FFFFFF' }}
             >
-              {sending ? 'sending...' : 'send message'}
+              {sending ? 'Sending...' : 'Send Message'}
             </button>
           </motion.div>
         </div>

@@ -23,7 +23,7 @@ interface OtherUser {
 const ChatPage = () => {
   const navigate = useNavigate()
   const { matchId } = useParams() // This now holds otherUserId
-  const { currentUser } = useAuth()
+  const { currentUser, userProfile } = useAuth()
   const [messages, setMessages] = useState<Message[]>([])
   const [newMessage, setNewMessage] = useState('')
   const [otherUser, setOtherUser] = useState<OtherUser | null>(null)
@@ -127,28 +127,29 @@ const ChatPage = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-cream grain flex items-center justify-center">
+      <div className="min-h-screen bg-white flex items-center justify-center">
         <div className="text-center">
           <div className="text-4xl mb-4">⏳</div>
-          <p className="text-warm-gray-600">loading conversation...</p>
+          <p className="text-warm-gray-600 font-normal">Loading conversation...</p>
         </div>
       </div>
     )
   }
 
   return (
-    <div className="min-h-screen bg-cream grain flex flex-col">
+    <div className="min-h-screen bg-white flex flex-col">
       {/* Header */}
-      <nav className="bg-white border-b border-warm-gray-200">
+      <nav className="bg-white/95 backdrop-blur-md border-b-2 border-mint shadow-sm" style={{ borderColor: '#7FB685' }}>
         <div className="max-w-5xl mx-auto px-8 py-6 flex items-center justify-between">
           <button
             onClick={() => navigate('/messages')}
-            className="flex items-center gap-2 text-warm-gray-600 hover:text-charcoal transition-colors"
+            className="flex items-center gap-2 text-forest hover:text-mint transition-colors font-medium"
+            style={{ color: '#456456' }}
           >
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
             </svg>
-            <span className="text-sm lowercase tracking-relaxed font-sans">back to messages</span>
+            <span className="text-sm font-sans">Back to Messages</span>
           </button>
 
           {otherUser && (
@@ -156,23 +157,23 @@ const ChatPage = () => {
               className="flex items-center gap-3 cursor-pointer hover:opacity-80 transition-opacity"
               onClick={() => navigate(`/profile/${matchId}`)}
             >
-              <div className="w-10 h-10 rounded-full overflow-hidden bg-sand">
-                {otherUser.profileImageUrl ? (
+              <div className="w-12 h-12 rounded-full overflow-hidden border-2 border-mint shadow-md" style={{ borderColor: '#7FB685' }}>
+                {otherUser.profileImageUrl && !otherUser.profileImageUrl.startsWith('data:image') ? (
                   <img 
                     src={otherUser.profileImageUrl}
                     alt={otherUser.name}
                     className="w-full h-full object-cover"
                   />
                 ) : (
-                  <div className="w-full h-full flex items-center justify-center text-warm-gray-400">
-                    {otherUser.name[0].toUpperCase()}
+                  <div className="w-full h-full bg-gradient-to-br from-forest to-mint flex items-center justify-center text-white font-bold text-lg" style={{ background: 'linear-gradient(135deg, #456456 0%, #7FB685 100%)' }}>
+                    {otherUser.name ? otherUser.name.charAt(0).toUpperCase() : '?'}
                   </div>
                 )}
               </div>
               <div>
-                <div className="font-serif text-lg lowercase text-charcoal">{otherUser.name}</div>
-                <div className="text-xs text-warm-gray-600 uppercase tracking-wider">
-                  {otherUser.role === 'builder' ? 'builder' : 'marketer'}
+                <div className="font-sans font-bold text-lg text-forest" style={{ color: '#456456' }}>{otherUser.name}</div>
+                <div className="text-xs text-mint uppercase tracking-wider font-semibold" style={{ color: '#7FB685' }}>
+                  {otherUser.role === 'builder' ? 'BUILDER' : 'MARKETER'}
                 </div>
               </div>
             </div>
@@ -181,13 +182,16 @@ const ChatPage = () => {
       </nav>
 
       {/* Messages Container */}
-      <div className="flex-1 overflow-y-auto">
+      <div className="flex-1 overflow-y-auto bg-gray-50">
         <div className="max-w-5xl mx-auto px-8 py-8">
           {messages.length === 0 ? (
             <div className="text-center py-20">
-              <div className="text-5xl mb-4">👋</div>
-              <p className="text-warm-gray-600 font-light">
-                start the conversation. say hello!
+              <div className="text-6xl mb-6">👋</div>
+              <h2 className="font-sans font-bold text-2xl text-forest mb-3" style={{ color: '#456456' }}>
+                Start the Conversation
+              </h2>
+              <p className="text-warm-gray-600 font-normal">
+                Say hello and introduce yourself!
               </p>
             </div>
           ) : (
@@ -207,16 +211,17 @@ const ChatPage = () => {
                       className="flex-shrink-0 cursor-pointer hover:opacity-80 transition-opacity"
                       onClick={() => navigate(`/profile/${isOwn ? currentUser.uid : matchId}`)}
                     >
-                      <div className="w-10 h-10 rounded-full bg-gradient-to-br from-sand to-warm-gray-200 overflow-hidden">
-                        {(isOwn ? currentUser?.photoURL : otherUser?.profileImageUrl) ? (
+                      <div className="w-10 h-10 rounded-full overflow-hidden border-2 border-mint shadow-md" style={{ borderColor: '#7FB685' }}>
+                        {(isOwn ? userProfile?.profileImageUrl : otherUser?.profileImageUrl) && 
+                         !(isOwn ? userProfile?.profileImageUrl : otherUser?.profileImageUrl)?.startsWith('data:image') ? (
                           <img 
-                            src={(isOwn ? currentUser?.photoURL : otherUser?.profileImageUrl) || ''}
+                            src={(isOwn ? userProfile?.profileImageUrl : otherUser?.profileImageUrl) || ''}
                             alt={isOwn ? 'You' : (otherUser?.name || 'User')}
                             className="w-full h-full object-cover"
                           />
                         ) : (
-                          <div className="w-full h-full flex items-center justify-center text-warm-gray-400 text-sm font-medium">
-                            {isOwn ? (currentUser?.displayName?.[0] || 'Y') : (otherUser?.name?.[0] || '?')}
+                          <div className="w-full h-full bg-gradient-to-br from-forest to-mint flex items-center justify-center text-white font-bold text-sm" style={{ background: 'linear-gradient(135deg, #456456 0%, #7FB685 100%)' }}>
+                            {isOwn ? (userProfile?.name?.[0]?.toUpperCase() || 'Y') : (otherUser?.name?.[0]?.toUpperCase() || '?')}
                           </div>
                         )}
                       </div>
@@ -224,22 +229,26 @@ const ChatPage = () => {
 
                     {/* Message Content */}
                     <div className={`max-w-lg ${isOwn ? 'items-end' : 'items-start'} flex flex-col`}>
-                      <div className={`text-xs font-medium mb-1 px-2 ${isOwn ? 'text-right' : 'text-left'}`}>
+                      <div className={`text-xs font-semibold mb-1 px-2 ${isOwn ? 'text-right' : 'text-left'}`}>
                         <span className="text-warm-gray-600">
                           {isOwn ? 'You' : otherUser?.name}
                         </span>
                       </div>
-                      <div className={`rounded-2xl px-6 py-4 ${
+                      <div className={`rounded-2xl px-6 py-4 shadow-md ${
                         isOwn
-                          ? 'bg-charcoal text-cream'
-                          : 'bg-white border border-warm-gray-200 text-charcoal'
-                      }`}>
-                        <p className="text-base leading-relaxed font-light">
+                          ? 'bg-forest text-white'
+                          : 'bg-white border-2 border-mint text-forest'
+                      }`} style={{
+                        backgroundColor: isOwn ? '#456456' : undefined,
+                        borderColor: isOwn ? undefined : '#7FB685',
+                        color: isOwn ? '#FFFFFF' : '#456456'
+                      }}>
+                        <p className="text-base leading-relaxed font-normal">
                           {msg.message}
                         </p>
                       </div>
-                      <div className={`mt-1 px-2 text-xs text-warm-gray-500 ${isOwn ? 'text-right' : 'text-left'}`}>
-                        {msg.timestamp ? new Date(msg.timestamp.toDate()).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : 'sending...'}
+                      <div className={`mt-1 px-2 text-xs text-warm-gray-500 font-medium ${isOwn ? 'text-right' : 'text-left'}`}>
+                        {msg.timestamp ? new Date(msg.timestamp.toDate()).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : 'Sending...'}
                       </div>
                     </div>
                   </motion.div>
@@ -252,22 +261,24 @@ const ChatPage = () => {
       </div>
 
       {/* Message Input */}
-      <div className="border-t border-warm-gray-200 bg-white">
+      <div className="border-t-2 border-mint bg-white shadow-lg" style={{ borderColor: '#7FB685' }}>
         <div className="max-w-5xl mx-auto px-8 py-6">
           <form onSubmit={handleSendMessage} className="flex gap-4">
             <input
               type="text"
               value={newMessage}
               onChange={(e) => setNewMessage(e.target.value)}
-              placeholder="type your message..."
-              className="flex-1 px-6 py-4 bg-cream rounded-full border border-warm-gray-300 focus:border-charcoal focus:outline-none transition-colors text-charcoal font-light"
+              placeholder="Type your message..."
+              className="flex-1 px-6 py-4 bg-gray-50 rounded-full border-2 border-warm-gray-300 focus:border-mint focus:outline-none transition-colors text-forest font-normal shadow-sm"
+              style={{ borderColor: newMessage ? '#7FB685' : undefined, color: '#456456' }}
             />
             <button
               type="submit"
               disabled={!newMessage.trim() || sending}
-              className="px-8 py-4 bg-charcoal text-cream rounded-full hover:bg-warm-gray-900 transition-all font-sans tracking-relaxed lowercase disabled:opacity-30 disabled:cursor-not-allowed"
+              className="px-8 py-4 bg-forest text-white rounded-full hover:bg-dark-green transition-all font-sans font-semibold shadow-md hover:shadow-lg disabled:opacity-30 disabled:cursor-not-allowed"
+              style={{ backgroundColor: '#456456', color: '#FFFFFF' }}
             >
-              {sending ? 'sending...' : 'send'}
+              {sending ? 'Sending...' : 'Send'}
             </button>
           </form>
         </div>
@@ -277,4 +288,3 @@ const ChatPage = () => {
 }
 
 export default ChatPage
-

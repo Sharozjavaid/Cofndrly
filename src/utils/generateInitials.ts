@@ -15,16 +15,16 @@ export const generateInitialsImage = (name: string): string => {
 
   if (!ctx) return ''
 
-  // Background gradient
+  // Background gradient - Forest to Mint
   const gradient = ctx.createLinearGradient(0, 0, size, size)
-  gradient.addColorStop(0, '#f3efe9') // sand
-  gradient.addColorStop(1, '#c5b9a1') // warm-gray
+  gradient.addColorStop(0, '#456456') // forest green
+  gradient.addColorStop(1, '#7FB685') // mint green
   ctx.fillStyle = gradient
   ctx.fillRect(0, 0, size, size)
 
   // Draw initials
-  ctx.fillStyle = '#111111' // charcoal
-  ctx.font = `bold ${size * 0.4}px "Playfair Display", serif`
+  ctx.fillStyle = '#FFFFFF' // white
+  ctx.font = `bold ${size * 0.4}px -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif`
   ctx.textAlign = 'center'
   ctx.textBaseline = 'middle'
   ctx.fillText(initials, size / 2, size / 2)

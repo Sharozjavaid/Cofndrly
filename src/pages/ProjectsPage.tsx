@@ -80,52 +80,58 @@ const ProjectsPage = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-cream grain flex items-center justify-center">
+      <div className="min-h-screen bg-white flex items-center justify-center">
         <div className="text-center">
           <div className="text-4xl mb-4">⏳</div>
-          <p className="text-warm-gray-600">loading projects...</p>
+          <p className="text-warm-gray-600 font-normal">Loading projects...</p>
         </div>
       </div>
     )
   }
 
   return (
-    <div className="min-h-screen bg-cream grain">
+    <div className="min-h-screen bg-white">
       {/* Navigation */}
-      <nav className="fixed top-0 w-full bg-cream/80 backdrop-blur-md border-b border-warm-gray-200/50 z-50">
-        <div className="max-w-7xl mx-auto px-8 py-6 flex items-center justify-between">
-          <div 
-            className="text-xl font-serif tracking-tight lowercase text-charcoal cursor-pointer" 
+      <nav className="fixed top-0 w-full bg-white/95 backdrop-blur-md border-b border-warm-gray-200 z-50">
+        <div className="max-w-7xl mx-auto px-8 py-4 flex items-center justify-between">
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="flex items-center gap-2 cursor-pointer"
             onClick={() => navigate('/projects')}
           >
-            cofndrly
-          </div>
-          <div className="flex gap-4 items-center">
+            <img src="/logo-bg.png" alt="GrowMyApp Logo" className="w-10 h-10" />
+            <span className="text-xl font-bold tracking-tight text-forest" style={{ color: '#456456' }}>
+              GrowMyApp
+            </span>
+          </motion.div>
+          <div className="flex gap-6 items-center">
             <button 
               onClick={() => navigate('/projects')}
-              className="text-sm text-charcoal font-medium transition-colors lowercase tracking-relaxed"
+              className="text-sm text-forest font-semibold transition-colors"
+              style={{ color: '#456456' }}
             >
-              browse projects
+              Browse Projects
             </button>
             {userProfile?.role === 'builder' && (
               <button 
                 onClick={() => navigate('/my-projects')}
-                className="text-sm text-warm-gray-600 hover:text-charcoal transition-colors lowercase tracking-relaxed"
+                className="text-sm text-warm-gray-600 hover:text-forest transition-colors font-medium"
               >
-                my projects
+                My Projects
               </button>
             )}
             <button 
               onClick={() => navigate('/messages')}
-              className="text-sm text-warm-gray-600 hover:text-charcoal transition-colors lowercase tracking-relaxed"
+              className="text-sm text-warm-gray-600 hover:text-forest transition-colors font-medium"
             >
-              messages
+              Messages
             </button>
             <button 
               onClick={() => navigate('/profile')}
-              className="text-sm text-warm-gray-600 hover:text-charcoal transition-colors lowercase tracking-relaxed"
+              className="text-sm text-warm-gray-600 hover:text-forest transition-colors font-medium"
             >
-              profile
+              Profile
             </button>
           </div>
         </div>
@@ -140,11 +146,11 @@ const ProjectsPage = () => {
             transition={{ duration: 0.6 }}
             className="mb-12"
           >
-            <h1 className="font-serif text-5xl md:text-6xl text-charcoal lowercase leading-tight mb-4">
-              browse projects
+            <h1 className="font-sans font-extrabold text-5xl md:text-6xl text-forest leading-tight mb-4" style={{ color: '#456456' }}>
+              Browse Projects
             </h1>
-            <p className="text-lg text-warm-gray-700 font-light max-w-2xl">
-              discover shelf projects looking for marketing help
+            <p className="text-lg text-warm-gray-700 font-normal max-w-2xl">
+              Discover shelf projects looking for marketing help
             </p>
           </motion.div>
 
@@ -160,11 +166,12 @@ const ProjectsPage = () => {
                 <button
                   key={cat}
                   onClick={() => setFilter(cat)}
-                  className={`px-5 py-2.5 rounded-sm transition-all text-sm lowercase ${
+                  className={`px-5 py-2.5 rounded-lg transition-all text-sm font-sans font-medium shadow-sm hover:shadow-md ${
                     filter === cat
-                      ? 'bg-charcoal text-cream'
-                      : 'bg-white text-warm-gray-700 border border-warm-gray-300 hover:border-charcoal'
+                      ? 'bg-forest text-white'
+                      : 'bg-white text-warm-gray-700 border border-warm-gray-300 hover:border-mint'
                   }`}
+                  style={filter === cat ? { backgroundColor: '#456456', color: '#FFFFFF' } : {}}
                 >
                   {cat}
                 </button>
@@ -176,9 +183,9 @@ const ProjectsPage = () => {
           {filteredProjects.length === 0 ? (
             <div className="text-center py-20">
               <div className="text-6xl mb-6">📦</div>
-              <h2 className="font-serif text-3xl text-charcoal lowercase mb-4">no projects yet</h2>
-              <p className="text-warm-gray-600">
-                check back soon for new projects to market!
+              <h2 className="font-sans font-bold text-3xl text-forest mb-4" style={{ color: '#456456' }}>No Projects Yet</h2>
+              <p className="text-warm-gray-600 font-normal">
+                Check back soon for new projects to market!
               </p>
             </div>
           ) : (
@@ -192,9 +199,9 @@ const ProjectsPage = () => {
                   onClick={() => navigate(`/user/${project.userId}/project/${project.projectIndex}`)}
                   className="group cursor-pointer"
                 >
-                  <div className="bg-white rounded-sm border border-warm-gray-200 hover:border-charcoal transition-all duration-300 overflow-hidden h-full flex flex-col">
+                  <div className="bg-white rounded-xl border-2 border-warm-gray-200 hover:border-mint transition-all duration-300 overflow-hidden h-full flex flex-col shadow-md hover:shadow-xl">
                     {/* Project Logo */}
-                    <div className="h-48 bg-gradient-to-br from-sand to-warm-gray-200 relative overflow-hidden flex items-center justify-center">
+                    <div className="h-48 bg-gradient-to-br from-light-mint to-warm-gray-100 relative overflow-hidden flex items-center justify-center" style={{ background: 'linear-gradient(135deg, #E8F4EA 0%, #F3F4F6 100%)' }}>
                       {project.logoUrl ? (
                         <img 
                           src={project.logoUrl} 
@@ -207,8 +214,8 @@ const ProjectsPage = () => {
                       
                       {/* Stage Badge */}
                       <div className="absolute top-4 right-4">
-                        <div className="px-3 py-1.5 bg-sage/90 backdrop-blur-sm rounded-sm text-xs lowercase text-charcoal font-sans">
-                          {project.stage}
+                        <div className="px-3 py-1.5 bg-mint/90 backdrop-blur-sm rounded-lg text-xs text-white font-sans font-medium shadow-md" style={{ backgroundColor: 'rgba(127, 182, 133, 0.9)' }}>
+                          ✓ {project.stage}
                         </div>
                       </div>
                     </div>
@@ -216,25 +223,26 @@ const ProjectsPage = () => {
                     {/* Project Info */}
                     <div className="p-6 flex-1 flex flex-col">
                       {/* Title */}
-                      <h3 className="font-serif text-2xl text-charcoal lowercase mb-3 group-hover:text-rust transition-colors">
+                      <h3 className="font-sans font-bold text-2xl text-forest mb-3 group-hover:text-mint transition-colors" style={{ color: '#456456' }}>
                         {project.name}
                       </h3>
 
                       {/* Description */}
-                      <p className="text-sm text-warm-gray-700 leading-relaxed font-light mb-4 line-clamp-3">
+                      <p className="text-sm text-warm-gray-700 leading-relaxed font-normal mb-4 line-clamp-3">
                         {project.description}
                       </p>
 
                       {/* Partnership Terms */}
-                      <div className="mt-auto pt-4 border-t border-warm-gray-200">
-                        <p className="text-xs uppercase tracking-loose text-warm-gray-500 mb-2 font-sans">
-                          open to
+                      <div className="mt-auto pt-4 border-t-2 border-warm-gray-200">
+                        <p className="text-xs uppercase tracking-loose text-warm-gray-500 mb-2 font-sans font-semibold">
+                          Open To
                         </p>
                         <div className="flex flex-wrap gap-2">
                           {project.partnershipPreference.slice(0, 2).map(term => (
                             <span
                               key={term}
-                              className="text-xs lowercase text-rust"
+                              className="text-xs text-mint font-medium"
+                              style={{ color: '#7FB685' }}
                             >
                               • {term}
                             </span>
@@ -243,20 +251,35 @@ const ProjectsPage = () => {
                       </div>
 
                       {/* Builder Info */}
-                      <div className="mt-4 pt-4 border-t border-warm-gray-200 flex items-center gap-3">
-                        {project.userProfileImage ? (
-                          <img
-                            src={project.userProfileImage}
-                            alt={project.userName}
-                            className="w-8 h-8 rounded-full object-cover"
-                          />
-                        ) : (
-                          <div className="w-8 h-8 rounded-full bg-rust/20 flex items-center justify-center text-xs text-charcoal">
-                            {project.userName.charAt(0).toUpperCase()}
-                          </div>
-                        )}
+                      <div className="mt-4 pt-4 border-t-2 border-warm-gray-200 flex items-center gap-3">
+                        <div 
+                          onClick={(e) => {
+                            e.stopPropagation()
+                            navigate(`/profile/${project.userId}`)
+                          }}
+                          className="cursor-pointer"
+                        >
+                          {project.userProfileImage && !project.userProfileImage.startsWith('data:image') ? (
+                            <img
+                              src={project.userProfileImage}
+                              alt={project.userName}
+                              className="w-10 h-10 rounded-full object-cover border-2 border-mint hover:border-forest transition-all shadow-md hover:shadow-lg"
+                              style={{ borderColor: '#7FB685' }}
+                            />
+                          ) : (
+                            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-forest to-mint flex items-center justify-center text-sm text-white font-bold border-2 border-mint hover:border-forest transition-all shadow-md hover:shadow-lg" style={{ background: 'linear-gradient(135deg, #456456 0%, #7FB685 100%)', borderColor: '#7FB685' }}>
+                              {project.userName.charAt(0).toUpperCase()}
+                            </div>
+                          )}
+                        </div>
                         <div>
-                          <p className="text-xs text-warm-gray-700 font-light">
+                          <p 
+                            onClick={(e) => {
+                              e.stopPropagation()
+                              navigate(`/profile/${project.userId}`)
+                            }}
+                            className="text-xs text-warm-gray-700 font-normal hover:text-forest transition-colors cursor-pointer"
+                          >
                             by {project.userName}
                           </p>
                         </div>

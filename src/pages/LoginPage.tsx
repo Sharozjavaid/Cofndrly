@@ -37,58 +37,77 @@ const LoginPage = () => {
   return (
     <>
       <SEO
-        title="Sign In to cofndrly — Access Your Account"
-        description="Sign in to your cofndrly account to browse projects, connect with builders and marketers, and launch your ideas."
-        canonicalUrl="https://cofndrly.com/login"
+        title="Sign In to GrowMyApp — Access Your Account"
+        description="Sign in to your GrowMyApp account to browse projects, connect with builders and marketers, and launch your ideas."
+        canonicalUrl="https://GrowMyApp.com/login"
         noindex={true}
       />
-      <div className="min-h-screen bg-cream grain flex items-center justify-center px-8 py-12">
+      <div className="min-h-screen bg-white flex items-center justify-center px-8 py-12">
+        {/* Same header as landing page */}
+        <nav className="fixed top-0 w-full bg-white/95 backdrop-blur-md border-b border-warm-gray-200 z-50">
+          <div className="max-w-7xl mx-auto px-8 py-4 flex items-center justify-between">
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              className="flex items-center gap-2 cursor-pointer"
+              onClick={() => navigate('/')}
+            >
+              <img src="/logo-bg.png" alt="GrowMyApp Logo" className="w-10 h-10" />
+              <span className="text-xl font-bold tracking-tight text-forest" style={{ color: '#456456' }}>
+                GrowMyApp
+              </span>
+            </motion.div>
+          </div>
+        </nav>
+
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="max-w-md w-full"
+        className="max-w-md w-full mt-20"
       >
         {/* Header */}
         <div className="text-center mb-12">
-          <h1 className="font-serif text-5xl md:text-6xl text-charcoal lowercase mb-4">
-            welcome back
+          <h1 className="font-sans font-extrabold text-5xl md:text-6xl text-forest mb-4 leading-tight" style={{ color: '#456456' }}>
+            Welcome Back
           </h1>
-          <p className="text-warm-gray-600 font-light">
-            sign in to browse projects
+          <p className="text-warm-gray-600 font-normal text-lg">
+            Sign in to browse projects
           </p>
         </div>
 
         {/* Form */}
         <form onSubmit={handleSubmit} className="space-y-8">
           {error && (
-            <div className="bg-rust/10 border border-rust/30 rounded-sm p-4">
-              <p className="text-rust text-sm">{error}</p>
+            <div className="bg-bright-orange/10 border-2 border-bright-orange/30 rounded-xl p-4 shadow-md" style={{ backgroundColor: 'rgba(245, 166, 91, 0.1)', borderColor: 'rgba(245, 166, 91, 0.3)' }}>
+              <p className="text-bright-orange text-sm font-sans font-medium" style={{ color: '#F5A65B' }}>{error}</p>
             </div>
           )}
 
           <div>
-            <label className="block text-xs uppercase tracking-loose text-warm-gray-600 mb-3 font-sans">
+            <label className="block text-xs uppercase tracking-loose text-warm-gray-600 mb-3 font-sans font-semibold">
               email
             </label>
             <input
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full px-0 py-3 bg-transparent border-b-2 border-warm-gray-300 focus:border-charcoal focus:outline-none transition-colors text-lg text-charcoal"
+              className="w-full px-0 py-3 bg-transparent border-b-2 border-warm-gray-300 focus:border-forest focus:outline-none transition-colors text-lg text-forest font-normal"
+              style={{ borderColor: email ? '#456456' : undefined }}
               placeholder="you@example.com"
               required
             />
           </div>
 
           <div>
-            <label className="block text-xs uppercase tracking-loose text-warm-gray-600 mb-3 font-sans">
+            <label className="block text-xs uppercase tracking-loose text-warm-gray-600 mb-3 font-sans font-semibold">
               password
             </label>
             <input
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full px-0 py-3 bg-transparent border-b-2 border-warm-gray-300 focus:border-charcoal focus:outline-none transition-colors text-lg text-charcoal"
+              className="w-full px-0 py-3 bg-transparent border-b-2 border-warm-gray-300 focus:border-forest focus:outline-none transition-colors text-lg text-forest font-normal"
+              style={{ borderColor: password ? '#456456' : undefined }}
               placeholder="••••••••"
               required
             />
@@ -97,28 +116,30 @@ const LoginPage = () => {
           <button
             type="submit"
             disabled={loading}
-            className="w-full py-4 bg-charcoal text-cream rounded-sm hover:bg-warm-gray-900 transition-all font-sans tracking-relaxed lowercase disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full py-4 bg-forest text-white rounded-xl hover:bg-dark-green transition-all font-sans font-semibold text-lg shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed"
+            style={{ backgroundColor: '#456456', color: '#FFFFFF' }}
           >
-            {loading ? 'signing in...' : 'sign in'}
+            {loading ? 'Signing In...' : 'Sign In'}
           </button>
         </form>
 
         {/* Footer */}
         <div className="mt-8 text-center space-y-4">
-          <p className="text-sm text-warm-gray-600">
-            don't have an account?{' '}
+          <p className="text-sm text-warm-gray-600 font-normal">
+            Don't have an account?{' '}
             <button
               onClick={() => navigate('/signup')}
-              className="text-charcoal hover:text-rust transition-colors font-medium"
+              className="text-forest hover:text-mint transition-colors font-semibold"
+              style={{ color: '#456456' }}
             >
-              sign up
+              Sign Up
             </button>
           </p>
           <button
             onClick={() => navigate('/')}
-            className="text-sm text-warm-gray-500 hover:text-warm-gray-700 transition-colors"
+            className="text-sm text-warm-gray-500 hover:text-forest transition-colors font-normal"
           >
-            ← back to home
+            ← Back to Home
           </button>
         </div>
       </motion.div>

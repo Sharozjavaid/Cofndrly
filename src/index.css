@@ -9,11 +9,11 @@
 }
 
 body {
-  font-family: 'Inter', 'Neue Haas Grotebok', system-ui, sans-serif;
+  font-family: 'Inter', system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background-color: #faf9f6;
-  color: #111111;
+  background-color: #FFFFFF;
+  color: #2F4538;
 }
 
 @layer utilities {
