@@ -1,9 +1,7 @@
 import { motion, useScroll, useTransform } from 'framer-motion'
 import { useNavigate } from 'react-router-dom'
 import { useRef, useState } from 'react'
-import { BuildIcon, CaptureIcon, CreateIcon, GrowIcon, ApplyIcon, ApproveIcon, ConnectIcon } from '../components/Icons'
 import SEO from '../components/SEO'
-import Logo from '../components/Logo'
 
 const LandingPage = () => {
   const navigate = useNavigate()

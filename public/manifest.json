@@ -1,21 +1,21 @@
 {
-  "name": "cofndrly — where builders meet storytellers",
-  "short_name": "cofndrly",
-  "description": "Not another networking app — a place to start something. Find your other half and launch together.",
+  "name": "GrowMyApp — Turn Your Shelf Projects Into Revenue",
+  "short_name": "GrowMyApp",
+  "description": "Connect builders with marketers. Launch projects that deserve to see the light of day.",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#F5F1E8",
-  "theme_color": "#2D2D2A",
+  "background_color": "#FFFFFF",
+  "theme_color": "#456456",
   "orientation": "portrait-primary",
   "icons": [
     {
-      "src": "/favicon.png",
+      "src": "/logo.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "any maskable"
     },
     {
-      "src": "/favicon.png",
+      "src": "/logo.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any maskable"
