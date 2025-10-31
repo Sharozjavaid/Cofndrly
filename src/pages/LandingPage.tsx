@@ -140,7 +140,7 @@ const LandingPage = () => {
       </nav>
 
       {/* Hero Section - Split Screen */}
-      <section ref={heroRef} className="min-h-screen flex items-center justify-center px-4 md:px-8 pt-32 pb-8 relative overflow-hidden bg-gradient-to-br from-white via-warm-gray-50 to-light-mint/10" aria-label="Hero section">
+      <section ref={heroRef} className="min-h-screen flex items-center justify-center px-4 md:px-8 pt-40 md:pt-32 pb-8 relative overflow-hidden bg-gradient-to-br from-white via-warm-gray-50 to-light-mint/10" aria-label="Hero section">
         <motion.div 
           style={{ opacity, scale }}
           className="max-w-[1400px] w-full relative z-10"
