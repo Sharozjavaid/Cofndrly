@@ -28,21 +28,21 @@ const LandingPage = () => {
 
       {/* User Type Selection Modal */}
       {showTypeModal && !userType && (
-        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[100] flex items-center justify-center p-4">
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[100] flex items-center justify-center p-6">
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.3 }}
-            className="bg-white rounded-3xl shadow-2xl max-w-2xl w-full p-8 md:p-12"
+            className="bg-white rounded-3xl shadow-2xl max-w-2xl w-full p-6 md:p-12 mx-4"
           >
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4 text-center font-sans">
+            <h2 className="text-2xl md:text-4xl font-bold text-gray-900 mb-3 md:mb-4 text-center font-sans">
               Welcome to GrowMyApp
             </h2>
-            <p className="text-lg text-warm-gray-600 mb-8 text-center font-sans">
+            <p className="text-base md:text-lg text-warm-gray-600 mb-6 md:mb-8 text-center font-sans">
               Are you a builder or a marketer?
             </p>
             
-            <div className="grid md:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
               {/* Builder Option */}
               <button
                 onClick={() => {
@@ -50,18 +50,18 @@ const LandingPage = () => {
                   setActiveTab('builder')
                   setShowTypeModal(false)
                 }}
-                className="group relative bg-gradient-to-br from-light-mint to-white rounded-2xl p-8 border-2 border-mint hover:border-forest transition-all duration-300 hover:shadow-xl"
+                className="group relative bg-gradient-to-br from-light-mint to-white rounded-2xl p-6 md:p-8 border-2 border-mint hover:border-forest transition-all duration-300 hover:shadow-xl"
                 style={{ borderColor: '#7FB685' }}
               >
-                <div className="flex flex-col items-center text-center gap-4">
-                  <div className="w-20 h-20 bg-forest rounded-2xl flex items-center justify-center text-4xl group-hover:scale-110 transition-transform" style={{ backgroundColor: '#456456' }}>
+                <div className="flex flex-col items-center text-center gap-3 md:gap-4">
+                  <div className="w-16 h-16 md:w-20 md:h-20 bg-forest rounded-2xl flex items-center justify-center text-3xl md:text-4xl group-hover:scale-110 transition-transform" style={{ backgroundColor: '#456456' }}>
                     <span>⚙️</span>
                   </div>
                   <div>
-                    <h3 className="text-2xl font-bold text-forest mb-2 font-sans" style={{ color: '#456456' }}>
+                    <h3 className="text-xl md:text-2xl font-bold text-forest mb-1 md:mb-2 font-sans" style={{ color: '#456456' }}>
                       I'm a Builder
                     </h3>
-                    <p className="text-sm text-warm-gray-600 font-sans">
+                    <p className="text-xs md:text-sm text-warm-gray-600 font-sans">
                       I have projects that need marketing
                     </p>
                   </div>
@@ -75,18 +75,18 @@ const LandingPage = () => {
                   setActiveTab('marketer')
                   setShowTypeModal(false)
                 }}
-                className="group relative bg-gradient-to-br from-peach/20 to-white rounded-2xl p-8 border-2 border-bright-orange hover:border-bright-orange transition-all duration-300 hover:shadow-xl"
+                className="group relative bg-gradient-to-br from-peach/20 to-white rounded-2xl p-6 md:p-8 border-2 border-bright-orange hover:border-bright-orange transition-all duration-300 hover:shadow-xl"
                 style={{ borderColor: '#F5A65B' }}
               >
-                <div className="flex flex-col items-center text-center gap-4">
-                  <div className="w-20 h-20 bg-bright-orange rounded-2xl flex items-center justify-center text-4xl group-hover:scale-110 transition-transform" style={{ backgroundColor: '#F5A65B' }}>
+                <div className="flex flex-col items-center text-center gap-3 md:gap-4">
+                  <div className="w-16 h-16 md:w-20 md:h-20 bg-bright-orange rounded-2xl flex items-center justify-center text-3xl md:text-4xl group-hover:scale-110 transition-transform" style={{ backgroundColor: '#F5A65B' }}>
                     <span>📈</span>
                   </div>
                   <div>
-                    <h3 className="text-2xl font-bold text-bright-orange mb-2 font-sans" style={{ color: '#F5A65B' }}>
+                    <h3 className="text-xl md:text-2xl font-bold text-bright-orange mb-1 md:mb-2 font-sans" style={{ color: '#F5A65B' }}>
                       I'm a Marketer
                     </h3>
-                    <p className="text-sm text-warm-gray-600 font-sans">
+                    <p className="text-xs md:text-sm text-warm-gray-600 font-sans">
                       I want to grow products for equity
                     </p>
                   </div>
@@ -94,7 +94,7 @@ const LandingPage = () => {
               </button>
             </div>
 
-            <p className="text-xs text-warm-gray-500 text-center mt-6 font-sans">
+            <p className="text-xs text-warm-gray-500 text-center mt-4 md:mt-6 font-sans">
               Don't worry, you can explore both options later
             </p>
           </motion.div>
@@ -140,7 +140,7 @@ const LandingPage = () => {
       </nav>
 
       {/* Hero Section - Split Screen */}
-      <section ref={heroRef} className="min-h-screen flex items-center justify-center px-4 md:px-8 pt-40 md:pt-32 pb-8 relative overflow-hidden bg-gradient-to-br from-white via-warm-gray-50 to-light-mint/10" aria-label="Hero section">
+      <section ref={heroRef} className="min-h-screen flex items-center justify-center px-4 md:px-8 pt-48 md:pt-32 pb-8 relative overflow-hidden bg-gradient-to-br from-white via-warm-gray-50 to-light-mint/10" aria-label="Hero section">
         <motion.div 
           style={{ opacity, scale }}
           className="max-w-[1400px] w-full relative z-10"
