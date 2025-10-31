@@ -1,21 +1,24 @@
-# robots.txt for cofndrly
+# robots.txt for GrowMyApp
 User-agent: *
 Allow: /
+Allow: /projects
 Allow: /builders
-Allow: /creatives
+Allow: /marketers
 Disallow: /admin
 Disallow: /admin/*
 Disallow: /login
 Disallow: /signup
 Disallow: /waiting
-Disallow: /matching
 Disallow: /messages
 Disallow: /chat
 Disallow: /chat/*
 Disallow: /profile
+Disallow: /profile/*
+Disallow: /edit-profile
+Disallow: /my-projects
 
 # Sitemap location
-Sitemap: https://cofndrly.com/sitemap.xml
+Sitemap: https://growmyapp.io/sitemap.xml
 
 # Crawl delay (optional, adjust if needed)
 Crawl-delay: 1

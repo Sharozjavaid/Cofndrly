@@ -11,12 +11,12 @@ interface SEOProps {
 }
 
 const SEO = ({
-  title = 'cofndrly — where builders meet storytellers',
-  description = 'Not another networking app — a place to start something. Connect technical builders with growth hackers, content creators, and marketers to launch your next startup.',
-  keywords = 'co-founder matching, find co-founder, technical co-founder, startup co-founder, growth hacker, content creator, entrepreneur networking, startup founders, builder network, marketing co-founder',
-  ogImage = 'https://cofndrly.com/og-image.png',
+  title = 'GrowMyApp — Turn Your Shelf Projects Into Revenue',
+  description = 'Connect builders with marketers for equity partnerships. Got projects collecting dust? Find marketers who can bring them to market. Want to market ready-to-launch products? Find builders who need your help. Partner for equity—zero downside, all upside.',
+  keywords = 'project marketplace, builder marketer platform, equity partnership, shelf projects, marketing partnerships, technical projects, revenue share, project collaboration, app marketing, product launch, growth marketing, saas marketing, mobile app growth',
+  ogImage = 'https://growmyapp.io/logo-bg.png',
   ogType = 'website',
-  canonicalUrl = 'https://cofndrly.com/',
+  canonicalUrl = 'https://growmyapp.io/',
   noindex = false,
 }: SEOProps) => {
   return (

@@ -104,14 +104,14 @@ const LandingPage = () => {
       <div className="min-h-screen bg-white">
         {/* Minimal Navigation */}
       <nav className="fixed top-0 w-full bg-white/95 backdrop-blur-md border-b border-warm-gray-200 z-50">
-        <div className="max-w-7xl mx-auto px-8 py-5 flex items-center justify-between">
+        <div className="max-w-7xl mx-auto px-4 md:px-8 py-4 md:py-5 flex items-center justify-between">
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             className="flex items-center gap-3"
           >
-            <img src="/logo-bg.png" alt="GrowMyApp Logo" className="w-16 h-16" />
-            <span className="text-3xl font-bold tracking-tight text-forest" style={{ color: '#456456' }}>
+            <img src="/logo-bg.png" alt="GrowMyApp Logo" className="w-12 h-12 md:w-16 md:h-16" />
+            <span className="hidden md:block text-3xl font-bold tracking-tight text-forest" style={{ color: '#456456' }}>
               GrowMyApp
             </span>
           </motion.div>
@@ -119,18 +119,18 @@ const LandingPage = () => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.2 }}
-            className="flex gap-4"
+            className="flex gap-2 md:gap-4"
           >
             <button
               onClick={() => navigate('/login')}
-              className="px-7 py-3 bg-transparent text-forest rounded-lg border-2 border-mint hover:border-forest transition-all font-sans text-base font-medium"
+              className="px-4 py-2 md:px-7 md:py-3 bg-transparent text-forest rounded-lg border-2 border-mint hover:border-forest transition-all font-sans text-sm md:text-base font-medium"
               style={{ color: '#456456', borderColor: '#7FB685', backgroundColor: 'transparent' }}
             >
               Sign In
             </button>
             <button
               onClick={() => navigate('/signup')}
-              className="px-7 py-3 bg-forest text-white rounded-lg hover:bg-dark-green transition-all font-sans text-base font-medium shadow-lg"
+              className="px-4 py-2 md:px-7 md:py-3 bg-forest text-white rounded-lg hover:bg-dark-green transition-all font-sans text-sm md:text-base font-medium shadow-lg"
               style={{ backgroundColor: '#456456', color: '#FFFFFF' }}
             >
               Get Started
