@@ -9,9 +9,9 @@ export default function TermsPage() {
         <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
           <Link to="/" className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-accent-gold to-accent-copper flex items-center justify-center">
-              <span className="text-obsidian font-bold text-lg">φ</span>
+              <span className="text-obsidian font-bold text-lg">⚡</span>
             </div>
-            <span className="font-serif text-xl text-pure">PhilosophizeMe</span>
+            <span className="font-serif text-xl text-pure">AutoContent</span>
           </Link>
           <Link to="/" className="text-silver hover:text-pure transition-colors text-sm">
             ← Back to Home
@@ -35,22 +35,22 @@ export default function TermsPage() {
           <div className="prose max-w-none">
             <h2>Agreement to Terms</h2>
             <p>
-              Welcome to PhilosophizeMe. These Terms of Service ("Terms") govern your access to and use of our 
+              Welcome to AutoContent. These Terms of Service ("Terms") govern your access to and use of our 
               website, application, and services (collectively, the "Service"). By accessing or using the Service, 
               you agree to be bound by these Terms and our Privacy Policy. If you do not agree to these Terms, 
               please do not use the Service.
             </p>
             <p>
               <strong>IMPORTANT:</strong> These Terms contain an arbitration clause and class action waiver that 
-              affect your legal rights. Please read Section 17 carefully.
+              affect your legal rights. Please read Section 16 carefully.
             </p>
 
             <h2>1. Definitions</h2>
             <ul>
-              <li><strong>"Service"</strong> refers to the PhilosophizeMe platform, including website, application, API, and all related services.</li>
+              <li><strong>"Service"</strong> refers to the AutoContent platform, including website, application, API, and all related services.</li>
               <li><strong>"User," "You," "Your"</strong> refers to any individual or entity using the Service.</li>
               <li><strong>"Content"</strong> refers to any text, images, videos, audio, scripts, or other materials generated through or uploaded to the Service.</li>
-              <li><strong>"We," "Us," "Our"</strong> refers to PhilosophizeMe and its affiliates, employees, and contractors.</li>
+              <li><strong>"We," "Us," "Our"</strong> refers to AutoContent and its affiliates, employees, and contractors.</li>
               <li><strong>"Generated Content"</strong> refers to videos, images, scripts, and other materials created by our AI systems based on your inputs.</li>
             </ul>
 
@@ -120,7 +120,7 @@ export default function TermsPage() {
             <h3>4.2 Content Responsibility</h3>
             <p>You are solely responsible for:</p>
             <ul>
-              <li>The topics and prompts you submit to our AI agent</li>
+              <li>The topics and prompts you submit to our AI</li>
               <li>The content you generate and publish through the Service</li>
               <li>Ensuring your use complies with applicable laws and platform policies</li>
               <li>Any consequences of posting Generated Content to social media</li>
@@ -152,7 +152,7 @@ export default function TermsPage() {
 
             <h3>5.3 Third-Party AI Services</h3>
             <p>
-              Generated Content is created using third-party AI services (OpenAI, Google, Anthropic, fal.ai, ElevenLabs). 
+              Generated Content is created using third-party AI services. 
               We do not guarantee exclusive ownership or copyright protection for Generated Content.
             </p>
 
@@ -219,7 +219,6 @@ export default function TermsPage() {
               <li>Contain inaccuracies or errors</li>
               <li>Include biases present in training data</li>
               <li>Produce unexpected or inappropriate results</li>
-              <li>Misrepresent philosophical concepts</li>
             </ul>
 
             <h3>10.2 "AS IS" Disclaimer</h3>
@@ -231,7 +230,7 @@ export default function TermsPage() {
 
             <h2>11. Limitation of Liability</h2>
             <p>
-              TO THE MAXIMUM EXTENT PERMITTED BY LAW, PHILOSOPHIZEME SHALL NOT BE LIABLE FOR ANY INDIRECT, 
+              TO THE MAXIMUM EXTENT PERMITTED BY LAW, AUTOCONTENT SHALL NOT BE LIABLE FOR ANY INDIRECT, 
               INCIDENTAL, SPECIAL, CONSEQUENTIAL, OR PUNITIVE DAMAGES, INCLUDING BUT NOT LIMITED TO:
             </p>
             <ul>
@@ -247,7 +246,7 @@ export default function TermsPage() {
 
             <h2>12. Indemnification</h2>
             <p>
-              You agree to indemnify, defend, and hold harmless PhilosophizeMe from any claims, liabilities, 
+              You agree to indemnify, defend, and hold harmless AutoContent from any claims, liabilities, 
               damages, losses, costs, or expenses arising from:
             </p>
             <ul>
@@ -272,7 +271,7 @@ export default function TermsPage() {
             <h3>15.1 Entire Agreement</h3>
             <p>
               These Terms, together with our Privacy Policy, constitute the entire agreement between you and 
-              PhilosophizeMe regarding the Service.
+              AutoContent regarding the Service.
             </p>
 
             <h3>15.2 Amendments</h3>
@@ -313,12 +312,11 @@ export default function TermsPage() {
             </p>
 
             <h2>17. Special Provisions</h2>
-            <h3>17.1 AI Agent System</h3>
-            <p>The AI agent is powered by Anthropic Claude. By using the agent:</p>
+            <h3>17.1 AI System</h3>
+            <p>By using our AI features:</p>
             <ul>
               <li>You acknowledge responses may be imperfect or incorrect</li>
-              <li>You agree not to rely solely on agent outputs for critical decisions</li>
-              <li>The agent does not provide professional philosophical advice</li>
+              <li>You agree not to rely solely on AI outputs for critical decisions</li>
             </ul>
 
             <h3>17.2 Social Media Posting</h3>
@@ -332,11 +330,7 @@ export default function TermsPage() {
             <h2>18. Contact Information</h2>
             <p>For questions about these Terms:</p>
             <ul>
-<li><strong>General Inquiries:</strong> <a href="mailto:sharoz75@gmail.com">sharoz75@gmail.com</a></li>
-                <li><strong>Support:</strong> <a href="mailto:sharoz75@gmail.com">sharoz75@gmail.com</a></li>
-                <li><strong>Privacy:</strong> <a href="mailto:sharoz75@gmail.com">sharoz75@gmail.com</a></li>
-                <li><strong>DMCA:</strong> <a href="mailto:sharoz75@gmail.com">sharoz75@gmail.com</a></li>
-                <li><strong>Disputes:</strong> <a href="mailto:sharoz75@gmail.com">sharoz75@gmail.com</a></li>
+              <li><strong>Email:</strong> <a href="mailto:sharoz75@gmail.com">sharoz75@gmail.com</a></li>
             </ul>
             <p><strong>Response Time:</strong> We aim to respond within 5 business days.</p>
 
@@ -393,7 +387,7 @@ export default function TermsPage() {
                 </tbody>
               </table>
               <p className="text-mist text-sm mt-6"><strong>This summary is NOT a substitute for reading the full Terms of Service.</strong></p>
-              <p className="text-mist text-sm mt-4">© 2026 PhilosophizeMe. All rights reserved.</p>
+              <p className="text-mist text-sm mt-4">© 2026 AutoContent. All rights reserved.</p>
             </div>
           </div>
         </motion.div>
@@ -402,7 +396,7 @@ export default function TermsPage() {
       {/* Footer */}
       <footer className="py-8 px-6 border-t border-slate/30">
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
-          <p className="text-mist text-sm">© 2026 PhilosophizeMe. All rights reserved.</p>
+          <p className="text-mist text-sm">© 2026 AutoContent. All rights reserved.</p>
           <div className="flex gap-6 text-sm">
             <Link to="/privacy" className="text-silver hover:text-pure transition-colors">Privacy Policy</Link>
             <Link to="/terms" className="text-accent-gold">Terms of Service</Link>

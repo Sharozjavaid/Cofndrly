@@ -1,7 +1,7 @@
 {
-  "name": "PhilosophizeMe — Transform Philosophy Into Viral Content",
-  "short_name": "PhilosophizeMe",
-  "description": "AI-powered platform that generates, designs, and posts engaging philosophy content to TikTok and Instagram automatically.",
+  "name": "AutoContent — Automate Your Content Creation",
+  "short_name": "AutoContent",
+  "description": "AI-powered platform that generates slideshows, short-form videos, and narrative content for any niche.",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#0D0D0D",

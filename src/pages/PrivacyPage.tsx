@@ -9,9 +9,9 @@ export default function PrivacyPage() {
         <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
           <Link to="/" className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-accent-gold to-accent-copper flex items-center justify-center">
-              <span className="text-obsidian font-bold text-lg">φ</span>
+              <span className="text-obsidian font-bold text-lg">⚡</span>
             </div>
-            <span className="font-serif text-xl text-pure">PhilosophizeMe</span>
+            <span className="font-serif text-xl text-pure">AutoContent</span>
           </Link>
           <Link to="/" className="text-silver hover:text-pure transition-colors text-sm">
             ← Back to Home
@@ -35,8 +35,8 @@ export default function PrivacyPage() {
           <div className="prose max-w-none">
             <h2>Introduction</h2>
             <p>
-              Welcome to PhilosophizeMe ("we," "our," or "us"). We are committed to protecting your privacy 
-              and ensuring you have a positive experience using our philosophy content automation platform. 
+              Welcome to AutoContent ("we," "our," or "us"). We are committed to protecting your privacy 
+              and ensuring you have a positive experience using our content automation platform. 
               This Privacy Policy explains how we collect, use, disclose, and safeguard your information when 
               you use our website, application, and services (collectively, the "Service").
             </p>
@@ -52,7 +52,7 @@ export default function PrivacyPage() {
             <p><strong>Account Information</strong></p>
             <ul>
               <li>Email address</li>
-              <li>Username</li>
+              <li>Name</li>
               <li>Password (encrypted and never stored in plain text)</li>
               <li>Profile information (optional)</li>
             </ul>
@@ -66,7 +66,7 @@ export default function PrivacyPage() {
 
             <p><strong>Content You Create</strong></p>
             <ul>
-              <li>Philosophical topics and prompts you submit</li>
+              <li>Topics and prompts you submit</li>
               <li>Custom scripts or text you input</li>
               <li>Generated videos, images, and slideshows</li>
               <li>Editing preferences (fonts, themes, voiceovers)</li>
@@ -76,7 +76,7 @@ export default function PrivacyPage() {
             <p><strong>Social Media Credentials</strong></p>
             <ul>
               <li>TikTok OAuth tokens (for posting automation)</li>
-              <li>Instagram account credentials via Post Bridge API</li>
+              <li>Instagram account credentials via API</li>
               <li>Social media account IDs and usernames</li>
             </ul>
 
@@ -100,7 +100,7 @@ export default function PrivacyPage() {
             <h3>1.3 Information from Third Parties</h3>
             <p><strong>AI Service Providers</strong></p>
             <ul>
-              <li>We process your content through OpenAI, Google Gemini, Anthropic Claude, fal.ai, and ElevenLabs APIs</li>
+              <li>We process your content through various AI APIs including OpenAI, ElevenLabs, and image generation services</li>
               <li>These providers may collect technical data as per their own privacy policies</li>
               <li>We do not receive personal information about you from these providers beyond what's necessary for service functionality</li>
             </ul>
@@ -110,7 +110,7 @@ export default function PrivacyPage() {
 
             <h3>2.1 Service Provision</h3>
             <ul>
-              <li>Generate philosophical content based on your requests</li>
+              <li>Generate content based on your requests</li>
               <li>Create videos, images, and slideshows</li>
               <li>Post content to your connected social media accounts</li>
               <li>Store your content in our gallery for future access</li>
@@ -120,7 +120,7 @@ export default function PrivacyPage() {
             <h3>2.2 Service Improvement</h3>
             <ul>
               <li>Analyze usage patterns to improve features</li>
-              <li>Train and optimize our AI agent</li>
+              <li>Train and optimize our AI systems</li>
               <li>Fix bugs and technical issues</li>
               <li>Develop new features based on user needs</li>
             </ul>
@@ -138,9 +138,9 @@ export default function PrivacyPage() {
 
             <h3>3.1 Service Providers</h3>
             <p>We share data with trusted third-party service providers who help us operate the Service:</p>
-            <p><strong>AI & Content Generation:</strong> OpenAI, Google, Anthropic, fal.ai, ElevenLabs</p>
-            <p><strong>Infrastructure & Hosting:</strong> Google Cloud Platform, Vercel</p>
-            <p><strong>Social Media Posting:</strong> TikTok, Post Bridge (Instagram)</p>
+            <p><strong>AI & Content Generation:</strong> OpenAI, ElevenLabs, image generation services</p>
+            <p><strong>Infrastructure & Hosting:</strong> Google Cloud Platform, Vercel, Firebase</p>
+            <p><strong>Social Media Posting:</strong> TikTok, Instagram APIs</p>
 
             <h3>3.2 Legal Requirements</h3>
             <p>We may disclose your information if required to do so by law or in response to valid legal processes.</p>
@@ -148,8 +148,8 @@ export default function PrivacyPage() {
             <h2>4. Data Storage and Security</h2>
             <h3>4.1 Where We Store Data</h3>
             <p>
-              Primary data storage and processing occurs on servers located in the United States (Google Cloud Platform, US-Central region). 
-              Generated videos, images, and slideshows are stored in Google Cloud Storage buckets.
+              Primary data storage and processing occurs on servers located in the United States. 
+              Generated videos, images, and slideshows are stored in cloud storage services.
             </p>
 
             <h3>4.2 Security Measures</h3>
@@ -222,16 +222,15 @@ export default function PrivacyPage() {
             <h2>12. Contact Us</h2>
             <p>If you have questions about this Privacy Policy, please contact us:</p>
             <ul>
-<li><strong>Email:</strong> <a href="mailto:sharoz75@gmail.com">sharoz75@gmail.com</a></li>
-                <li><strong>Support:</strong> <a href="mailto:sharoz75@gmail.com">sharoz75@gmail.com</a></li>
+              <li><strong>Email:</strong> <a href="mailto:sharoz75@gmail.com">sharoz75@gmail.com</a></li>
             </ul>
             <p><strong>Response Time:</strong> We aim to respond to all inquiries within 5 business days.</p>
 
             <div className="mt-16 pt-8 border-t border-slate/30">
               <p className="text-mist text-sm">
-                <strong>By using PhilosophizeMe, you acknowledge that you have read and understood this Privacy Policy.</strong>
+                <strong>By using AutoContent, you acknowledge that you have read and understood this Privacy Policy.</strong>
               </p>
-              <p className="text-mist text-sm mt-4">© 2026 PhilosophizeMe. All rights reserved.</p>
+              <p className="text-mist text-sm mt-4">© 2026 AutoContent. All rights reserved.</p>
             </div>
           </div>
         </motion.div>
@@ -240,7 +239,7 @@ export default function PrivacyPage() {
       {/* Footer */}
       <footer className="py-8 px-6 border-t border-slate/30">
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
-          <p className="text-mist text-sm">© 2026 PhilosophizeMe. All rights reserved.</p>
+          <p className="text-mist text-sm">© 2026 AutoContent. All rights reserved.</p>
           <div className="flex gap-6 text-sm">
             <Link to="/privacy" className="text-accent-gold">Privacy Policy</Link>
             <Link to="/terms" className="text-silver hover:text-pure transition-colors">Terms of Service</Link>

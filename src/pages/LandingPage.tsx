@@ -1,6 +1,8 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
+import { collection, addDoc, serverTimestamp } from 'firebase/firestore'
+import { db } from '../firebase/config'
 
 // Animation variants
 const fadeInUp = {
@@ -24,19 +26,19 @@ const features = [
     icon: '🤖',
     title: 'AI-Powered Agent',
     subtitle: 'Smart Content Creation',
-    description: 'Our Claude-powered agent understands philosophy deeply. Just tell it what you want, and it researches, writes scripts, and generates complete video slideshows.'
+    description: 'Our intelligent agent understands your niche deeply. Just describe what you want, and it researches, writes scripts, and generates complete video content.'
   },
   {
     icon: '🎨',
     title: 'Beautiful Visual Design',
     subtitle: 'Custom Themes & Typography',
-    description: 'Every slide is uniquely designed with AI-generated imagery, professional typography, and multiple visual themes from glitch aesthetics to cinematic portraits.'
+    description: 'Every slide is uniquely designed with AI-generated imagery, professional typography, and multiple visual themes to match your brand aesthetic.'
   },
   {
     icon: '🎙️',
     title: 'Professional Voiceovers',
     subtitle: 'Natural AI Narration',
-    description: 'ElevenLabs integration provides human-like voiceovers that bring philosophical concepts to life. Multiple voice options to match your brand.'
+    description: 'ElevenLabs integration provides human-like voiceovers that bring your content to life. Multiple voice options to match your brand personality.'
   },
   {
     icon: '📱',
@@ -58,12 +60,35 @@ const features = [
   }
 ]
 
+const contentTypes = [
+  {
+    icon: '📸',
+    title: 'Slideshows',
+    description: 'Beautiful carousel posts with smooth transitions and engaging text overlays'
+  },
+  {
+    icon: '🎬',
+    title: 'Short-Form Videos',
+    description: 'TikTok and Reels-ready vertical videos with music and effects'
+  },
+  {
+    icon: '📖',
+    title: 'Narrative Videos',
+    description: 'Story-driven content with AI voiceover and cinematic imagery'
+  },
+  {
+    icon: '✨',
+    title: 'Quote Posts',
+    description: 'Eye-catching quote graphics with custom backgrounds and typography'
+  }
+]
+
 const steps = [
   {
     number: '01',
     title: 'Tell the Agent',
     subtitle: 'Natural Conversation',
-    description: 'Simply chat with our AI agent about what content you want. "Create a video about Stoic resilience" or "Make a series on existentialism for Gen Z."'
+    description: 'Simply chat with our AI agent about what content you want. Describe your niche, topic, or idea in plain language.'
   },
   {
     number: '02',
@@ -85,11 +110,15 @@ const steps = [
   }
 ]
 
-const audiences = [
-  { icon: '📚', title: 'Philosophy Educators', description: 'Share complex ideas in digestible, viral-ready formats.' },
-  { icon: '🎬', title: 'Content Creators', description: 'Build a philosophy-focused brand without hours of editing.' },
-  { icon: '📱', title: 'Social Media Managers', description: 'Manage philosophy accounts with minimal time investment.' },
-  { icon: '💡', title: 'Philosophy Enthusiasts', description: 'Turn your passion into engaging content effortlessly.' }
+const niches = [
+  { icon: '📚', title: 'Education & Learning', description: 'Turn complex topics into digestible content' },
+  { icon: '💪', title: 'Fitness & Wellness', description: 'Motivational content and workout tips' },
+  { icon: '💰', title: 'Finance & Business', description: 'Investment tips and entrepreneurship' },
+  { icon: '🎮', title: 'Gaming & Entertainment', description: 'Reviews, tips, and highlights' },
+  { icon: '🍳', title: 'Food & Recipes', description: 'Recipe videos and cooking content' },
+  { icon: '✈️', title: 'Travel & Lifestyle', description: 'Destination guides and vlogs' },
+  { icon: '💄', title: 'Beauty & Fashion', description: 'Tutorials and style inspiration' },
+  { icon: '🧠', title: 'Self-Improvement', description: 'Motivation and personal growth' }
 ]
 
 const pricingPlans = [
@@ -98,7 +127,7 @@ const pricingPlans = [
     price: '$0',
     period: '/month',
     features: ['10 videos per month', '2 themes available', 'Basic voiceover', 'Manual posting', 'Community support'],
-    cta: 'Get Started',
+    cta: 'Join Waitlist',
     featured: false
   },
   {
@@ -106,7 +135,7 @@ const pricingPlans = [
     price: '$29',
     period: '/month',
     features: ['100 videos per month', 'All themes & fonts', 'Premium voiceovers', 'TikTok + Instagram posting', 'Version history', 'Priority support'],
-    cta: 'Start Creating',
+    cta: 'Join Waitlist',
     featured: true
   },
   {
@@ -114,7 +143,7 @@ const pricingPlans = [
     price: '$99',
     period: '/month',
     features: ['Unlimited videos', 'Multiple accounts', 'Custom themes', 'API access', 'White-label options', 'Dedicated support'],
-    cta: 'Contact Us',
+    cta: 'Join Waitlist',
     featured: false
   }
 ]
@@ -128,16 +157,16 @@ const stats = [
 
 const testimonials = [
   {
-    quote: 'This is exactly what I needed. I can finally share philosophy without spending 5 hours per video.',
-    author: '@philosophy_daily'
+    quote: 'This is exactly what I needed. I can finally post consistently without spending hours on each video.',
+    author: '@contentcreator'
   },
   {
-    quote: 'The AI agent actually understands the nuances of philosophical concepts. Impressive.',
-    author: '@stoic_mindset'
+    quote: 'The AI actually understands my niche and creates content that resonates with my audience.',
+    author: '@digital_marketer'
   },
   {
-    quote: 'I went from 1 post per week to daily content. Game changer for my account.',
-    author: '@modern_philosopher'
+    quote: 'I went from 1 post per week to daily content. Complete game changer for my growth.',
+    author: '@socialmedia_pro'
   }
 ]
 
@@ -148,7 +177,11 @@ const faqs = [
   },
   {
     q: 'Do I need video editing skills?',
-    a: 'None at all. The AI handles everything from script to final video. You just provide the topic.'
+    a: 'None at all. The AI handles everything from script to final video. You just provide the topic or idea.'
+  },
+  {
+    q: 'What niches does this work for?',
+    a: 'Any niche! Education, fitness, finance, gaming, food, travel, beauty, self-improvement, and more. The AI adapts to your content style.'
   },
   {
     q: 'Can I customize the content?',
@@ -156,31 +189,137 @@ const faqs = [
   },
   {
     q: 'What about copyright on images?',
-    a: "All images are generated by AI specifically for your content. They're unique and safe to use."
+    a: "All images are generated by AI specifically for your content. They're unique and safe to use commercially."
   },
   {
     q: 'How does the TikTok/Instagram posting work?',
     a: 'You connect your accounts once via OAuth. After that, the system can post directly to your drafts (TikTok) or feed (Instagram) automatically.'
-  },
-  {
-    q: "What if I don't like a generated video?",
-    a: 'Regenerate individual slides, change the theme, adjust fonts, or start fresh. No limits on iterations.'
   }
 ]
 
 export default function LandingPage() {
   const [openFaq, setOpenFaq] = useState<number | null>(null)
+  const [showWaitlistModal, setShowWaitlistModal] = useState(false)
+  const [waitlistForm, setWaitlistForm] = useState({ name: '', email: '' })
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [submitSuccess, setSubmitSuccess] = useState(false)
+  const [submitError, setSubmitError] = useState('')
+
+  const handleWaitlistSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setIsSubmitting(true)
+    setSubmitError('')
+
+    try {
+      await addDoc(collection(db, 'waitlist'), {
+        name: waitlistForm.name,
+        email: waitlistForm.email,
+        createdAt: serverTimestamp()
+      })
+      setSubmitSuccess(true)
+      setWaitlistForm({ name: '', email: '' })
+    } catch (error) {
+      console.error('Error adding to waitlist:', error)
+      setSubmitError('Something went wrong. Please try again.')
+    } finally {
+      setIsSubmitting(false)
+    }
+  }
+
+  const openWaitlist = () => {
+    setShowWaitlistModal(true)
+    setSubmitSuccess(false)
+    setSubmitError('')
+  }
 
   return (
     <div className="min-h-screen bg-obsidian text-cloud">
+      {/* Waitlist Modal */}
+      {showWaitlistModal && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+          <div 
+            className="absolute inset-0 bg-obsidian/80 backdrop-blur-sm"
+            onClick={() => setShowWaitlistModal(false)}
+          />
+          <motion.div
+            className="relative bg-charcoal border border-slate/50 rounded-2xl p-8 max-w-md w-full"
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+          >
+            <button 
+              onClick={() => setShowWaitlistModal(false)}
+              className="absolute top-4 right-4 text-mist hover:text-pure transition-colors"
+            >
+              ✕
+            </button>
+
+            {submitSuccess ? (
+              <div className="text-center py-8">
+                <div className="text-5xl mb-4">🎉</div>
+                <h3 className="text-2xl font-serif text-pure mb-2">You're on the list!</h3>
+                <p className="text-silver">We'll notify you when we launch. Get ready to automate your content.</p>
+              <button
+                  onClick={() => setShowWaitlistModal(false)}
+                  className="mt-6 px-6 py-3 bg-accent-gold text-obsidian font-medium rounded-xl hover:bg-accent-gold/90 transition-colors"
+                >
+                  Got it!
+                </button>
+                  </div>
+            ) : (
+              <>
+                <h3 className="text-2xl font-serif text-pure mb-2">Join the Waitlist</h3>
+                <p className="text-silver mb-6">Be the first to know when we launch. Early access members get special perks.</p>
+                
+                <form onSubmit={handleWaitlistSubmit} className="space-y-4">
+                  <div>
+                    <label className="block text-sm text-silver mb-2">Name</label>
+                    <input
+                      type="text"
+                      required
+                      value={waitlistForm.name}
+                      onChange={(e) => setWaitlistForm({ ...waitlistForm, name: e.target.value })}
+                      className="w-full px-4 py-3 bg-graphite border border-slate/50 rounded-xl text-pure placeholder-mist focus:outline-none focus:border-accent-gold/50 transition-colors"
+                      placeholder="Your name"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm text-silver mb-2">Email</label>
+                    <input
+                      type="email"
+                      required
+                      value={waitlistForm.email}
+                      onChange={(e) => setWaitlistForm({ ...waitlistForm, email: e.target.value })}
+                      className="w-full px-4 py-3 bg-graphite border border-slate/50 rounded-xl text-pure placeholder-mist focus:outline-none focus:border-accent-gold/50 transition-colors"
+                      placeholder="you@example.com"
+                    />
+                  </div>
+                  
+                  {submitError && (
+                    <p className="text-red-400 text-sm">{submitError}</p>
+                  )}
+                  
+                  <button
+                    type="submit"
+                    disabled={isSubmitting}
+                    className="w-full py-3 bg-accent-gold text-obsidian font-semibold rounded-xl hover:bg-accent-gold/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    {isSubmitting ? 'Joining...' : 'Join Waitlist'}
+              </button>
+                </form>
+              </>
+            )}
+          </motion.div>
+        </div>
+      )}
+
       {/* Navigation */}
       <nav className="fixed top-0 left-0 right-0 z-50 glass border-b border-slate/30">
         <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
           <Link to="/" className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-accent-gold to-accent-copper flex items-center justify-center">
-              <span className="text-obsidian font-bold text-lg">φ</span>
+              <span className="text-obsidian font-bold text-lg">⚡</span>
             </div>
-            <span className="font-serif text-xl text-pure">PhilosophizeMe</span>
+            <span className="font-serif text-xl text-pure">AutoContent</span>
           </Link>
           <div className="hidden md:flex items-center gap-8">
             <a href="#features" className="text-silver hover:text-pure transition-colors text-sm">Features</a>
@@ -188,14 +327,12 @@ export default function LandingPage() {
             <a href="#pricing" className="text-silver hover:text-pure transition-colors text-sm">Pricing</a>
             <a href="#faq" className="text-silver hover:text-pure transition-colors text-sm">FAQ</a>
           </div>
-          <div className="flex items-center gap-4">
-            <button className="text-silver hover:text-pure transition-colors text-sm hidden sm:block">
-              Sign In
-            </button>
-            <button className="px-5 py-2.5 bg-accent-gold text-obsidian font-medium text-sm rounded-lg hover:bg-accent-gold/90 transition-colors">
-              Get Started
-            </button>
-          </div>
+          <button 
+            onClick={openWaitlist}
+            className="px-5 py-2.5 bg-accent-gold text-obsidian font-medium text-sm rounded-lg hover:bg-accent-gold/90 transition-colors"
+          >
+            Join Waitlist
+          </button>
         </div>
       </nav>
 
@@ -212,7 +349,7 @@ export default function LandingPage() {
           animate="visible"
           variants={staggerContainer}
         >
-          <motion.div 
+          <motion.div
             variants={fadeInUp}
             className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-accent-gold/30 bg-accent-gold/5 mb-8"
           >
@@ -224,27 +361,30 @@ export default function LandingPage() {
             variants={fadeInUp}
             className="text-5xl md:text-7xl lg:text-8xl font-serif text-pure mb-6 leading-tight"
           >
-            Transform Philosophy Into{' '}
-            <span className="gradient-text">Viral Content</span>
+            Automate Your{' '}
+            <span className="gradient-text">Content Creation</span>
           </motion.h1>
           
           <motion.p 
             variants={fadeInUp}
             className="text-xl md:text-2xl text-silver max-w-3xl mx-auto mb-10 leading-relaxed"
           >
-            AI-powered platform that generates, designs, and posts engaging philosophy content to TikTok and Instagram. 
+            AI-powered platform that generates slideshows, short-form videos, and narrative content for any niche. 
             <span className="text-cloud"> No editing. No posting. Just pure automation.</span>
           </motion.p>
           
-          <motion.div 
+          <motion.div
             variants={fadeInUp}
             className="flex flex-col sm:flex-row items-center justify-center gap-4"
           >
-            <button className="w-full sm:w-auto px-8 py-4 bg-accent-gold text-obsidian font-semibold rounded-xl hover:bg-accent-gold/90 transition-all hover-lift glow-gold">
-              Get Started Free
+            <button
+              onClick={openWaitlist}
+              className="w-full sm:w-auto px-8 py-4 bg-accent-gold text-obsidian font-semibold rounded-xl hover:bg-accent-gold/90 transition-all hover-lift glow-gold"
+            >
+              Join Waitlist — It's Free
             </button>
             <button className="w-full sm:w-auto px-8 py-4 border border-slate text-cloud font-medium rounded-xl hover:border-silver hover:bg-charcoal/50 transition-all">
-              Watch Demo →
+              See How It Works ↓
             </button>
           </motion.div>
         </motion.div>
@@ -262,28 +402,29 @@ export default function LandingPage() {
                 <div className="w-3 h-3 rounded-full bg-red-500/60" />
                 <div className="w-3 h-3 rounded-full bg-yellow-500/60" />
                 <div className="w-3 h-3 rounded-full bg-green-500/60" />
-              </div>
-            </div>
+                  </div>
+                  </div>
             <div className="bg-gradient-to-br from-graphite to-charcoal p-8 md:p-12">
               <div className="grid md:grid-cols-2 gap-8 items-center">
                 <div className="space-y-4">
                   <div className="text-sm text-accent-gold font-mono">// Agent Response</div>
                   <p className="text-cloud leading-relaxed">
-                    "I'll create a 5-slide video about Stoic resilience, featuring Marcus Aurelius quotes with 
-                    cinematic portrait imagery and a deep, contemplative voiceover..."
+                    "I'll create a 5-slide video about productivity tips, featuring 
+                    engaging visuals with a motivational voiceover and trending audio..."
                   </p>
                   <div className="flex gap-2 pt-4">
-                    <div className="px-3 py-1 bg-accent-sage/20 text-accent-sage text-xs rounded-full">Stoicism</div>
-                    <div className="px-3 py-1 bg-accent-violet/20 text-accent-violet text-xs rounded-full">Resilience</div>
+                    <div className="px-3 py-1 bg-accent-sage/20 text-accent-sage text-xs rounded-full">Productivity</div>
+                    <div className="px-3 py-1 bg-accent-violet/20 text-accent-violet text-xs rounded-full">Motivation</div>
+                    <div className="px-3 py-1 bg-accent-gold/20 text-accent-gold text-xs rounded-full">Tips</div>
                   </div>
                 </div>
                 <div className="relative aspect-[9/16] max-w-[200px] mx-auto bg-obsidian rounded-xl overflow-hidden border border-slate/50">
                   <div className="absolute inset-0 flex items-center justify-center">
                     <div className="text-center p-4">
-                      <div className="text-4xl mb-4">🏛️</div>
-                      <p className="text-sm text-silver font-serif italic">"The obstacle is the way"</p>
-                      <p className="text-xs text-mist mt-2">— Marcus Aurelius</p>
-                    </div>
+                      <div className="text-4xl mb-4">🚀</div>
+                      <p className="text-sm text-silver font-serif italic">"Your content, automated"</p>
+                      <p className="text-xs text-mist mt-2">— AutoContent AI</p>
+                  </div>
                   </div>
                 </div>
               </div>
@@ -297,7 +438,7 @@ export default function LandingPage() {
         <div className="max-w-6xl mx-auto">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
             {stats.map((stat, i) => (
-              <motion.div 
+          <motion.div
                 key={i}
                 className="text-center"
                 initial={{ opacity: 0, y: 20 }}
@@ -330,16 +471,48 @@ export default function LandingPage() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
           >
-            PhilosophizeMe is an intelligent content automation platform that turns timeless philosophical wisdom 
-            into modern, shareable social media content. Our AI agent researches topics, generates beautiful 
+            AutoContent is an intelligent content automation platform that transforms your ideas into 
+            engaging social media content. Our AI agent researches topics, generates beautiful 
             slideshows with custom imagery and voiceovers, and automatically publishes to your TikTok and 
-            Instagram accounts.
+            Instagram accounts — all while you sleep.
           </motion.p>
         </div>
       </section>
 
+      {/* Content Types */}
+      <section className="py-24 px-6 bg-charcoal/30">
+        <div className="max-w-6xl mx-auto">
+          <motion.div 
+            className="text-center mb-16"
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true }}
+          >
+            <h2 className="text-4xl md:text-5xl font-serif text-pure mb-4">Content Types</h2>
+            <p className="text-silver text-lg">Generate any format, for any platform</p>
+          </motion.div>
+          
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {contentTypes.map((type, i) => (
+              <motion.div
+                key={i}
+                className="p-6 rounded-2xl bg-graphite/50 border border-slate/30 text-center hover:border-accent-gold/30 transition-all hover-lift"
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.1 }}
+              >
+                <div className="text-4xl mb-4">{type.icon}</div>
+                <h3 className="text-lg font-serif text-pure mb-2">{type.title}</h3>
+                <p className="text-silver text-sm">{type.description}</p>
+              </motion.div>
+            ))}
+          </div>
+            </div>
+      </section>
+
       {/* Features Section */}
-      <section id="features" className="py-24 px-6 bg-charcoal/30">
+      <section id="features" className="py-24 px-6">
         <div className="max-w-7xl mx-auto">
           <motion.div 
             className="text-center mb-16"
@@ -348,12 +521,12 @@ export default function LandingPage() {
             viewport={{ once: true }}
           >
             <h2 className="text-4xl md:text-5xl font-serif text-pure mb-4">Key Features</h2>
-            <p className="text-silver text-lg">Everything you need to automate philosophy content</p>
+            <p className="text-silver text-lg">Everything you need to automate content creation</p>
           </motion.div>
-          
+
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             {features.map((feature, i) => (
-              <motion.div
+            <motion.div
                 key={i}
                 className="p-8 rounded-2xl bg-graphite/50 border border-slate/30 hover:border-accent-gold/30 transition-all hover-lift"
                 initial={{ opacity: 0, y: 30 }}
@@ -367,12 +540,12 @@ export default function LandingPage() {
                 <p className="text-silver text-sm leading-relaxed">{feature.description}</p>
               </motion.div>
             ))}
-          </div>
-        </div>
+                  </div>
+                </div>
       </section>
 
       {/* How It Works */}
-      <section id="how-it-works" className="py-24 px-6">
+      <section id="how-it-works" className="py-24 px-6 bg-charcoal/30">
         <div className="max-w-6xl mx-auto">
           <motion.div 
             className="text-center mb-16"
@@ -404,42 +577,43 @@ export default function LandingPage() {
               </motion.div>
             ))}
           </div>
-        </div>
+                  </div>
       </section>
 
-      {/* Who Is This For */}
-      <section className="py-24 px-6 bg-charcoal/30">
-        <div className="max-w-5xl mx-auto">
-          <motion.div 
+      {/* Works For Any Niche */}
+      <section className="py-24 px-6">
+        <div className="max-w-6xl mx-auto">
+                      <motion.div
             className="text-center mb-16"
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
             viewport={{ once: true }}
           >
-            <h2 className="text-4xl md:text-5xl font-serif text-pure mb-4">Who Is This For?</h2>
-          </motion.div>
+            <h2 className="text-4xl md:text-5xl font-serif text-pure mb-4">Works For Any Niche</h2>
+            <p className="text-silver text-lg">No matter your content focus, we've got you covered</p>
+                      </motion.div>
           
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {audiences.map((audience, i) => (
-              <motion.div
+            {niches.map((niche, i) => (
+                      <motion.div
                 key={i}
                 className="p-6 rounded-xl bg-graphite/30 border border-slate/20 text-center"
                 initial={{ opacity: 0, scale: 0.9 }}
                 whileInView={{ opacity: 1, scale: 1 }}
                 viewport={{ once: true }}
-                transition={{ delay: i * 0.1 }}
+                transition={{ delay: i * 0.05 }}
               >
-                <div className="text-3xl mb-3">{audience.icon}</div>
-                <h3 className="font-serif text-pure mb-2">{audience.title}</h3>
-                <p className="text-silver text-sm">{audience.description}</p>
+                <div className="text-3xl mb-3">{niche.icon}</div>
+                <h3 className="font-serif text-pure mb-2">{niche.title}</h3>
+                <p className="text-silver text-sm">{niche.description}</p>
               </motion.div>
             ))}
-          </div>
-        </div>
+                  </div>
+                </div>
       </section>
 
       {/* Testimonials */}
-      <section className="py-24 px-6">
+      <section className="py-24 px-6 bg-charcoal/30">
         <div className="max-w-6xl mx-auto">
           <motion.div 
             className="text-center mb-16"
@@ -466,13 +640,13 @@ export default function LandingPage() {
               </motion.div>
             ))}
           </div>
-        </div>
+                  </div>
       </section>
 
       {/* Pricing */}
-      <section id="pricing" className="py-24 px-6 bg-charcoal/30">
+      <section id="pricing" className="py-24 px-6">
         <div className="max-w-6xl mx-auto">
-          <motion.div 
+                      <motion.div
             className="text-center mb-16"
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
@@ -480,11 +654,11 @@ export default function LandingPage() {
           >
             <h2 className="text-4xl md:text-5xl font-serif text-pure mb-4">Simple Pricing</h2>
             <p className="text-silver text-lg">Start free, scale as you grow</p>
-          </motion.div>
+                      </motion.div>
           
           <div className="grid md:grid-cols-3 gap-8">
             {pricingPlans.map((plan, i) => (
-              <motion.div
+                      <motion.div
                 key={i}
                 className={`p-8 rounded-2xl border ${
                   plan.featured 
@@ -514,11 +688,14 @@ export default function LandingPage() {
                     </li>
                   ))}
                 </ul>
-                <button className={`w-full py-3 rounded-xl font-medium transition-all ${
-                  plan.featured
-                    ? 'bg-accent-gold text-obsidian hover:bg-accent-gold/90'
-                    : 'border border-slate text-cloud hover:border-silver hover:bg-charcoal/50'
-                }`}>
+                <button 
+                  onClick={openWaitlist}
+                  className={`w-full py-3 rounded-xl font-medium transition-all ${
+                    plan.featured
+                      ? 'bg-accent-gold text-obsidian hover:bg-accent-gold/90'
+                      : 'border border-slate text-cloud hover:border-silver hover:bg-charcoal/50'
+                  }`}
+                >
                   {plan.cta}
                 </button>
               </motion.div>
@@ -526,15 +703,15 @@ export default function LandingPage() {
           </div>
           
           <p className="text-center text-mist text-sm mt-8">
-            Current version is in beta — contact us for early access
+            Currently in beta — join the waitlist for early access
           </p>
         </div>
       </section>
 
       {/* FAQ */}
-      <section id="faq" className="py-24 px-6">
+      <section id="faq" className="py-24 px-6 bg-charcoal/30">
         <div className="max-w-3xl mx-auto">
-          <motion.div 
+          <motion.div
             className="text-center mb-16"
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
@@ -575,27 +752,30 @@ export default function LandingPage() {
       {/* Final CTA */}
       <section className="py-24 px-6 relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-radial from-accent-gold/5 via-transparent to-transparent" />
-        <motion.div 
+          <motion.div
           className="relative max-w-4xl mx-auto text-center"
           initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-        >
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+          >
           <h2 className="text-4xl md:text-5xl font-serif text-pure mb-6">
-            Ready to Automate Your Philosophy Content?
-          </h2>
+            Ready to Automate Your Content?
+            </h2>
           <p className="text-silver text-lg mb-8 max-w-2xl mx-auto">
-            Join creators who are sharing wisdom with the world — without the hours of manual work.
+            Join thousands of creators who are growing their audience — without the hours of manual work.
           </p>
           <div className="flex flex-wrap justify-center gap-4 mb-10 text-sm text-silver">
             <span className="flex items-center gap-2"><span className="text-accent-gold">✓</span> No video editing required</span>
-            <span className="flex items-center gap-2"><span className="text-accent-gold">✓</span> No research paralysis</span>
-            <span className="flex items-center gap-2"><span className="text-accent-gold">✓</span> No posting headaches</span>
+            <span className="flex items-center gap-2"><span className="text-accent-gold">✓</span> Works for any niche</span>
+            <span className="flex items-center gap-2"><span className="text-accent-gold">✓</span> Publish while you sleep</span>
           </div>
-          <button className="px-10 py-4 bg-accent-gold text-obsidian font-semibold rounded-xl hover:bg-accent-gold/90 transition-all hover-lift glow-gold text-lg">
-            Start Creating Now — Free
-          </button>
-        </motion.div>
+            <button
+            onClick={openWaitlist}
+            className="px-10 py-4 bg-accent-gold text-obsidian font-semibold rounded-xl hover:bg-accent-gold/90 transition-all hover-lift glow-gold text-lg"
+          >
+            Join the Waitlist — Free
+            </button>
+          </motion.div>
       </section>
 
       {/* Footer */}
@@ -606,12 +786,12 @@ export default function LandingPage() {
             <div className="md:col-span-1">
               <Link to="/" className="flex items-center gap-3 mb-4">
                 <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-accent-gold to-accent-copper flex items-center justify-center">
-                  <span className="text-obsidian font-bold text-lg">φ</span>
+                  <span className="text-obsidian font-bold text-lg">⚡</span>
                 </div>
-                <span className="font-serif text-xl text-pure">PhilosophizeMe</span>
+                <span className="font-serif text-xl text-pure">AutoContent</span>
               </Link>
               <p className="text-silver text-sm leading-relaxed">
-                Empowering creators to share wisdom with the world.
+                Automate your content creation and grow your audience effortlessly.
               </p>
             </div>
             
@@ -622,7 +802,6 @@ export default function LandingPage() {
                 <li><a href="#features" className="text-silver hover:text-pure transition-colors">Features</a></li>
                 <li><a href="#pricing" className="text-silver hover:text-pure transition-colors">Pricing</a></li>
                 <li><a href="#faq" className="text-silver hover:text-pure transition-colors">FAQ</a></li>
-                <li><a href="#" className="text-silver hover:text-pure transition-colors">API</a></li>
               </ul>
             </div>
             
@@ -640,19 +819,16 @@ export default function LandingPage() {
               <h4 className="text-cloud font-medium mb-4">Connect</h4>
               <ul className="space-y-2 text-sm">
                 <li><a href="mailto:sharoz75@gmail.com" className="text-silver hover:text-pure transition-colors">sharoz75@gmail.com</a></li>
-                <li><a href="https://twitter.com/philosophizeme" className="text-silver hover:text-pure transition-colors">Twitter/X</a></li>
-                <li><a href="https://instagram.com/philosophizeme_app" className="text-silver hover:text-pure transition-colors">Instagram</a></li>
-                <li><a href="#" className="text-silver hover:text-pure transition-colors">Discord</a></li>
               </ul>
             </div>
           </div>
           
           <div className="pt-8 border-t border-slate/30 flex flex-col md:flex-row items-center justify-between gap-4">
-            <p className="text-mist text-sm">© 2026 PhilosophizeMe. All rights reserved.</p>
-            <p className="text-mist text-sm italic">Empowering creators to share wisdom with the world.</p>
+            <p className="text-mist text-sm">© 2026 AutoContent. All rights reserved.</p>
+            <p className="text-mist text-sm italic">Automate your content, grow your audience.</p>
           </div>
         </div>
       </footer>
-    </div>
+      </div>
   )
 }
