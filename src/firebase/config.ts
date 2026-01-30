@@ -21,7 +21,7 @@ const app = initializeApp(firebaseConfig)
 
 // Initialize services
 export const auth = getAuth(app)
-export const db = getFirestore(app)
+export const db = getFirestore(app, 'cofndrly-automation')
 export const storage = getStorage(app)
 
 // Initialize Analytics (only in browser)

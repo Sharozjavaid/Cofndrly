@@ -88,9 +88,18 @@ service cloud.firestore {
     match /swipes/{swipeId} {
       // Users can create swipes
       allow create: if request.auth != null;
-      
+
       // Users can read their own swipes
       allow read: if request.auth != null;
+    }
+
+    // Waitlist collection - stores email signups
+    match /waitlist/{entryId} {
+      // Anyone can add themselves to the waitlist (no auth required)
+      allow create: if true;
+
+      // Only admins can read/update/delete waitlist entries
+      allow read, update, delete: if isAdmin();
     }
   }
 }

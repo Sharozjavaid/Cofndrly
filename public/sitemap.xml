@@ -7,26 +7,25 @@
   <!-- Homepage -->
   <url>
     <loc>https://cofndrly.com/</loc>
-    <lastmod>2025-10-28</lastmod>
+    <lastmod>2026-01-29</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
 
-  <!-- Builders Page -->
+  <!-- Privacy Policy -->
   <url>
-    <loc>https://cofndrly.com/builders</loc>
-    <lastmod>2025-10-28</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
+    <loc>https://cofndrly.com/privacy</loc>
+    <lastmod>2026-01-29</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
   </url>
 
-  <!-- Creatives/Storytellers Page -->
+  <!-- Terms of Service -->
   <url>
-    <loc>https://cofndrly.com/creatives</loc>
-    <lastmod>2025-10-28</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
+    <loc>https://cofndrly.com/terms</loc>
+    <lastmod>2026-01-29</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
   </url>
 
 </urlset>
-

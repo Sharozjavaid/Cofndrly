@@ -9,9 +9,9 @@ export default function PrivacyPage() {
         <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
           <Link to="/" className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-accent-gold to-accent-copper flex items-center justify-center">
-              <span className="text-obsidian font-bold text-lg">⚡</span>
+              <span className="text-obsidian font-bold text-lg">C</span>
             </div>
-            <span className="font-serif text-xl text-pure">AutoContent</span>
+            <span className="font-serif text-xl text-pure">Cofndrly</span>
           </Link>
           <Link to="/" className="text-silver hover:text-pure transition-colors text-sm">
             ← Back to Home
@@ -35,7 +35,7 @@ export default function PrivacyPage() {
           <div className="prose max-w-none">
             <h2>Introduction</h2>
             <p>
-              Welcome to AutoContent ("we," "our," or "us"). We are committed to protecting your privacy 
+              Welcome to Cofndrly ("we," "our," or "us"). We are committed to protecting your privacy 
               and ensuring you have a positive experience using our content automation platform. 
               This Privacy Policy explains how we collect, use, disclose, and safeguard your information when 
               you use our website, application, and services (collectively, the "Service").
@@ -228,9 +228,9 @@ export default function PrivacyPage() {
 
             <div className="mt-16 pt-8 border-t border-slate/30">
               <p className="text-mist text-sm">
-                <strong>By using AutoContent, you acknowledge that you have read and understood this Privacy Policy.</strong>
+                <strong>By using Cofndrly, you acknowledge that you have read and understood this Privacy Policy.</strong>
               </p>
-              <p className="text-mist text-sm mt-4">© 2026 AutoContent. All rights reserved.</p>
+              <p className="text-mist text-sm mt-4">© 2026 Cofndrly. All rights reserved.</p>
             </div>
           </div>
         </motion.div>
@@ -239,7 +239,7 @@ export default function PrivacyPage() {
       {/* Footer */}
       <footer className="py-8 px-6 border-t border-slate/30">
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
-          <p className="text-mist text-sm">© 2026 AutoContent. All rights reserved.</p>
+          <p className="text-mist text-sm">© 2026 Cofndrly. All rights reserved.</p>
           <div className="flex gap-6 text-sm">
             <Link to="/privacy" className="text-accent-gold">Privacy Policy</Link>
             <Link to="/terms" className="text-silver hover:text-pure transition-colors">Terms of Service</Link>

@@ -9,9 +9,9 @@ export default function TermsPage() {
         <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
           <Link to="/" className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-accent-gold to-accent-copper flex items-center justify-center">
-              <span className="text-obsidian font-bold text-lg">⚡</span>
+              <span className="text-obsidian font-bold text-lg">C</span>
             </div>
-            <span className="font-serif text-xl text-pure">AutoContent</span>
+            <span className="font-serif text-xl text-pure">Cofndrly</span>
           </Link>
           <Link to="/" className="text-silver hover:text-pure transition-colors text-sm">
             ← Back to Home
@@ -35,7 +35,7 @@ export default function TermsPage() {
           <div className="prose max-w-none">
             <h2>Agreement to Terms</h2>
             <p>
-              Welcome to AutoContent. These Terms of Service ("Terms") govern your access to and use of our 
+              Welcome to Cofndrly. These Terms of Service ("Terms") govern your access to and use of our 
               website, application, and services (collectively, the "Service"). By accessing or using the Service, 
               you agree to be bound by these Terms and our Privacy Policy. If you do not agree to these Terms, 
               please do not use the Service.
@@ -47,10 +47,10 @@ export default function TermsPage() {
 
             <h2>1. Definitions</h2>
             <ul>
-              <li><strong>"Service"</strong> refers to the AutoContent platform, including website, application, API, and all related services.</li>
+              <li><strong>"Service"</strong> refers to the Cofndrly platform, including website, application, API, and all related services.</li>
               <li><strong>"User," "You," "Your"</strong> refers to any individual or entity using the Service.</li>
               <li><strong>"Content"</strong> refers to any text, images, videos, audio, scripts, or other materials generated through or uploaded to the Service.</li>
-              <li><strong>"We," "Us," "Our"</strong> refers to AutoContent and its affiliates, employees, and contractors.</li>
+              <li><strong>"We," "Us," "Our"</strong> refers to Cofndrly and its affiliates, employees, and contractors.</li>
               <li><strong>"Generated Content"</strong> refers to videos, images, scripts, and other materials created by our AI systems based on your inputs.</li>
             </ul>
 
@@ -246,7 +246,7 @@ export default function TermsPage() {
 
             <h2>12. Indemnification</h2>
             <p>
-              You agree to indemnify, defend, and hold harmless AutoContent from any claims, liabilities, 
+              You agree to indemnify, defend, and hold harmless Cofndrly from any claims, liabilities, 
               damages, losses, costs, or expenses arising from:
             </p>
             <ul>
@@ -271,7 +271,7 @@ export default function TermsPage() {
             <h3>15.1 Entire Agreement</h3>
             <p>
               These Terms, together with our Privacy Policy, constitute the entire agreement between you and 
-              AutoContent regarding the Service.
+              Cofndrly regarding the Service.
             </p>
 
             <h3>15.2 Amendments</h3>
@@ -387,7 +387,7 @@ export default function TermsPage() {
                 </tbody>
               </table>
               <p className="text-mist text-sm mt-6"><strong>This summary is NOT a substitute for reading the full Terms of Service.</strong></p>
-              <p className="text-mist text-sm mt-4">© 2026 AutoContent. All rights reserved.</p>
+              <p className="text-mist text-sm mt-4">© 2026 Cofndrly. All rights reserved.</p>
             </div>
           </div>
         </motion.div>
@@ -396,7 +396,7 @@ export default function TermsPage() {
       {/* Footer */}
       <footer className="py-8 px-6 border-t border-slate/30">
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
-          <p className="text-mist text-sm">© 2026 AutoContent. All rights reserved.</p>
+          <p className="text-mist text-sm">© 2026 Cofndrly. All rights reserved.</p>
           <div className="flex gap-6 text-sm">
             <Link to="/privacy" className="text-silver hover:text-pure transition-colors">Privacy Policy</Link>
             <Link to="/terms" className="text-accent-gold">Terms of Service</Link>

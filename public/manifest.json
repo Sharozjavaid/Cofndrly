@@ -1,7 +1,7 @@
 {
-  "name": "AutoContent — Automate Your Content Creation",
-  "short_name": "AutoContent",
-  "description": "AI-powered platform that generates slideshows, short-form videos, and narrative content for any niche.",
+  "name": "Cofndrly — Your Marketing Cofounder",
+  "short_name": "Cofndrly",
+  "description": "AI-powered marketing cofounder for social media strategy, content creation, and automated posting.",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#0D0D0D",
@@ -21,7 +21,7 @@
       "purpose": "any maskable"
     }
   ],
-  "categories": ["multimedia", "social", "productivity"],
+  "categories": ["business", "social", "productivity"],
   "lang": "en-US",
   "dir": "ltr"
 }

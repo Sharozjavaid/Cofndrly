@@ -13,7 +13,7 @@ const Logo = ({ className = '', size = 'md' }: LogoProps) => {
   return (
     <img
       src="/logo.png"
-      alt="GrowMyAPP Logo"
+      alt="Cofndrly Logo"
       className={className || sizeClasses[size]}
       style={{ 
         mixBlendMode: 'multiply',
